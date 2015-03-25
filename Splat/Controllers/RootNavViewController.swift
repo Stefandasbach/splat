@@ -45,7 +45,7 @@ class RootNavViewController: UINavigationController {
                 var test = PFUser.currentUser()
                 println(test.objectId)
                 
-                //remove old user defauls
+                //remove old user defaults
                 if let appDomain = NSBundle.mainBundle().bundleIdentifier {
                     NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
                     println(NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes"))

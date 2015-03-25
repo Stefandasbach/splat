@@ -245,7 +245,6 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                 var query: PFQuery = PFQuery(className: "Post")
                 query.limit = limit
                 query.skip = skip
-
                 query.orderByDescending("score")
                 query.findObjectsInBackgroundWithBlock({
                     (objects: [AnyObject]!, error: NSError!)->Void in
