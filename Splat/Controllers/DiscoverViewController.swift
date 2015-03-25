@@ -93,7 +93,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         shareButton.addTarget(self, action: "shareButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         
         //MAIN SCORE VIEW
-        circleView = UIView(frame: CGRectMake(self.mainScrollView.frame.width/8, 150, 3*self.mainScrollView.frame.width/4, 3*self.mainScrollView.frame.width/4))
+        circleView = UIView(frame: CGRectMake(self.mainScrollView.frame.width/8, self.view.frame.height/5, 3*self.mainScrollView.frame.width/4, 3*self.mainScrollView.frame.width/4))
         circleView.layer.cornerRadius = 3*self.mainScrollView.frame.width/8;
         circleView.backgroundColor = UIColorFromRGB(BACKGROUND_GREY)
         
@@ -158,7 +158,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
 
         
         //Scrolls to the profile area
-        caretButton = UIButton(frame: CGRectMake(7*self.mainScrollView.frame.width/16, circleView.frame.maxY+75, self.mainScrollView.frame.width/8, self.mainScrollView.frame.width/8))
+        caretButton = UIButton(frame: CGRectMake(7*self.mainScrollView.frame.width/16, self.view.frame.height-self.mainScrollView.frame.width/8-50, self.mainScrollView.frame.width/8, self.mainScrollView.frame.width/8))
         caretButton.setImage(UIImage(named: "caretImageFlipped.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         caretButton.tintColor = UIColorFromRGB(BACKGROUND_GREY)
         caretButton.addTarget(self, action: "caretButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
