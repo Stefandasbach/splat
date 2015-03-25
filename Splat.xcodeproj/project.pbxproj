@@ -260,10 +260,10 @@
 		02B2CA5F1AA6383300BB05B9 = {
 			isa = PBXGroup;
 			children = (
-				02B2CA8E1AA6584000BB05B9 /* Frameworks */,
 				02B2CA6A1AA6383300BB05B9 /* Splat */,
 				02B2CA801AA6383300BB05B9 /* SplatTests */,
 				02B2CA691AA6383300BB05B9 /* Products */,
+				02B2CA8E1AA6584000BB05B9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -279,15 +279,15 @@
 		02B2CA6A1AA6383300BB05B9 /* Splat */ = {
 			isa = PBXGroup;
 			children = (
-				02F2C6A01AB4879A0041A09F /* Assets */,
+				02B2CA6D1AA6383300BB05B9 /* AppDelegate.swift */,
 				02F2C69D1AB484FB0041A09F /* Controllers */,
 				02F2C6AC1AB51A1F0041A09F /* Views */,
 				02F2C6A91AB4F4ED0041A09F /* Models */,
 				02F2C69A1AB483FC0041A09F /* Utilities */,
-				02B2CA6D1AA6383300BB05B9 /* AppDelegate.swift */,
 				02B2CA711AA6383300BB05B9 /* Main.storyboard */,
 				02B2CA741AA6383300BB05B9 /* Images.xcassets */,
 				02B2CA761AA6383300BB05B9 /* LaunchScreen.xib */,
+				02F2C6A01AB4879A0041A09F /* Assets */,
 				02B2CA6B1AA6383300BB05B9 /* Supporting Files */,
 				02B2CAA91AA6599600BB05B9 /* Splat-Bridging-Header.h */,
 			);
@@ -483,10 +483,11 @@
 				TargetAttributes = {
 					02B2CA671AA6383300BB05B9 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = V8V9KT2MFC;
+						DevelopmentTeam = 75XP583E93;
 					};
 					02B2CA7C1AA6383300BB05B9 = {
 						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = 75XP583E93;
 						TestTargetID = 02B2CA671AA6383300BB05B9;
 					};
 				};
