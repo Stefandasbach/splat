@@ -207,8 +207,6 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
             
             post.setPicture(pngImage)
             post.setScore(0)
-            post.setDownvotes(NSArray())
-            post.setUpvotes(NSArray())
             post.setFlags(0)
             post.setComment(commentBox.getComment())
             
@@ -222,7 +220,7 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
                 }
                 
                 post.setGeopoint(geopoint)
-                
+                post.setState((NSUserDefaults.standardUserDefaults().objectForKey("state") as String!))
                 post.saveObjectInBackgroundForCurrentUser { (success) -> Void in
                     if success {
                         println("Success creating post!")

@@ -10,10 +10,9 @@ import UIKit
 import Parse
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
 
     var window: UIWindow?
-
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -23,6 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Parse.setApplicationId("bPx47th2SCzPkhTnnbWuoYQ3X2oeB6nq5aK007T8", clientKey: "bBMvgqmIMqsAHESMqZfk2GdRfv4WTsYZcBB7YUXj")
         
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
+        Location().getUserLocation()
         var feedView = FeedViewController(style: UITableViewStyle.Plain)
         var navView = RootNavViewController(rootViewController: feedView)
         self.window?.rootViewController = navView
@@ -46,6 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillEnterForeground(application: UIApplication) {
         
         NSNotificationCenter.defaultCenter().postNotificationName("ReloadFeed", object: nil)
+        Location().getUserLocation()
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     }
 
@@ -56,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
+    
+    
 }
 
