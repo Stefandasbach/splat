@@ -32,10 +32,10 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     
     override init(style: UITableViewStyle) {
         super.init(style: style)
-        initNotifictions()
+        initNotifications()
     }
     
-    func initNotifictions() {
+    func initNotifications() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedNotification:", name: "DoneAddingPost", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedNotification:", name: "RemovedPost", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedNotification:", name: "RefreshFeed", object: nil)
