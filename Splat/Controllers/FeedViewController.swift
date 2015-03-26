@@ -62,8 +62,10 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         self.selected = "New"
         self.loadNewData(0, limit: 10)
         let defaults = NSUserDefaults.standardUserDefaults()
-        var state = defaults.objectForKey("state") as NSString
-        println(state)
+        var state = defaults.objectForKey("state") as? NSString
+        if (state? != nil) {
+            println(state)
+        }
     }
     
     func renderNavbar() {
