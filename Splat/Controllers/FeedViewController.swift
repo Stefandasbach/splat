@@ -62,7 +62,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         self.selected = "New"
         self.loadNewData(0, limit: 10)
         let defaults = NSUserDefaults.standardUserDefaults()
-        var state = defaults.objectForKey("state") as? NSString
+        var state = defaults.objectForKey("state") as? String
         if (state? != nil) {
             println(state)
         }
@@ -250,7 +250,6 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                 var query: PFQuery = PFQuery(className: "Post")
                 query.limit = limit
                 query.skip = skip
-
                 query.orderByDescending("score")
                 query.findObjectsInBackgroundWithBlock({
                     (objects: [AnyObject]!, error: NSError!)->Void in

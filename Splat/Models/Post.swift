@@ -206,20 +206,12 @@ class Post : NSObject {
         return object["geopoint"] as PFGeoPoint!
     }
 
-    func setUpvotes(array: NSArray) {
-        object["upvotes"] = array
+    func setState(state: String!) {
+        object["state"] = state
     }
     
-    func setDownvotes(array: NSArray) {
-        object["downvotes"] = array
-    }
-    
-    func getUpvotes()->NSArray! {
-        return object["upvotes"] as NSArray!
-    }
-    
-    func getDownvotes()->NSArray {
-        return object["downvotes"] as NSArray!
+    func getState() -> String! {
+        return object["state"] as String!
     }
     
     func setScore(score: Int) {
