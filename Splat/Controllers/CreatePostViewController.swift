@@ -191,7 +191,7 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
             cameraVC.cameraDelegate = self
         }
         
-        self.presentViewController(cameraVC, animated: false, completion: nil)
+        self.presentViewController(cameraVC, animated: true, completion: nil)
     }
     
     func backButtonListener(sender: UIButton) {

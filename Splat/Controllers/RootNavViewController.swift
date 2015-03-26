@@ -36,29 +36,9 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //login
-        if (PFAnonymousUtils.isLinkedWithUser(PFUser.currentUser())) {
-            println("logged in")
-        }
-        else {
-            PFAnonymousUtils.logInWithBlock { (user, error) -> Void in
-                var test = PFUser.currentUser()
-                println(test.objectId)
-                
-                //remove old user defaults
-                if let appDomain = NSBundle.mainBundle().bundleIdentifier {
-                    NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
-                    println(NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes"))
-                }
-                
-            }
-        }
-        
         self.view.backgroundColor = UIColor.whiteColor()
         self.navigationBar.barTintColor = UIColorFromRGB(PURPLE_SELECTED)
 
-        
-        
         
         renderElements()
     

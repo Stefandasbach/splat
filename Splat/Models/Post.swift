@@ -8,7 +8,6 @@
 
 
 //todo -> redo voting to do everything in the background. Im getting weird errors with deadlock
-
 import Foundation
 import Parse
 

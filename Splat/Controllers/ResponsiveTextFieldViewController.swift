@@ -30,12 +30,10 @@ class ResponsiveTextFieldViewController : UIViewController
     }
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        initializeView()
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        initializeView()
     }
     
     func initializeView() {

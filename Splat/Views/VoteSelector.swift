@@ -15,6 +15,7 @@ class VoteSelector: ContainerView {
     let scoreTag = 1
     
     var currentPost: Post!
+    var currentReply: Reply!
     var rendered = false
     
     override init() {
@@ -80,6 +81,14 @@ class VoteSelector: ContainerView {
         }
     }
     
+    func initialize(reply: Reply) {
+        if (rendered) {
+            currentReply = reply
+            Score.text = "\(reply.getScore())"
+            updateHighlighted()
+        }
+    }
+    
     func updateHighlighted() {
         //highlight selected
      /*   var user = User()
@@ -98,22 +107,45 @@ class VoteSelector: ContainerView {
         } */
         
         var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as NSArray!
-        if let oID = currentPost.object.objectId {
-            
-            if (upvotes != nil && upvotes.containsObject(oID)) {
-                UpvoteButton.tintColor = UIColorFromRGB(PURPLE_SELECTED)
-            } else {
-                UpvoteButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
+        if currentPost != nil {
+            if let oID = currentPost.object.objectId {
+                
+                if (upvotes != nil && upvotes.containsObject(oID)) {
+                    UpvoteButton.tintColor = UIColorFromRGB(PURPLE_SELECTED)
+                } else {
+                    UpvoteButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
+                }
+            }
+        }
+        else if currentReply != nil {
+            if let oID = currentReply.object.objectId {
+                if (upvotes != nil && upvotes.containsObject(oID)) {
+                    UpvoteButton.tintColor = UIColorFromRGB(PURPLE_SELECTED)
+                } else {
+                    UpvoteButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
+                }
             }
         }
         
         var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as NSArray!
-        if let oID = currentPost.object.objectId {
-            
-            if (downvotes != nil && downvotes.containsObject(oID)) {
-                DownvoteButton.tintColor = UIColorFromRGB(PURPLE_SELECTED)
-            } else {
-                DownvoteButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
+        if currentPost != nil {
+            if let oID = currentPost.object.objectId {
+                
+                if (downvotes != nil && downvotes.containsObject(oID)) {
+                    DownvoteButton.tintColor = UIColorFromRGB(PURPLE_SELECTED)
+                } else {
+                    DownvoteButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
+                }
+            }
+        }
+        else if currentReply != nil {
+            if let oID = currentReply.object.objectId {
+                if (downvotes != nil && downvotes.containsObject(oID)) {
+                    DownvoteButton.tintColor = UIColorFromRGB(PURPLE_SELECTED)
+                } else {
+                    DownvoteButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
+                }
+
             }
         }
 

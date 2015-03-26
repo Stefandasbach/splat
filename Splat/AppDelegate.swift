@@ -23,6 +23,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         Location().getUserLocation()
+        
+        //login
+        if (PFAnonymousUtils.isLinkedWithUser(PFUser.currentUser())) {
+            println("logged in")
+        }
+        else {
+            PFAnonymousUtils.logInWithBlock { (user, error) -> Void in
+                var test = PFUser.currentUser()
+                println(test.objectId)
+                
+                //set acl
+                var defaultACL = PFACL()
+                defaultACL.setPublicReadAccess(true)
+                defaultACL.setPublicWriteAccess(true)
+                PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser:true)
+                
+                //remove old user defaults
+                if let appDomain = NSBundle.mainBundle().bundleIdentifier {
+                    NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
+                    println(NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes"))
+                }
+                
+            }
+        }
+        
+        //set acl
+        var defaultACL = PFACL()
+        defaultACL.setPublicReadAccess(true)
+        defaultACL.setPublicWriteAccess(true)
+        PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser:true)
+        
         var feedView = FeedViewController(style: UITableViewStyle.Plain)
         var navView = RootNavViewController(rootViewController: feedView)
         self.window?.rootViewController = navView
