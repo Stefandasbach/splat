@@ -145,7 +145,7 @@ class Reply : NSObject {
     
     private func addInverseRelationshipToCurrentUser(reply: PFObject) -> Void {
         var user = PFUser.currentUser()
-        user.addUniqueObject(reply, forKey: "Replys")
+        user.addUniqueObject(reply, forKey: "Replies")
         user.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
                 println(error)
@@ -188,7 +188,7 @@ class Reply : NSObject {
     private func removeInverseRelationshipToCurrentUser(reply: PFObject) -> Void {
         
         var user = PFUser.currentUser()
-        user.removeObject(reply, forKey: "Replys")
+        user.removeObject(reply, forKey: "Replies")
         user.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
                 println(error)
