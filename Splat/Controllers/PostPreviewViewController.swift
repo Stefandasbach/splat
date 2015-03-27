@@ -97,7 +97,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         replyImage.clipsToBounds = true
         replyImageLabel = UILabel()
         replyImageLabel.frame = replyImage.frame
-        replyImageLabel.text = "Image"
+        replyImageLabel.text = "Reply"
         replyImageLabel.textColor = UIColor.whiteColor()
         replyImageLabel.textAlignment = NSTextAlignment.Center
         replyImageLabel.font = UIFont.systemFontOfSize(12.0)
@@ -408,7 +408,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                 self.enlargedReplyView.frame.size.height = 50 - 20
                 self.enlargedReplyView.frame.size.width = self.view.frame.width-50-10-10
                 
-                self.replyImageLabel.text = "Image"
+                self.replyImageLabel.text = "Reply"
                 self.replyImageLabel.font = UIFont.systemFontOfSize(12.0)
                 
                 self.mainScrollView.frame = CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - self.replyView.frame.height)
