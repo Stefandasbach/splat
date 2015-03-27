@@ -13,7 +13,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     
     var cameraVC: CameraViewController!
     
-    var mainScrollView: UIScrollView!
+    var mainScrollView: PostScrollView!
     var replyTable: UITableView!
     var replyData = NSMutableArray()
 
@@ -23,6 +23,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     var replyImageLabel: UILabel!
     var replyView: UIView!
     
+    
     var currentPost: Post!
     var postImage: UIImageView!
     var commentText: UITextView!
@@ -30,6 +31,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     var flagButton: UIButton!
     var shareButton: UIButton!
     var timeCreatedLabel: UILabel!
+    
     
     let maxCharacters = 200
     var numberCharactersLeft: Int!
@@ -116,24 +118,6 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         enlargedReplyView.delegate = self
         enlargedReplyView.backgroundColor = UIColor.whiteColor()
         
-        var toolbar = UIToolbar(frame: CGRectMake(0, 0, self.view.frame.width, 44))
-        toolbar.barStyle = UIBarStyle.BlackTranslucent
-        toolbar.translucent = true
-        
-        var cancelItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: Selector("cancelReplyListener"))
-        cancelItem.tintColor = UIColor.whiteColor()
-        
-        var postitiveSeparator = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FixedSpace, target: nil, action: nil)
-        postitiveSeparator.width = 10
-        
-        var array = NSMutableArray(capacity: 3)
-        array.addObject(UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil))
-        array.addObject(cancelItem)
-        array.addObject(postitiveSeparator)
-        toolbar.setItems(array, animated: false)
-        
-        enlargedReplyView.inputAccessoryView = toolbar
-        
         replyView.addSubview(replyImage)
         replyView.addSubview(replyImageButton)
         replyView.addSubview(enlargedReplyView)
@@ -142,11 +126,11 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         if let navOffset = self.navigationController?.navigationBar.frame.maxY {
             replyView.frame = CGRect(x: 0, y: self.view.frame.height-navOffset-50, width: self.view.frame.width, height: 50)
             self.view.addSubview(replyView)
-            mainScrollView = UIScrollView(frame: CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - navOffset - replyView.frame.height))
+            mainScrollView = PostScrollView(frame: CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - navOffset - replyView.frame.height))
         } else {
             replyView.frame = CGRect(x: 0, y: self.view.frame.height-50, width: self.view.frame.width, height: 50)
             self.view.addSubview(replyView)
-            mainScrollView = UIScrollView(frame: CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - replyView.frame.height))
+            mainScrollView = PostScrollView(frame: CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - replyView.frame.height))
         }
         
         //ADD IMAGE
@@ -163,6 +147,8 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         mainScrollView.addSubview(postImage)
         
         ylocCursor = postImage.frame.maxY
+        
+        
         
         //ADD COMMENT
         commentText = UITextView(frame: CGRectMake(padding, ylocCursor+padding, self.view.frame.width-40-padding, 100))
@@ -386,6 +372,8 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                 self.mainScrollView.frame = CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - self.replyView.frame.height)
                 
             })
+            
+            disableSubviews()
         }
             
     }
@@ -414,6 +402,8 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                 self.mainScrollView.frame = CGRectMake(0, 0, self.view.frame.width, self.view.frame.height - self.replyView.frame.height)
                 
             })
+            
+            enableSubviews()
         }
         
         if (textView == commentText) {
@@ -633,6 +623,25 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         return cell
     }
     
+    //allows reply box to be exited through touch events
+    func disableSubviews() {
+        replyTable.userInteractionEnabled = false
+        commentText.userInteractionEnabled = false
+        voteSelector.userInteractionEnabled = false
+        flagButton.userInteractionEnabled = false
+        shareButton.userInteractionEnabled = false
+        timeCreatedLabel.userInteractionEnabled = false
+    }
+    
+    func enableSubviews() {
+        replyTable.userInteractionEnabled = true
+        commentText.userInteractionEnabled = true
+        voteSelector.userInteractionEnabled = true
+        flagButton.userInteractionEnabled = true
+        shareButton.userInteractionEnabled = true
+        timeCreatedLabel.userInteractionEnabled = true
+    }
+    
     func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         if let replyCell = cell as? ReplyCell {
             replyCell.cancelLoad()
@@ -688,6 +697,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         self.presentViewController(cameraVC, animated: true, completion: nil)
     }
     
+    //CameraViewController Delegate methods
     func pickedImage(image: UIImage!) {
         replyImage.image = image
         replyImageLabel.hidden = true
@@ -720,6 +730,21 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     override func keyboardWillHide(notification: NSNotification)
     {
         super.keyboardWillHide(notification)
+    }
+    
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        super.touchesBegan(touches, withEvent: event)
+            if (enlargedReplyView.isFirstResponder()) {
+                enlargedReplyView.resignFirstResponder()
+            }
+    }
+    
+    ///allows touch events to pass through
+    class PostScrollView: UIScrollView {
+        override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+            super.touchesBegan(touches, withEvent: event)
+            super.nextResponder()?.touchesBegan(touches, withEvent: event)
+        }
     }
     
 }
