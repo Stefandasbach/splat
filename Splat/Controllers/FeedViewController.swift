@@ -358,7 +358,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                         if (downvotes != nil && downvotes.containsObject(oID)) {
                             //remove downvote
                             post.removeDownvote()
-                            removeArchivedDownvote(post, oID, downvotes)
+                            removeArchivedDownvote(oID, downvotes)
                             existingScore = existingScore + 1
                             
                             self.sortRowsUp(cellIndexPathExists.row)
@@ -367,17 +367,19 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                         } else if (upvotes != nil && upvotes.containsObject(oID)) {
                             //remove Upvote
                             post.removeUpvote()
-                            removeArchivedUpvote(post, oID, upvotes)
+                            removeArchivedUpvote(oID, upvotes)
                             existingScore = existingScore - 1
                             
-                            archiveDownvote(post, oID, downvotes)
+                            post.addDownvote()
+                            archiveDownvote(oID, downvotes)
                             existingScore = existingScore - 1
                             
                             self.sortRowsDown(cellIndexPathExists.row)
                             
                             //nothing selected
                         } else {
-                            archiveDownvote(post, oID, downvotes)
+                            post.addDownvote()
+                            archiveDownvote(oID, downvotes)
                             existingScore = existingScore - 1
                             
                             self.sortRowsDown(cellIndexPathExists.row)
@@ -412,7 +414,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                         if (upvotes != nil && upvotes.containsObject(oID)) {
                             //remove upvote
                             post.removeUpvote()
-                            removeArchivedUpvote(post, oID, upvotes)
+                            removeArchivedUpvote(oID, upvotes)
                             existingScore = existingScore - 1
                             
                             self.sortRowsDown(cellIndexPathExists.row)
@@ -421,17 +423,19 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                         } else if (downvotes != nil && downvotes.containsObject(oID)) {
                             //remove downvote
                             post.removeDownvote()
-                            removeArchivedDownvote(post, oID, downvotes)
+                            removeArchivedDownvote(oID, downvotes)
                             existingScore = existingScore + 1
                             
-                            archiveUpvote(post, oID, upvotes)
+                            post.addUpvote()
+                            archiveUpvote(oID, upvotes)
                             existingScore = existingScore + 1
                             
                             self.sortRowsUp(cellIndexPathExists.row)
                             
                             //nothing selected
                         } else {
-                            archiveUpvote(post, oID, upvotes)
+                            post.addUpvote()
+                            archiveUpvote(oID, upvotes)
                             existingScore = existingScore + 1
                             
                             self.sortRowsUp(cellIndexPathExists.row)

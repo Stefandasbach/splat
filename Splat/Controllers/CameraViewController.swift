@@ -47,8 +47,10 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
     
     override func viewDidAppear(animated: Bool) {
         //Kind of a hack. Want to reinit the camera settings
-        orientCamera(flipCamera)
-        setFlash(flashButton)
+         if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)) {
+            orientCamera(flipCamera)
+            setFlash(flashButton)
+        }
     }
     
     func renderCameraElements() {

@@ -169,22 +169,24 @@ class GenericPostsTableViewController : UITableViewController, UITableViewDelega
                         if (downvotes != nil && downvotes.containsObject(oID)) {
                             //remove downvote
                             post.removeDownvote()
-                            removeArchivedDownvote(post, oID, downvotes)
+                            removeArchivedDownvote(oID, downvotes)
                             existingScore = existingScore + 1
                             
                             //if Upvote already selected
                         } else if (upvotes != nil && upvotes.containsObject(oID)) {
                             //remove Upvote
                             post.removeUpvote()
-                            removeArchivedUpvote(post, oID, upvotes)
+                            removeArchivedUpvote(oID, upvotes)
                             existingScore = existingScore - 1
                             
-                            archiveDownvote(post, oID, downvotes)
+                            post.addDownvote()
+                            archiveDownvote(oID, downvotes)
                             existingScore = existingScore - 1
                             
                             //nothing selected
                         } else {
-                            archiveDownvote(post, oID, downvotes)
+                            post.addDownvote()
+                            archiveDownvote(oID, downvotes)
                             existingScore = existingScore - 1
 
                         }
@@ -218,22 +220,24 @@ class GenericPostsTableViewController : UITableViewController, UITableViewDelega
                         if (upvotes != nil && upvotes.containsObject(oID)) {
                             //remove upvote
                             post.removeUpvote()
-                            removeArchivedUpvote(post, oID, upvotes)
+                            removeArchivedUpvote(oID, upvotes)
                             existingScore = existingScore - 1
                             
                             //if downvote already selected
                         } else if (downvotes != nil && downvotes.containsObject(oID)) {
                             //remove downvote
                             post.removeDownvote()
-                            removeArchivedDownvote(post, oID, downvotes)
+                            removeArchivedDownvote(oID, downvotes)
                             existingScore = existingScore + 1
                             
-                            archiveUpvote(post, oID, upvotes)
+                            post.addUpvote()
+                            archiveUpvote(oID, upvotes)
                             existingScore = existingScore + 1
                             
                             //nothing selected
                         } else {
-                            archiveUpvote(post, oID, upvotes)
+                            post.addUpvote()
+                            archiveUpvote(oID, upvotes)
                             existingScore = existingScore + 1
 
                         }

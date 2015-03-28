@@ -220,7 +220,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         //create shape from path
         var shapeLayer = CAShapeLayer()
         shapeLayer.path = path.CGPath
-        shapeLayer.strokeColor = UIColor.grayColor().colorWithAlphaComponent(0.5).CGColor
+        shapeLayer.strokeColor = UIColorFromRGB(PURPLE_UNSELECTED).CGColor
         shapeLayer.lineWidth = 3.0
         shapeLayer.fillColor = UIColor.clearColor().CGColor
         
@@ -430,22 +430,24 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                     if (upvotes != nil && upvotes.containsObject(oID)) {
                         //remove upvote
                         post.removeUpvote()
-                        removeArchivedUpvote(post, oID, upvotes)
+                        removeArchivedUpvote(oID, upvotes)
                         existingScore = existingScore - 1
 
                         //if downvote already selected
                     } else if (downvotes != nil && downvotes.containsObject(oID)) {
                         //remove downvote
                         post.removeDownvote()
-                        removeArchivedDownvote(post, oID, downvotes)
+                        removeArchivedDownvote(oID, downvotes)
                         existingScore = existingScore + 1
                         
-                        archiveUpvote(post, oID, upvotes)
+                        post.addUpvote()
+                        archiveUpvote(oID, upvotes)
                         existingScore = existingScore + 1
                         
                         //nothing selected
                     } else {
-                        archiveUpvote(post, oID, upvotes)
+                        post.addUpvote()
+                        archiveUpvote(oID, upvotes)
                         existingScore = existingScore + 1
                         
                     }
@@ -472,22 +474,24 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                     if (downvotes != nil && downvotes.containsObject(oID)) {
                         //remove downvote
                         post.removeDownvote()
-                        removeArchivedDownvote(post, oID, downvotes)
+                        removeArchivedDownvote(oID, downvotes)
                         existingScore = existingScore + 1
                         
                         //if Upvote already selected
                     } else if (upvotes != nil && upvotes.containsObject(oID)) {
                         //remove Upvote
                         post.removeUpvote()
-                        removeArchivedUpvote(post, oID, upvotes)
+                        removeArchivedUpvote(oID, upvotes)
                         existingScore = existingScore - 1
                         
-                        archiveDownvote(post, oID, downvotes)
+                        post.addDownvote()
+                        archiveDownvote(oID, downvotes)
                         existingScore = existingScore - 1
                         
                         //nothing selected
                     } else {
-                        archiveDownvote(post, oID, downvotes)
+                        post.addDownvote()
+                        archiveDownvote(oID, downvotes)
                         existingScore = existingScore - 1
                         
                     }
@@ -536,6 +540,109 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
             }
         }
     }
+    
+    func upvoteReply(sender: UIButton) {
+        let pointInTable: CGPoint = sender.convertPoint(sender.bounds.origin, toView: self.replyTable)
+        let cellIndexPath = self.replyTable.indexPathForRowAtPoint(pointInTable)
+        if (cellIndexPath != nil) {
+            var cellIndexPathExists: NSIndexPath
+            cellIndexPathExists = cellIndexPath as NSIndexPath!
+            let cell = self.replyTable.cellForRowAtIndexPath(cellIndexPathExists) as ReplyCell
+        
+            if let post = replyData[cellIndexPathExists.row] as? Reply {
+                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as NSArray!
+                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as NSArray!
+                
+                if var existingScore = cell.voteSelector.Score.text?.toInt() {
+                    
+                    if let oID = post.object.objectId {
+                        //if upvote already selected
+                        if (upvotes != nil && upvotes.containsObject(oID)) {
+                            //remove upvote
+                            post.removeUpvote()
+                            removeArchivedUpvote(oID, upvotes)
+                            existingScore = existingScore - 1
+                            
+                            //if downvote already selected
+                        } else if (downvotes != nil && downvotes.containsObject(oID)) {
+                            //remove downvote
+                            post.removeDownvote()
+                            removeArchivedDownvote(oID, downvotes)
+                            existingScore = existingScore + 1
+                            
+                            post.addUpvote()
+                            archiveUpvote(oID, upvotes)
+                            existingScore = existingScore + 1
+                            
+                            //nothing selected
+                        } else {
+                            post.addUpvote()
+                            archiveUpvote(oID, upvotes)
+                            existingScore = existingScore + 1
+                            
+                        }
+                        
+                        cell.voteSelector.Score.text = "\(existingScore)"
+                        cell.voteSelector.updateHighlighted()
+                        
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    func downvoteReply(sender: UIButton) {
+        
+        let pointInTable: CGPoint = sender.convertPoint(sender.bounds.origin, toView: self.replyTable)
+        let cellIndexPath = self.replyTable.indexPathForRowAtPoint(pointInTable)
+        if (cellIndexPath != nil) {
+            var cellIndexPathExists: NSIndexPath
+            cellIndexPathExists = cellIndexPath as NSIndexPath!
+            let cell = self.replyTable.cellForRowAtIndexPath(cellIndexPathExists) as ReplyCell
+            
+            if let post = replyData[cellIndexPathExists.row] as? Reply {
+                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as NSArray!
+                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as NSArray!
+                
+                if var existingScore = cell.voteSelector.Score.text?.toInt() {
+                    
+                    if let oID = post.object.objectId {
+                        //if downvote already selected
+                        if (downvotes != nil && downvotes.containsObject(oID)) {
+                            //remove downvote
+                            post.removeDownvote()
+                            removeArchivedDownvote(oID, downvotes)
+                            existingScore = existingScore + 1
+                            
+                            //if Upvote already selected
+                        } else if (upvotes != nil && upvotes.containsObject(oID)) {
+                            //remove Upvote
+                            post.removeUpvote()
+                            removeArchivedUpvote(oID, upvotes)
+                            existingScore = existingScore - 1
+                            
+                            post.addDownvote()
+                            archiveDownvote(oID, downvotes)
+                            existingScore = existingScore - 1
+                            
+                            //nothing selected
+                        } else {
+                            post.addDownvote()
+                            archiveDownvote(oID, downvotes)
+                            existingScore = existingScore - 1
+                            
+                        }
+                        
+                        cell.voteSelector.Score.text = "\(existingScore)"
+                        cell.voteSelector.updateHighlighted()
+                        
+                    }
+                }
+            }
+        }
+    }
+
     
     //TODO:
     func share(sender: UIButton) {
@@ -615,10 +722,8 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         cell.voteSelector.DownvoteButton.tag = indexPath.row
         
         //TODO: add scoring system for comments
-       /* cell.voteSelector.UpvoteButton.addTarget(self, action: "upvote:", forControlEvents: UIControlEvents.TouchUpInside)
-        cell.voteSelector.DownvoteButton.addTarget(self, action: "downvote:", forControlEvents: UIControlEvents.TouchUpInside)
-        cell.flagButton.addTarget(self, action: "flag:", forControlEvents: UIControlEvents.TouchUpInside)
-        */
+        cell.voteSelector.UpvoteButton.addTarget(self, action: "upvoteReply:", forControlEvents: UIControlEvents.TouchUpInside)
+        cell.voteSelector.DownvoteButton.addTarget(self, action: "downvoteReply:", forControlEvents: UIControlEvents.TouchUpInside)
         
         return cell
     }
