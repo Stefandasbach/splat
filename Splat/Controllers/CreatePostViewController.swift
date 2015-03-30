@@ -182,7 +182,7 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
         }
         
         //cameraVC.dismissViewControllerAnimated(false, completion: nil)
-        self.navigationController?.popViewControllerAnimated(false)
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func getPicture() {

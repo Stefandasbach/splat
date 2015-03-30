@@ -89,8 +89,10 @@ class Post : NSObject {
     }
     
     func editComment(text: String, completion: ()->Void) {
-        object.setObject(text, forKey: "comment")
-        object.saveInBackgroundWithBlock { (success, error) -> Void in
+        var pointer = PFObject(withoutDataWithClassName: "Post", objectId: object.objectId)
+
+        pointer.setObject(text, forKey: "comment")
+        pointer.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
                 println(error)
             }
@@ -222,10 +224,10 @@ class Post : NSObject {
     }
     
     func addUpvote() {
-        
+        var pointer = PFObject(withoutDataWithClassName: "Post", objectId: object.objectId)
 
-            object.incrementKey("score", byAmount: 1)
-            object.saveInBackgroundWithBlock { (success, error) -> Void in
+            pointer.incrementKey("score", byAmount: 1)
+            pointer.saveInBackgroundWithBlock { (success, error) -> Void in
                 if (error != nil) {
                     println(error)
                 }
@@ -240,9 +242,10 @@ class Post : NSObject {
     }
     
     func removeUpvote() {
-        
-            object.incrementKey("score", byAmount: -1)
-            object.saveInBackgroundWithBlock { (success, error) -> Void in
+        var pointer = PFObject(withoutDataWithClassName: "Post", objectId: object.objectId)
+
+        pointer.incrementKey("score", byAmount: -1)
+        pointer.saveInBackgroundWithBlock { (success, error) -> Void in
                 if (error != nil) {
                     println(error)
                 }
@@ -261,9 +264,10 @@ class Post : NSObject {
     
     
     func addDownvote() {
+        var pointer = PFObject(withoutDataWithClassName: "Post", objectId: object.objectId)
         
-        object.incrementKey("score", byAmount: -1)
-            object.saveInBackgroundWithBlock { (success, error) -> Void in
+        pointer.incrementKey("score", byAmount: -1)
+        pointer.saveInBackgroundWithBlock { (success, error) -> Void in
                 if (error != nil) {
                     println(error)
                 }
@@ -279,10 +283,10 @@ class Post : NSObject {
     }
     
     func removeDownvote() {
-       
+        var pointer = PFObject(withoutDataWithClassName: "Post", objectId: object.objectId)
             
-            object.incrementKey("score", byAmount: 1)
-            object.saveInBackgroundWithBlock { (success, error) -> Void in
+            pointer.incrementKey("score", byAmount: 1)
+            pointer.saveInBackgroundWithBlock { (success, error) -> Void in
                 if (error != nil) {
                     println(error)
                 }
@@ -305,8 +309,10 @@ class Post : NSObject {
     }
     
     func addFlag() {
-        object.incrementKey("flags", byAmount: 1)
-        object.saveInBackgroundWithBlock { (success, error) -> Void in
+        var pointer = PFObject(withoutDataWithClassName: "Post", objectId: object.objectId)
+
+        pointer.incrementKey("flags", byAmount: 1)
+        pointer.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
                 println(error)
             }
@@ -320,8 +326,10 @@ class Post : NSObject {
     }
     
     func removeFlag() {
-        object.incrementKey("flags", byAmount: -1)
-        object.saveInBackgroundWithBlock { (success, error) -> Void in
+        var pointer = PFObject(withoutDataWithClassName: "Post", objectId: object.objectId)
+
+        pointer.incrementKey("flags", byAmount: -1)
+        pointer.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
                 println(error)
             }
@@ -329,7 +337,7 @@ class Post : NSObject {
                 println("Removed Flag")
                 self.object.fetchInBackgroundWithBlock { (object, error) -> Void in
                     //refresh
-                }
+                } 
             }
         }
 

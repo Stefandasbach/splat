@@ -16,7 +16,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
-        PFQuery.clearAllCachedResults()
         Parse.enableLocalDatastore()
         
         Parse.setApplicationId("bPx47th2SCzPkhTnnbWuoYQ3X2oeB6nq5aK007T8", clientKey: "bBMvgqmIMqsAHESMqZfk2GdRfv4WTsYZcBB7YUXj")
@@ -24,35 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         Location().getUserLocation()
         
-        //login
-        if (PFAnonymousUtils.isLinkedWithUser(PFUser.currentUser())) {
-            println("logged in")
-        }
-        else {
-            PFAnonymousUtils.logInWithBlock { (user, error) -> Void in
-                var test = PFUser.currentUser()
-                println(test.objectId)
-                
-                //set acl
-                var defaultACL = PFACL()
-                defaultACL.setPublicReadAccess(true)
-                defaultACL.setPublicWriteAccess(true)
-                PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser:true)
-                
-                //remove old user defaults
-                if let appDomain = NSBundle.mainBundle().bundleIdentifier {
-                    NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
-                    println(NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes"))
-                }
-                
-            }
-        }
-        
-        //set acl
-        var defaultACL = PFACL()
-        defaultACL.setPublicReadAccess(true)
-        defaultACL.setPublicWriteAccess(true)
-        PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser:true)
+        login()
         
         var feedView = FeedViewController(style: UITableViewStyle.Plain)
         var navView = RootNavViewController(rootViewController: feedView)
@@ -78,6 +49,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
         NSNotificationCenter.defaultCenter().postNotificationName("ReloadFeed", object: nil)
         Location().getUserLocation()
+        
+        login()
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     }
 
@@ -89,6 +62,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
+    func login() {
+        
+        PFUser.enableAutomaticUser()
+        
+        //login
+        if (PFAnonymousUtils.isLinkedWithUser(PFUser.currentUser())) {
+            println("logged in")
+        }
+        else {
+            PFAnonymousUtils.logInWithBlock { (user, error) -> Void in
+                var test = PFUser.currentUser()
+                println(test.objectId)
+                
+                //set acl
+                var defaultACL = PFACL()
+                defaultACL.setPublicReadAccess(true)
+                defaultACL.setPublicWriteAccess(true)
+                PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser:true)
+                
+                //remove old user defaults
+                if let appDomain = NSBundle.mainBundle().bundleIdentifier {
+                    NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
+                }
+                
+            }
+        }
+
+    }
     
 }
 

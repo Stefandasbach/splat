@@ -189,7 +189,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         shareButton.setImage(UIImage(named: "shareIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         shareButton.imageEdgeInsets = UIEdgeInsetsMake(12.5, 12.5, 12.5, 12.5)
         shareButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
-        mainScrollView.addSubview(shareButton)
+        //mainScrollView.addSubview(shareButton)
         
         //time created
         timeCreatedLabel = UILabel()
@@ -550,8 +550,8 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
             let cell = self.replyTable.cellForRowAtIndexPath(cellIndexPathExists) as ReplyCell
         
             if let post = replyData[cellIndexPathExists.row] as? Reply {
-                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as NSArray!
-                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as NSArray!
+                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyUpvotes") as NSArray!
+                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyDownvotes") as NSArray!
                 
                 if var existingScore = cell.voteSelector.Score.text?.toInt() {
                     
@@ -560,24 +560,24 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                         if (upvotes != nil && upvotes.containsObject(oID)) {
                             //remove upvote
                             post.removeUpvote()
-                            removeArchivedUpvote(oID, upvotes)
+                            removeArchivedUpvoteReply(oID, upvotes)
                             existingScore = existingScore - 1
                             
                             //if downvote already selected
                         } else if (downvotes != nil && downvotes.containsObject(oID)) {
                             //remove downvote
                             post.removeDownvote()
-                            removeArchivedDownvote(oID, downvotes)
+                            removeArchivedDownvoteReply(oID, downvotes)
                             existingScore = existingScore + 1
                             
                             post.addUpvote()
-                            archiveUpvote(oID, upvotes)
+                            archiveUpvoteReply(oID, upvotes)
                             existingScore = existingScore + 1
                             
                             //nothing selected
                         } else {
                             post.addUpvote()
-                            archiveUpvote(oID, upvotes)
+                            archiveUpvoteReply(oID, upvotes)
                             existingScore = existingScore + 1
                             
                         }
@@ -602,8 +602,8 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
             let cell = self.replyTable.cellForRowAtIndexPath(cellIndexPathExists) as ReplyCell
             
             if let post = replyData[cellIndexPathExists.row] as? Reply {
-                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as NSArray!
-                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as NSArray!
+                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyUpvotes") as NSArray!
+                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyDownvotes") as NSArray!
                 
                 if var existingScore = cell.voteSelector.Score.text?.toInt() {
                     
@@ -612,24 +612,24 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                         if (downvotes != nil && downvotes.containsObject(oID)) {
                             //remove downvote
                             post.removeDownvote()
-                            removeArchivedDownvote(oID, downvotes)
+                            removeArchivedDownvoteReply(oID, downvotes)
                             existingScore = existingScore + 1
                             
                             //if Upvote already selected
                         } else if (upvotes != nil && upvotes.containsObject(oID)) {
                             //remove Upvote
                             post.removeUpvote()
-                            removeArchivedUpvote(oID, upvotes)
+                            removeArchivedUpvoteReply(oID, upvotes)
                             existingScore = existingScore - 1
                             
                             post.addDownvote()
-                            archiveDownvote(oID, downvotes)
+                            archiveDownvoteReply(oID, downvotes)
                             existingScore = existingScore - 1
                             
                             //nothing selected
                         } else {
                             post.addDownvote()
-                            archiveDownvote(oID, downvotes)
+                            archiveDownvoteReply(oID, downvotes)
                             existingScore = existingScore - 1
                             
                         }
@@ -682,6 +682,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     {
         //selected reply
         //TODO: add comment image preview
+        tableView.deselectRowAtIndexPath(indexPath, animated: true);
     
     }
     
@@ -782,7 +783,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
             
             self.replyTable.reloadData()
             self.replyTable.frame.size.height = CGFloat(self.replyData.count)*100
-            self.mainScrollView.contentSize.height = self.replyTable.frame.maxY + 10
+            self.mainScrollView.contentSize.height = self.replyTable.frame.maxY + 200
             
         })
         

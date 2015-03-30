@@ -90,23 +90,8 @@ class VoteSelector: ContainerView {
     }
     
     func updateHighlighted() {
-        //highlight selected
-     /*   var user = User()
-        var upvotes = user.getUpvoted()
-        if (upvotes?.containsObject(currentPost.getObject().objectId) == true) {
-            UpvoteButton.tintColor = UIColorFromRGB(PURPLE_SELECTED)
-        } else {
-            UpvoteButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
-        }
-        
-        var downvotes = user.getDownvoted()
-        if (downvotes?.containsObject(currentPost.getObject().objectId) == true) {
-            DownvoteButton.tintColor = UIColorFromRGB(PURPLE_SELECTED)
-        } else {
-            DownvoteButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
-        } */
-        
         var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as NSArray!
+        var upvotesReply = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyUpvotes") as NSArray!
         if currentPost != nil {
             if let oID = currentPost.object.objectId {
                 
@@ -119,7 +104,7 @@ class VoteSelector: ContainerView {
         }
         else if currentReply != nil {
             if let oID = currentReply.object.objectId {
-                if (upvotes != nil && upvotes.containsObject(oID)) {
+                if (upvotesReply != nil && upvotesReply.containsObject(oID)) {
                     UpvoteButton.tintColor = UIColorFromRGB(PURPLE_SELECTED)
                 } else {
                     UpvoteButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
@@ -128,6 +113,7 @@ class VoteSelector: ContainerView {
         }
         
         var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as NSArray!
+        var downvotesReply = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyDownvotes") as NSArray!
         if currentPost != nil {
             if let oID = currentPost.object.objectId {
                 
@@ -140,7 +126,7 @@ class VoteSelector: ContainerView {
         }
         else if currentReply != nil {
             if let oID = currentReply.object.objectId {
-                if (downvotes != nil && downvotes.containsObject(oID)) {
+                if (downvotesReply != nil && downvotesReply.containsObject(oID)) {
                     DownvoteButton.tintColor = UIColorFromRGB(PURPLE_SELECTED)
                 } else {
                     DownvoteButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)

@@ -9,8 +9,11 @@
 import Foundation
 import UIKit
 import Parse
+import MapKit
 
 class DiscoverViewController: UIViewController, UIScrollViewDelegate {
+    
+    var statusBarStyle = UIStatusBarStyle.LightContent
     
     //Main views
     var mainScrollView: UIScrollView!
@@ -29,10 +32,16 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     //Profile
     var currentUser: User!
     var userPosts: NSMutableArray!
+    var userReplies: NSMutableArray!
     var ratedPosts:NSMutableArray!
+    var ratedReplies:NSMutableArray!
     
     var numberPostsButton:UIButton!
+    var numberRepliesButton: UIButton!
     var ratedPostsButton:UIButton!
+    var ratedRepliesButton:UIButton!
+    
+    var map: MKMapView!
     
     
     override init() {
@@ -50,14 +59,33 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
-        renderElements()
+        self.view.backgroundColor = UIColorFromRGB(PURPLE_SELECTED)
         
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        renderElements()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: false)
+        
+        PFGeoPoint.geoPointForCurrentLocationInBackground { (geopoint, error) -> Void in
+            if (error == nil){
+                let location = CLLocationCoordinate2D(
+                    latitude: geopoint.latitude,
+                    longitude: geopoint.longitude
+                )
+                
+                let span = MKCoordinateSpanMake(0.05, 0.05)
+                let region = MKCoordinateRegion(center: location, span: span)
+                self.map.setRegion(region, animated: true)
+                
+               
+                let annotation = MKPointAnnotation()
+                annotation.setCoordinate(location)
+                self.map.addAnnotation(annotation)
+            }
+        }
     }
     
     ///Adds the programmatic elements to the screen
@@ -79,8 +107,8 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         gradient.anchorPoint = CGPointZero;
         
         //BACK BUTTON
-        backButton = UIButton(frame: CGRectMake(self.mainScrollView.frame.width-50, 10, 40, 40))
-        backButton.setImage(UIImage(named: "backIconFlipped.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        backButton = UIButton(frame: CGRectMake(10, 10, 40, 40))
+        backButton.setImage(UIImage(named: "backIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         backButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
         backButton.tintColor = UIColor.whiteColor()
         backButton.addTarget(self, action: "backButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
@@ -177,7 +205,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         
         //Add Subviews
         mainScrollView.addSubview(backButton)
-        mainScrollView.addSubview(shareButton)
+        //mainScrollView.addSubview(shareButton)
         mainScrollView.addSubview(circleView)
         mainScrollView.addSubview(caretButton)
         mainScrollView.addSubview(caretButtonUp)
@@ -208,6 +236,16 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         numberPostsButton = ProfileButton(y: myProfileLabel.frame.maxY + 10, text: "Past posts", value: totalPosts)
         numberPostsButton.addTarget(self, action: "postsButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         
+        //NUMBER REPLIES BUTTON
+        var totalReplies = 0
+        if let countReplies = currentUser.getReplies()?.count {
+            totalReplies = countReplies
+        }
+        
+        numberRepliesButton = ProfileButton(y: numberPostsButton.frame.maxY - 1, text: "Past replies", value: totalReplies)
+        numberRepliesButton.addTarget(self, action: "repliesButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+
+        
         //Get the total number of upvotes and downvotes
         var numUpvotes = 0
         var numDownvotes = 0
@@ -220,13 +258,46 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         }
 
         //RATED POSTS BUTTON
-        ratedPostsButton = ProfileButton(y: numberPostsButton.frame.maxY - 1, text: "Upvoted posts", value: (numUpvotes))
+        ratedPostsButton = ProfileButton(y: numberRepliesButton.frame.maxY - 1, text: "Upvoted posts", value: (numUpvotes))
         ratedPostsButton.addTarget(self, action: "ratedButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        //Get the total number of upvotes and downvotes
+        numUpvotes = 0
+        numDownvotes = 0
+        
+        if let upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyUpvotes") as? NSArray {
+            numUpvotes = upvotes.count
+        }
+        if let downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyDownvotes") as? NSArray {
+            numDownvotes = downvotes.count
+        }
+        
+        //RATED REPLIES BUTTON
+        ratedRepliesButton = ProfileButton(y: ratedPostsButton.frame.maxY - 1, text: "Upvoted replies", value: (numUpvotes))
+        ratedRepliesButton.addTarget(self, action: "ratedRepliesButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+
+        
+        //PROFILE SECTION LABEL
+        var myLocationLabel = UILabel(frame: CGRectMake(10, ratedRepliesButton.frame.maxY + 20, 100, 100))
+        myLocationLabel.text = "My Location"
+        myLocationLabel.textColor = UIColorFromRGB(PURPLE_SELECTED)
+        myLocationLabel.font = UIFont.systemFontOfSize(16)
+        myLocationLabel.sizeToFit()
+        
+        //ADD MAP
+        map = MKMapView(frame: CGRect(x: 0, y: myLocationLabel.frame.maxY + 10, width: self.view.frame.width, height: mainScrollView.contentSize.height-(myLocationLabel.frame.maxY + 25)))
+        map.scrollEnabled = false
+        map.zoomEnabled = false
+        
         
         //Add the elements
         mainScrollView.addSubview(myProfileLabel)
         mainScrollView.addSubview(numberPostsButton)
+        mainScrollView.addSubview(numberRepliesButton)
         mainScrollView.addSubview(ratedPostsButton)
+        mainScrollView.addSubview(ratedRepliesButton)
+        mainScrollView.addSubview(myLocationLabel)
+        mainScrollView.addSubview(map)
     }
     
     func initParticles() {
@@ -270,17 +341,13 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
-    }
-    
-    override func prefersStatusBarHidden() -> Bool {
-        return true
+        return statusBarStyle
     }
     
     //** BUTTON LISTENERS **//
     func backButtonListener(sender: UIButton) {
-         self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.popToRootViewControllerAnimated(false)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.navigationController?.popViewControllerAnimated(true)
        
     }
     
@@ -292,11 +359,15 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     func caretButtonListener(sender: UIButton) {
         var bottomOffset = CGPointMake(0, self.mainScrollView.contentSize.height - self.mainScrollView.bounds.size.height);
         self.mainScrollView.setContentOffset(bottomOffset, animated: true)
+        statusBarStyle = UIStatusBarStyle.Default
+        self.setNeedsStatusBarAppearanceUpdate()
     }
     
     func caretUpButtonListener(sender: UIButton) {
         var bottomOffset = CGPointMake(0, 0);
         self.mainScrollView.setContentOffset(bottomOffset, animated: true)
+        statusBarStyle = UIStatusBarStyle.LightContent
+        self.setNeedsStatusBarAppearanceUpdate()
     }
     
     func ratedButtonListener(sender: UIButton) {
@@ -395,6 +466,104 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         var pastPostsVC = GenericPostsTableViewController(posts: userPosts, title: "Past")
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(pastPostsVC, animated: false)
+    }
+    
+    func ratedRepliesButtonListener(sender: UIButton) {
+        sender.backgroundColor = UIColor.whiteColor()
+        
+        //if there is not data, get it
+        if (ratedReplies == nil) {
+            //GET USER DATA
+            var posts = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyUpvotes") as? NSArray
+            ratedReplies = NSMutableArray()
+            
+            if (posts != nil) {
+                var query = PFQuery(className: "Reply")
+                query.whereKey("objectId", containedIn: posts)
+                //Get objects for the pointer data
+                query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
+                    if (error != nil) {
+                        println(error)
+                    } else {
+                        if (objects == nil) {
+                            println("Can't find rated")
+                        } else {
+                            for obj in objects {
+                                if let pfobj = obj as? PFObject {
+                                    var reply = Reply(pfObject: pfobj)
+                                    self.ratedReplies.addObject(Post(pfObject:reply.getParentPost()))
+                                    
+                                }
+                            }
+                        }
+                        
+                        self.ratedReplies = NSMutableArray(array: self.ratedReplies.reverseObjectEnumerator().allObjects)
+                        
+                        self.pushToRatedReplies()
+                    }
+                    
+                }
+            } else {
+                println("No rated")
+                pushToRatedReplies()
+            }
+            
+        } else {
+            pushToRatedReplies()
+        }
+
+    }
+    
+    func pushToRatedReplies() {
+        var ratedRepliesVC = GenericPostsTableViewController(posts: ratedReplies, title: "Upvoted")
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(ratedRepliesVC, animated: false)
+    }
+    
+    func repliesButtonListener(sender: UIButton) {
+        sender.backgroundColor = UIColor.whiteColor()
+        
+        //if there is not data, get it
+        if (userReplies == nil) {
+            //GET USER DATA
+            var replies = currentUser.getReplies()
+            userReplies = NSMutableArray()
+            
+            //Get objects for the pointer data
+            PFObject.fetchAllIfNeededInBackground(replies, block: { (objects, error) -> Void in
+
+                if (error != nil) {
+                    println(error)
+                } else {
+                    if (objects == nil) {
+                        println("Can't find replies")
+                    } else {
+                        for obj in objects {
+                            if let pfobj = obj as? PFObject {
+                                var reply = Reply(pfObject: pfobj)
+                                self.userReplies.addObject(Post(pfObject:reply.getParentPost()))
+                                
+                            }
+                        }
+                    }
+                    
+                    self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
+                    
+                    self.pushToUserReplies()
+                }
+                    
+            })
+                
+        } else {
+            pushToUserReplies()
+        }
+        
+    }
+    
+    func pushToUserReplies() {
+        var userRepliesVC = GenericPostsTableViewController(posts: userReplies, title: "Upvoted")
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.pushViewController(userRepliesVC, animated: false)
     }
 
     func highlightButton(sender: UIButton) {

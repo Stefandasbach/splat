@@ -79,6 +79,7 @@
 		02F2C6B91AB60A250041A09F /* animationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C6B81AB60A250041A09F /* animationUtils.swift */; };
 		02F2C6BB1AB60A680041A09F /* RootNavViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C6BA1AB60A680041A09F /* RootNavViewController.swift */; };
 		02F2C6BD1AB701AF0041A09F /* CommentBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C6BC1AB701AF0041A09F /* CommentBox.swift */; };
+		02F515731AC9D4E20047D566 /* feedPlaceholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 02F515721AC9D4E20047D566 /* feedPlaceholder.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,6 +170,7 @@
 		02F2C6B81AB60A250041A09F /* animationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = animationUtils.swift; sourceTree = "<group>"; };
 		02F2C6BA1AB60A680041A09F /* RootNavViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNavViewController.swift; sourceTree = "<group>"; };
 		02F2C6BC1AB701AF0041A09F /* CommentBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentBox.swift; sourceTree = "<group>"; };
+		02F515721AC9D4E20047D566 /* feedPlaceholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = feedPlaceholder.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -382,6 +384,7 @@
 				0284C73C1ABDE0FA00E55B58 /* Camera */,
 				021B75B81AB76EF3007D5CA4 /* Misc */,
 				02F2C6A21AB4879A0041A09F /* Icons */,
+				02F515711AC9D4E20047D566 /* Placeholders */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -435,6 +438,14 @@
 				027112471AC06F3600F6D25E /* ReplyCell.swift */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		02F515711AC9D4E20047D566 /* Placeholders */ = {
+			isa = PBXGroup;
+			children = (
+				02F515721AC9D4E20047D566 /* feedPlaceholder.png */,
+			);
+			path = Placeholders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -540,6 +551,7 @@
 				0284C7361ABC8F7100E55B58 /* backIconFlipped.png in Resources */,
 				0284C74A1ABE473C00E55B58 /* autofocusBoundingBox.png in Resources */,
 				02B2CA781AA6383300BB05B9 /* LaunchScreen.xib in Resources */,
+				02F515731AC9D4E20047D566 /* feedPlaceholder.png in Resources */,
 				026C86201AB9182F00BE67D5 /* caretImage.png in Resources */,
 				021B75BA1AB76EF3007D5CA4 /* CommentBoxPlaceholder.png in Resources */,
 				02F2C6B31AB5F5DC0041A09F /* backIcon.png in Resources */,

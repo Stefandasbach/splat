@@ -42,6 +42,10 @@ class User: NSObject {
         return object["Posts"] as NSArray!
     }
     
+    func getReplies() -> NSArray! {
+        return object["Replies"] as NSArray!
+    }
+
 }
 
 //functions used for saving things in the user defaults
@@ -94,5 +98,41 @@ func removeArchivedFlag(flags: NSArray!, oID: String) {
     var newFlags = NSMutableArray(array: flags)
     newFlags.removeObject(oID)
     NSUserDefaults.standardUserDefaults().setObject(newFlags, forKey: "SplatFlags")
+}
+
+
+//functions used for saving things in the user defaults
+func archiveDownvoteReply(oID: String, downvotes: NSArray!) {
+    var newDownvotes:NSMutableArray
+    if (downvotes == nil) {
+        newDownvotes = NSMutableArray()
+    } else {
+        newDownvotes = NSMutableArray(array: downvotes)
+    }
+    newDownvotes.addObject(oID)
+    NSUserDefaults.standardUserDefaults().setObject(newDownvotes, forKey: "SplatReplyDownvotes")
+}
+
+func archiveUpvoteReply(oID: String, upvotes: NSArray!) {
+    var newUpvotes:NSMutableArray
+    if (upvotes == nil) {
+        newUpvotes = NSMutableArray()
+    } else {
+        newUpvotes = NSMutableArray(array: upvotes)
+    }
+    newUpvotes.addObject(oID)
+    NSUserDefaults.standardUserDefaults().setObject(newUpvotes, forKey: "SplatReplyUpvotes")
+}
+
+func removeArchivedDownvoteReply(oID: String, downvotes: NSArray!) {
+    var newDownvotes = NSMutableArray(array: downvotes)
+    newDownvotes.removeObject(oID)
+    NSUserDefaults.standardUserDefaults().setObject(newDownvotes, forKey: "SplatReplyDownvotes")
+}
+
+func removeArchivedUpvoteReply(oID: String, upvotes: NSArray!) {
+    var newUpvotes = NSMutableArray(array: upvotes)
+    newUpvotes.removeObject(oID)
+    NSUserDefaults.standardUserDefaults().setObject(newUpvotes, forKey: "SplatReplyUpvotes")
 }
 

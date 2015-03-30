@@ -213,10 +213,10 @@ class Reply : NSObject {
     }
     
     func addUpvote() {
-        
-        
-        object.incrementKey("score", byAmount: 1)
-        object.saveInBackgroundWithBlock { (success, error) -> Void in
+        var pointer = PFObject(withoutDataWithClassName: "Reply", objectId: object.objectId)
+
+        pointer.incrementKey("score", byAmount: 1)
+        pointer.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
                 println(error)
             }
@@ -231,9 +231,10 @@ class Reply : NSObject {
     }
     
     func removeUpvote() {
+        var pointer = PFObject(withoutDataWithClassName: "Reply", objectId: object.objectId)
         
-        object.incrementKey("score", byAmount: -1)
-        object.saveInBackgroundWithBlock { (success, error) -> Void in
+        pointer.incrementKey("score", byAmount: -1)
+        pointer.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
                 println(error)
             }
@@ -252,9 +253,10 @@ class Reply : NSObject {
     
     
     func addDownvote() {
+        var pointer = PFObject(withoutDataWithClassName: "Reply", objectId: object.objectId)
         
-        object.incrementKey("score", byAmount: -1)
-        object.saveInBackgroundWithBlock { (success, error) -> Void in
+        pointer.incrementKey("score", byAmount: -1)
+        pointer.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
                 println(error)
             }
@@ -270,10 +272,10 @@ class Reply : NSObject {
     }
     
     func removeDownvote() {
+        var pointer = PFObject(withoutDataWithClassName: "Reply", objectId: object.objectId)
         
-        
-        object.incrementKey("score", byAmount: 1)
-        object.saveInBackgroundWithBlock { (success, error) -> Void in
+        pointer.incrementKey("score", byAmount: 1)
+        pointer.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
                 println(error)
             }
@@ -282,7 +284,7 @@ class Reply : NSObject {
                 self.object.fetchInBackgroundWithBlock { (object, error) -> Void in
                     //refresh
                 }
-                
+
             }
         }
     }

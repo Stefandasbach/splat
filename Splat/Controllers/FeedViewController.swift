@@ -9,7 +9,7 @@
 import Foundation
 import Parse
 
-class FeedViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource {
+class FeedViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource {
     
     let dataLimit = 20;
     let dataDistance = 5.0;
@@ -19,8 +19,18 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     var HotButton:UIButton!
     var BestButton:UIButton!
     
+    var LocationBar: UIToolbar!
+    var LocationButton: UIButton!
+    var locationPicker: UIPickerView!
+    var selectButton: UIButton!
+    
     var selected: String!
     var feedData = NSMutableArray()
+    
+    var selectedLocation = "My Location"
+    var currentSelection = "My Location"
+    
+    var backgroundImage: UIImageView!
     
     override init() {
         super.init()
@@ -59,8 +69,15 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         self.refreshControl = UIRefreshControl()
          self.refreshControl?.addTarget(self, action: Selector("refreshFeed"), forControlEvents: UIControlEvents.ValueChanged)
         
+        backgroundImage = UIImageView(image: UIImage(named: "feedPlaceholder.png"))
+        backgroundImage.frame = self.tableView.frame
+        backgroundImage.contentMode = UIViewContentMode.ScaleAspectFit
+        
+        self.tableView.backgroundColor = UIColorFromRGB(BACKGROUND_GREY)
+        self.tableView.tableFooterView = UIView()
+        
         self.selected = "New"
-        self.loadNewData(0, limit: 10)
+        refreshFeed()
         let defaults = NSUserDefaults.standardUserDefaults()
         var state = defaults.objectForKey("state") as? String
         if (state? != nil) {
@@ -69,6 +86,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     }
     
     func renderNavbar() {
+        self.navigationController?.navigationBar.translucent = false
         //NAV ICONS//
         var newItemImageButton = UIButton(frame: CGRectMake(0, 0, 20, 20))
         newItemImageButton.setImage(UIImage(named: "createPostIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
@@ -85,71 +103,109 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         self.navigationItem.leftBarButtonItem = discoverNavItem
         self.navigationItem.rightBarButtonItem = newItemNavItem
         
+        let navBarHeight:CGFloat = 40.0
+        let navBarWidth = self.view.frame.width
+        LocationBar = UIToolbar(frame: CGRectMake(0, 0, navBarWidth, navBarHeight))
+        LocationBar.barTintColor = UIColorFromRGB(PURPLE_SELECTED)
+        
+        locationPicker = UIPickerView(frame: CGRectMake(0, self.view.frame.height-20-200, self.view.frame.width, 200))
+        locationPicker.delegate = self
+        locationPicker.dataSource = self
+        locationPicker.showsSelectionIndicator = true
+        locationPicker.backgroundColor = UIColor.whiteColor()
+        
+        
+        selectButton = UIButton(frame: CGRect(x: 0, y: self.view.frame.height-20-240, width: self.view.frame.width, height: 40))
+        selectButton.backgroundColor = UIColorFromRGB(PURPLE_SELECTED)
+        selectButton.setTitle("Select", forState: UIControlState.Normal)
+        selectButton.titleLabel?.textAlignment = NSTextAlignment.Center
+        selectButton.addTarget(self, action: "selectLocation:", forControlEvents: UIControlEvents.TouchUpInside)
+        //self.view.addSubview(locationPicker)
+        
         
         //FEED BUTTONS//
         if let navBarHeight = self.navigationController?.navigationBar.frame.height {
+            let navBarWidth = self.navigationController?.navigationBar.frame.width
             let buttonWidth: CGFloat = 65
-        let buttonHeight = navBarHeight
-        let buttonY = navBarHeight/2 - buttonHeight/2
-        let buttonPadding = 10 as CGFloat
-        let buttonPaddingTop = 5 as CGFloat
+            let buttonHeight = navBarHeight
+            let buttonY = navBarHeight/2 - buttonHeight/2
+            let buttonPadding = 10 as CGFloat
+            let buttonPaddingTop = 5 as CGFloat
+            let locationButtonPadding = (navBarWidth! - buttonWidth*3)/2
             
-        NewButton = UIButton()
-        HotButton = UIButton()
-        BestButton = UIButton()
-        
-        NewButton.frame = CGRectMake(0*buttonWidth, 0, buttonWidth, buttonHeight)
-        HotButton.frame = CGRectMake(1*buttonWidth, 0, buttonWidth, buttonHeight)
-        BestButton.frame = CGRectMake(2*buttonWidth, 0, buttonWidth, buttonHeight)
-        
-        NewButton.setTitle( "New",  forState: .Normal)
-        NewButton.titleLabel?.font = UIFont(name: "Pacifico", size: 18.0)
-        NewButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Selected)
-        NewButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.5), forState: UIControlState.Normal)
-        NewButton.selected = true
-        
+            LocationButton = UIButton()
+            NewButton = UIButton()
+            HotButton = UIButton()
+            BestButton = UIButton()
             
-        HotButton.setTitle( "Hot",  forState: .Normal)
-        HotButton.titleLabel?.font = UIFont(name: "Pacifico", size: 18.0)
-        HotButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Selected)
-        HotButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.5), forState: UIControlState.Normal)
-        HotButton.selected = false
+            LocationButton.frame = CGRectMake(locationButtonPadding, 0, buttonWidth*3, buttonHeight)
+            NewButton.frame      = CGRectMake(0*buttonWidth, 0, buttonWidth,   buttonHeight)
+            HotButton.frame      = CGRectMake(1*buttonWidth, 0, buttonWidth,   buttonHeight)
+            BestButton.frame     = CGRectMake(2*buttonWidth, 0, buttonWidth,   buttonHeight)
             
-        BestButton.setTitle("Best", forState: .Normal)
-        BestButton.titleLabel?.font = UIFont(name: "Pacifico", size: 18.0)
-        BestButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Selected)
-        BestButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.5), forState: UIControlState.Normal)
-        BestButton.selected = false
-        
-        NewButton.contentHorizontalAlignment  = UIControlContentHorizontalAlignment.Center
-        NewButton.contentVerticalAlignment    = UIControlContentVerticalAlignment.Center
-        HotButton.contentHorizontalAlignment  = UIControlContentHorizontalAlignment.Center
-        HotButton.contentVerticalAlignment    = UIControlContentVerticalAlignment.Center
-        BestButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
-        BestButton.contentVerticalAlignment   = UIControlContentVerticalAlignment.Center
-        
-        NewButton.addTarget(self, action: "changeSort:", forControlEvents: UIControlEvents.TouchUpInside)
-        HotButton.addTarget(self, action: "changeSort:", forControlEvents: UIControlEvents.TouchUpInside)
-        BestButton.addTarget(self, action: "changeSort:", forControlEvents: UIControlEvents.TouchUpInside)
-        
-        //Container for feed buttons
-        let buttonContainer = ContainerView()
-            buttonContainer.frame = CGRectMake(0, 0, NewButton.frame.width + HotButton.frame.width + BestButton.frame.width, buttonHeight)
-            buttonContainer.addSubview(NewButton)
-            buttonContainer.addSubview(HotButton)
-            buttonContainer.addSubview(BestButton)
-        self.navigationItem.titleView = buttonContainer
+            LocationButton.setTitle( "Location",  forState: .Normal)
+            LocationButton.titleLabel?.font = UIFont(name: "Helvetica", size: 18.0)
+            LocationButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Selected)
+            LocationButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.5), forState: UIControlState.Normal)
+            LocationButton.selected = false
+            
+            NewButton.setTitle( "New",  forState: .Normal)
+            NewButton.titleLabel?.font = UIFont(name: "Pacifico", size: 18.0)
+            NewButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Selected)
+            NewButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.5), forState: UIControlState.Normal)
+            NewButton.selected = true
+            
+            HotButton.setTitle( "Hot",  forState: .Normal)
+            HotButton.titleLabel?.font = UIFont(name: "Pacifico", size: 18.0)
+            HotButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Selected)
+            HotButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.5), forState: UIControlState.Normal)
+            HotButton.selected = false
+            
+            BestButton.setTitle("Best", forState: .Normal)
+            BestButton.titleLabel?.font = UIFont(name: "Pacifico", size: 18.0)
+            BestButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Selected)
+            BestButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.5), forState: UIControlState.Normal)
+            BestButton.selected = false
+            
+            LocationButton.contentHorizontalAlignment  = UIControlContentHorizontalAlignment.Center
+            LocationButton.contentVerticalAlignment    = UIControlContentVerticalAlignment.Center
+            NewButton.contentHorizontalAlignment  = UIControlContentHorizontalAlignment.Center
+            NewButton.contentVerticalAlignment    = UIControlContentVerticalAlignment.Center
+            HotButton.contentHorizontalAlignment  = UIControlContentHorizontalAlignment.Center
+            HotButton.contentVerticalAlignment    = UIControlContentVerticalAlignment.Center
+            BestButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
+            BestButton.contentVerticalAlignment   = UIControlContentVerticalAlignment.Center
+            
+            LocationButton.addTarget(self, action: "changeLocation:", forControlEvents: UIControlEvents.TouchUpInside)
+            NewButton.addTarget(self, action: "changeSort:", forControlEvents: UIControlEvents.TouchUpInside)
+            HotButton.addTarget(self, action: "changeSort:", forControlEvents: UIControlEvents.TouchUpInside)
+            BestButton.addTarget(self, action: "changeSort:", forControlEvents: UIControlEvents.TouchUpInside)
+            
+            //Container for feed buttons
+            let buttonContainer = ContainerView()
+                buttonContainer.frame = CGRectMake(0, 0, NewButton.frame.width + HotButton.frame.width + BestButton.frame.width, buttonHeight)
+                buttonContainer.addSubview(NewButton)
+                buttonContainer.addSubview(HotButton)
+                buttonContainer.addSubview(BestButton)
+            self.navigationItem.titleView = buttonContainer
+            self.LocationBar.addSubview(LocationButton)
         }
+        
+        var content = ContainerView()
+        content.frame = LocationBar.frame
+        content.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
+        content.addSubview(LocationBar)
+        self.tableView.tableHeaderView = content
     }
     
     func createButtonListener(sender: UIButton) {
         var createPostVC = CreatePostViewController()
-        self.navigationController?.pushViewController(createPostVC, animated: false)
+        self.navigationController?.pushViewController(createPostVC, animated: true)
     }
     
     func discoverButtonListener(sender: UIButton) {
         var discoverVC = DiscoverViewController()
-        self.navigationController?.pushViewController(discoverVC, animated: false)
+        self.navigationController?.pushViewController(discoverVC, animated: true)
     }
     
     ///Gets the newest data in your area
@@ -166,7 +222,13 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                 var query: PFQuery = PFQuery(className: "Post")
                 query.limit = limit
                 query.skip = skip
-                query.whereKey("geopoint", nearGeoPoint: geopoint, withinMiles: self.dataDistance)
+                
+                if (self.selectedLocation == "My Location") {
+                    query.whereKey("geopoint", nearGeoPoint: geopoint, withinMiles: self.dataDistance)
+                } else {
+                    query.whereKey("state", equalTo: self.selectedLocation)
+                }
+
                 query.orderByDescending("createdAt")
                 query.findObjectsInBackgroundWithBlock({
                     (objects: [AnyObject]!, error: NSError!)->Void in
@@ -186,6 +248,8 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                             self.feedData.addObject(Post(pfObject: obj))
                         }
                     }
+                    
+                    self.toggleBackgroundImage()
                     
                     self.tableView.reloadData()
                     self.refreshControl?.endRefreshing()
@@ -213,7 +277,13 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                 var query: PFQuery = PFQuery(className: "Post")
                 query.limit = limit
                 query.skip = skip
-                query.whereKey("geopoint", nearGeoPoint: geopoint, withinMiles: self.dataDistance)
+                
+                if (self.selectedLocation == "My Location") {
+                    query.whereKey("geopoint", nearGeoPoint: geopoint, withinMiles: self.dataDistance)
+                } else {
+                    query.whereKey("state", equalTo: self.selectedLocation)
+                }
+                
                 query.orderByDescending("score")
                 query.whereKey("createdAt", greaterThan: sevenDaysAgo)
                 query.findObjectsInBackgroundWithBlock({
@@ -235,6 +305,8 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                         }
                     }
                     
+                    self.toggleBackgroundImage()
+                    
                     self.tableView.reloadData()
                     self.refreshControl?.endRefreshing()
                     
@@ -246,10 +318,26 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     
     ///loads the best scores for all time
     func loadBestData(skip: Int, limit: Int) {
-       
+        PFGeoPoint.geoPointForCurrentLocationInBackground { (geopoint, error) -> Void in
+            if (error != nil) {
+                println("Error: location services not enabled")
+                self.feedData.removeAllObjects()
+                self.tableView.reloadData()
+                self.refreshControl?.endRefreshing()
+                return
+            }
+            else {
+
                 var query: PFQuery = PFQuery(className: "Post")
                 query.limit = limit
                 query.skip = skip
+                
+                if (self.selectedLocation == "My Location") {
+                    query.whereKey("geopoint", nearGeoPoint: geopoint, withinMiles: self.dataDistance)
+                } else {
+                    query.whereKey("state", equalTo: self.selectedLocation)
+                }
+
                 query.orderByDescending("score")
                 query.findObjectsInBackgroundWithBlock({
                     (objects: [AnyObject]!, error: NSError!)->Void in
@@ -270,12 +358,27 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                         }
                     }
                     
+                    self.toggleBackgroundImage()
+                    
                     self.tableView.reloadData()
                     self.refreshControl?.endRefreshing()
                     
                 })
-            
+            }
+        }
+        
     
+    }
+    
+    func toggleBackgroundImage() {
+    
+        if (self.feedData.count == 0) {
+            self.tableView.backgroundColor = UIColorFromRGB(BACKGROUND_GREY)
+            self.tableView.backgroundView = self.backgroundImage
+        } else {
+            self.tableView.backgroundColor = UIColor.whiteColor()
+            self.tableView.backgroundView = nil
+        }
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -336,7 +439,54 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             postCell.Image.image = nil
         }
     }
+    
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+        
+        var rect = self.LocationBar.frame
+        
+        var origin = max(0, self.tableView.contentOffset.y);
+        var origin2 = max(0, self.tableView.contentOffset.y);
+        
+        if (origin > 400 ) {
+            origin = 400
+        }
+        
+        rect.origin.y = origin
+        self.LocationBar.frame = rect
+        
+        self.locationPicker.frame.origin.y = origin2 + self.view.frame.height+20-200
+        self.selectButton.frame.origin.y = origin2 + self.view.frame.height+20-240
+    }
 
+    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if (row == 0) {
+            currentSelection = "My Location"
+        } else {
+            currentSelection = Location.getStates()[row-1]
+        }
+    }
+    
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return Location.getStates().count+1
+    }
+
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+        if (row == 0) {
+            return "My Location"
+        } else {
+            return Location.getStates()[row-1]
+        }
+
+    }
+    
+    func pickerView(pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+        return self.view.frame.width
+    }
+    
     
     // MARK: - Voting
     func downvote(sender: AnyObject) {
@@ -450,6 +600,28 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         } else {return}
     }
     
+    func changeLocation(sender: UIButton) {
+        self.view.addSubview(locationPicker)
+        self.view.addSubview(selectButton)
+        println("Change location")
+        println("Render new TableView here")
+    }
+    
+    func selectLocation(sender: UIButton) {
+        selectedLocation = currentSelection
+        if (currentSelection != "My Location") {
+            LocationButton.selected = true
+            LocationButton.setTitle(currentSelection, forState: UIControlState.Normal)
+        } else {
+            LocationButton.selected = false
+            LocationButton.setTitle("Location", forState: UIControlState.Normal)
+        }
+        locationPicker.removeFromSuperview()
+        selectButton.removeFromSuperview()
+        refreshFeed()
+        
+    }
+    
     func changeSort(sender: UIButton) {
         if (sender.titleLabel?.text == "New") {
             HotButton.selected = false
@@ -457,7 +629,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             NewButton.selected = true
 
             selected = "New"
-            loadNewData(0, limit: 20)
+            refreshFeed()
         }
         else if (sender.titleLabel?.text == "Hot") {
             HotButton.selected = true
@@ -465,7 +637,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             NewButton.selected = false
             
             selected = "Hot"
-            loadHotData(0, limit: 20)
+            refreshFeed()
         }
         else if (sender.titleLabel?.text == "Best") {
             HotButton.selected = false
@@ -473,7 +645,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             NewButton.selected = false
             
             selected = "Best"
-            loadBestData(0, limit: 20)
+            refreshFeed()
         }
         
     }
