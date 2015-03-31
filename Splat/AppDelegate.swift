@@ -64,7 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     func login() {
         
-        PFUser.enableAutomaticUser()
+        //PFUser.enableAutomaticUser()
         
         //login
         if (PFAnonymousUtils.isLinkedWithUser(PFUser.currentUser())) {
