@@ -615,7 +615,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func pushToUserReplies() {
-        var userRepliesVC = GenericPostsTableViewController(posts: userReplies, title: "Upvoted")
+        var userRepliesVC = GenericPostsTableViewController(posts: userReplies, title: "Replies")
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(userRepliesVC, animated: false)
     }
