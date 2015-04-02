@@ -38,10 +38,8 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
         
         self.view.backgroundColor = UIColor.whiteColor()
         self.navigationBar.barTintColor = UIColorFromRGB(PURPLE_SELECTED)
-
         
         renderElements()
-    
     }
 
     override func didReceiveMemoryWarning() {

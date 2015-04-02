@@ -32,6 +32,28 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
         
         self.allowsEditing = true
         
+        /* Ask for access to camera */
+        var cameraEnabled = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        
+        if (cameraEnabled == AVAuthorizationStatus.Authorized) {
+            //Proceed
+        } else {
+            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: {(granted) -> Void in
+                if(granted){
+                    println("Granted camera access")
+                } else {
+                    println("Not granted camera access")
+                    dispatch_async(dispatch_get_main_queue(), {
+                        UIAlertView(
+                            title: "Could not use camera",
+                            message: "Splat does not have permission to use the camera. Please update your privacy settings.",
+                            delegate: self,
+                            cancelButtonTitle: "OK").show()
+                    })
+                }
+            })
+        }
+        
         //check if the camera is available
         if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)) {
             self.sourceType = UIImagePickerControllerSourceType.Camera

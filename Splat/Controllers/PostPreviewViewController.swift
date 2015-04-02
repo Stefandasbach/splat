@@ -799,7 +799,6 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
             cameraVC = CameraViewController()
             cameraVC.cameraDelegate = self
         }
-        
         self.presentViewController(cameraVC, animated: true, completion: nil)
     }
     
