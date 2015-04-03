@@ -39,6 +39,9 @@ class ProfileButton: UIButton {
         self.layer.borderWidth = 1
         self.layer.borderColor = UIColor.blackColor().colorWithAlphaComponent(0.3).CGColor
         self.addTarget(self, action: "highlightButton:", forControlEvents: UIControlEvents.TouchDown)
+        self.addTarget(self, action: "unselectButton:", forControlEvents: UIControlEvents.TouchUpOutside)
+        self.addTarget(self, action: "unselectButton:", forControlEvents: UIControlEvents.TouchDragOutside)
+        self.addTarget(self, action: "unselectButton:", forControlEvents: UIControlEvents.TouchDragInside)
         
         //TITLE SUBVIEW for numberPostsButton
         var pastPostsLabel = UILabel(frame: CGRectMake(20, 18, 100, 100))
@@ -62,5 +65,9 @@ class ProfileButton: UIButton {
     
    func highlightButton(sender: UIButton) {
         sender.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.2)
+    }
+    
+    func unselectButton(sender: UIButton) {
+        sender.backgroundColor = UIColor.whiteColor()
     }
 }

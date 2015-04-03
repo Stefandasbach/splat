@@ -497,11 +497,11 @@
 				TargetAttributes = {
 					02B2CA671AA6383300BB05B9 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = 75XP583E93;
+						DevelopmentTeam = V8V9KT2MFC;
 					};
 					02B2CA7C1AA6383300BB05B9 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = 75XP583E93;
+						DevelopmentTeam = V8V9KT2MFC;
 						TestTargetID = 02B2CA671AA6383300BB05B9;
 					};
 				};

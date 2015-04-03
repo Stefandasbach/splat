@@ -43,6 +43,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     
     var map: MKMapView!
     
+    var screen = "Score"
     
     override init() {
         super.init()
@@ -289,6 +290,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         map.scrollEnabled = false
         map.zoomEnabled = false
         
+        initGestureRecognizers()
         
         //Add the elements
         mainScrollView.addSubview(myProfileLabel)
@@ -299,6 +301,32 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         mainScrollView.addSubview(myLocationLabel)
         mainScrollView.addSubview(map)
     }
+    
+    func initGestureRecognizers() {
+        var swipeUpGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "handleSwipeUpFrom:")
+        swipeUpGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Up
+        
+        mainScrollView.addGestureRecognizer(swipeUpGestureRecognizer)
+        
+        var swipeDownGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "handleSwipeDownFrom:")
+        swipeDownGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Down
+        
+        mainScrollView.addGestureRecognizer(swipeDownGestureRecognizer)
+    }
+    
+    //Gesture Recognizers
+    func handleSwipeUpFrom(recognizer: UIGestureRecognizer) {
+        if (screen == "Score") {
+            caretButtonListener(caretButton)
+        }
+    }
+    
+    func handleSwipeDownFrom(recognizer: UIGestureRecognizer) {
+        if (screen == "Profile") {
+            caretUpButtonListener(caretButtonUp)
+        }
+    }
+
     
     func initParticles() {
         //Create our particle image from a cg context
@@ -357,6 +385,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func caretButtonListener(sender: UIButton) {
+        screen = "Profile"
         var bottomOffset = CGPointMake(0, self.mainScrollView.contentSize.height - self.mainScrollView.bounds.size.height);
         self.mainScrollView.setContentOffset(bottomOffset, animated: true)
         statusBarStyle = UIStatusBarStyle.Default
@@ -364,6 +393,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func caretUpButtonListener(sender: UIButton) {
+        screen = "Score"
         var bottomOffset = CGPointMake(0, 0);
         self.mainScrollView.setContentOffset(bottomOffset, animated: true)
         statusBarStyle = UIStatusBarStyle.LightContent
@@ -499,7 +529,19 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                         
                         self.ratedReplies = NSMutableArray(array: self.ratedReplies.reverseObjectEnumerator().allObjects)
                         
-                        self.pushToRatedReplies()
+                        PFObject.fetchAllIfNeededInBackground(self.ratedReplies, block: { (objects, error) -> Void in
+                            self.ratedReplies.removeAllObjects()
+                            
+                            for obj in objects {
+                                if let pfobj = obj as? PFObject {
+                                    self.ratedReplies.addObject(Post(pfObject: pfobj))
+                                }
+                            }
+                            
+                            self.pushToRatedReplies()
+                        })
+                        
+
                     }
                     
                 }
@@ -541,7 +583,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                         for obj in objects {
                             if let pfobj = obj as? PFObject {
                                 var reply = Reply(pfObject: pfobj)
-                                self.userReplies.addObject(Post(pfObject:reply.getParentPost()))
+                                self.userReplies.addObject(reply.getParentPost())
                                 
                             }
                         }
@@ -549,7 +591,19 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                     
                     self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
                     
-                    self.pushToUserReplies()
+                    PFObject.fetchAllIfNeededInBackground(self.userReplies, block: { (objects, error) -> Void in
+                        self.userReplies.removeAllObjects()
+                        
+                        for obj in objects {
+                            if let pfobj = obj as? PFObject {
+                                self.userReplies.addObject(Post(pfObject: pfobj))
+                            }
+                        }
+                        
+                        self.pushToUserReplies()
+                    })
+                    
+
                 }
                     
             })
@@ -561,7 +615,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func pushToUserReplies() {
-        var userRepliesVC = GenericPostsTableViewController(posts: userReplies, title: "Upvoted")
+        var userRepliesVC = GenericPostsTableViewController(posts: userReplies, title: "Replies")
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.pushViewController(userRepliesVC, animated: false)
     }

@@ -31,7 +31,12 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
         super.viewDidLoad()
         
         self.allowsEditing = true
-        
+        initView()
+    
+        self.delegate = self
+    }
+    
+    func initView() {
         /* Ask for access to camera */
         var cameraEnabled = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
         
@@ -53,25 +58,28 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
                 }
             })
         }
-        
+
         //check if the camera is available
         if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)) {
             self.sourceType = UIImagePickerControllerSourceType.Camera
             self.showsCameraControls = false
+            self.selectionType = "Camera"
             renderCameraElements()
+
         } else {
             self.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
             self.selectionType = "Library"
         }
-        
-        self.delegate = self
+
     }
     
     override func viewDidAppear(animated: Bool) {
         //Kind of a hack. Want to reinit the camera settings
          if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)) {
-            orientCamera(flipCamera)
-            setFlash(flashButton)
+            if (self.sourceType == UIImagePickerControllerSourceType.Camera) {
+                orientCamera(flipCamera)
+                setFlash(flashButton)
+            }
         }
     }
     
