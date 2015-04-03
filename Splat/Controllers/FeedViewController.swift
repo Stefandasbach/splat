@@ -29,6 +29,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     
     var selectedLocation = "My Location"
     var currentSelection = "My Location"
+    var userLocation: String!
     
     var backgroundImage: UIImageView!
     
@@ -64,10 +65,17 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        /* Get user's location */
+        let defaults = NSUserDefaults.standardUserDefaults()
+        var state = defaults.objectForKey("state") as? String
+        if (state? != nil) {
+            userLocation = state!
+        }
+        
         self.renderNavbar()
         
         self.refreshControl = UIRefreshControl()
-         self.refreshControl?.addTarget(self, action: Selector("refreshFeed"), forControlEvents: UIControlEvents.ValueChanged)
+        self.refreshControl?.addTarget(self, action: Selector("refreshFeed"), forControlEvents: UIControlEvents.ValueChanged)
         
         backgroundImage = UIImageView(image: UIImage(named: "feedPlaceholder.png"))
         backgroundImage.frame = self.tableView.frame
@@ -78,11 +86,6 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         
         self.selected = "New"
         refreshFeed()
-        let defaults = NSUserDefaults.standardUserDefaults()
-        var state = defaults.objectForKey("state") as? String
-        if (state? != nil) {
-            println(state)
-        }
     }
     
     func renderNavbar() {
@@ -117,7 +120,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         
         selectButton = UIButton(frame: CGRect(x: 0, y: self.view.frame.height-20-240, width: self.view.frame.width, height: 40))
         selectButton.backgroundColor = UIColorFromRGB(PURPLE_SELECTED)
-        selectButton.setTitle("Select", forState: UIControlState.Normal)
+        selectButton.setTitle("Select Location", forState: UIControlState.Normal)
         selectButton.titleLabel?.textAlignment = NSTextAlignment.Center
         selectButton.addTarget(self, action: "selectLocation:", forControlEvents: UIControlEvents.TouchUpInside)
         //self.view.addSubview(locationPicker)
@@ -142,8 +145,13 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             NewButton.frame      = CGRectMake(0*buttonWidth, 0, buttonWidth,   buttonHeight)
             HotButton.frame      = CGRectMake(1*buttonWidth, 0, buttonWidth,   buttonHeight)
             BestButton.frame     = CGRectMake(2*buttonWidth, 0, buttonWidth,   buttonHeight)
+            if (userLocation == nil) {
+                // TODO: Set default  location if foreigner
+                LocationButton.setTitle( "Location",  forState: .Normal)
+            } else {
+                LocationButton.setTitle( "\(userLocation) (my location)",  forState: .Normal)
+            }
             
-            LocationButton.setTitle( "Location",  forState: .Normal)
             LocationButton.titleLabel?.font = UIFont(name: "Helvetica", size: 18.0)
             LocationButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Selected)
             LocationButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.5), forState: UIControlState.Normal)
@@ -371,7 +379,6 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     }
     
     func toggleBackgroundImage() {
-    
         if (self.feedData.count == 0) {
             self.tableView.backgroundColor = UIColorFromRGB(BACKGROUND_GREY)
             self.tableView.backgroundView = self.backgroundImage
@@ -382,7 +389,6 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
         var currentPost = feedData.objectAtIndex(indexPath.row) as Post
         var previewController = PostPreviewViewController(post: currentPost)
         self.navigationController?.pushViewController(previewController, animated: true)
@@ -402,25 +408,19 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
         //we get an error without this for some reason...
         if (feedData.count == 0) {
             return UITableViewCell();
         }
         
         var cell: PostCell!
-        
-        let post = feedData.objectAtIndex(indexPath.row) as Post
-        
         cell = tableView.dequeueReusableCellWithIdentifier("PostCell") as PostCell!
-        
-        
         if (cell == nil) {
             cell = PostCell(style: UITableViewCellStyle.Default, reuseIdentifier: "PostCell")
         }
         
+        let post = feedData.objectAtIndex(indexPath.row) as Post
         cell.initialize(post)
-        
         
         cell.voteSelector.UpvoteButton.tag = indexPath.row
         cell.voteSelector.DownvoteButton.tag = indexPath.row
@@ -429,7 +429,6 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         cell.voteSelector.DownvoteButton.addTarget(self, action: "downvote:", forControlEvents: UIControlEvents.TouchUpInside)
         cell.flagButton.addTarget(self, action: "flag:", forControlEvents: UIControlEvents.TouchUpInside)
 
-        
         return cell
     }
     
@@ -441,12 +440,10 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     }
     
     override func scrollViewDidScroll(scrollView: UIScrollView) {
-        
         var rect = self.LocationBar.frame
         
         var origin = max(0, self.tableView.contentOffset.y);
         var origin2 = max(0, self.tableView.contentOffset.y);
-        
         if (origin > 400 ) {
             origin = 400
         }
@@ -460,14 +457,15 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
 
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if (row == 0) {
+            /* Could probably just set this to the user's current state here */
             currentSelection = "My Location"
         } else {
-            currentSelection = Location.getStates()[row-1]
+            currentSelection = Location.States.list[row-1]
         }
     }
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return Location.getStates().count+1
+        return Location.States.list.count+1
     }
 
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
@@ -476,11 +474,14 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     
     func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
         if (row == 0) {
-            return "My Location"
+            if (userLocation != nil) {
+                return "\(userLocation!) (my location)"
+            } else {
+                return "My Location"
+            }
         } else {
-            return Location.getStates()[row-1]
+            return Location.States.list [row-1]
         }
-
     }
     
     func pickerView(pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
@@ -545,7 +546,6 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     }
     
     func upvote(sender: AnyObject) {
-        
         let pointInTable: CGPoint = sender.convertPoint(sender.bounds.origin, toView: self.tableView)
         let cellIndexPath = self.tableView.indexPathForRowAtPoint(pointInTable)
         if (cellIndexPath != nil) {
@@ -603,8 +603,6 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     func changeLocation(sender: UIButton) {
         self.view.addSubview(locationPicker)
         self.view.addSubview(selectButton)
-        println("Change location")
-        println("Render new TableView here")
     }
     
     func selectLocation(sender: UIButton) {
@@ -619,7 +617,6 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         locationPicker.removeFromSuperview()
         selectButton.removeFromSuperview()
         refreshFeed()
-        
     }
     
     func changeSort(sender: UIButton) {
@@ -647,9 +644,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             selected = "Best"
             refreshFeed()
         }
-        
     }
-
     
     func sortRowsDown(startRow: NSInteger) {
         let lastRowToCheck = feedData.count-1
@@ -669,6 +664,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             swapRows(startRow, row2: lastRowToCheck)
         }
     }
+    
     func sortRowsUp(startRow: NSInteger) {
         let lastRowToCheck = 0
         var rowToChange = startRow
@@ -688,6 +684,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         }
         
     }
+    
     func swapRows(row1: NSInteger, row2: NSInteger) {
         let path1 = NSIndexPath(forRow: row1, inSection: 0)
         let path2 = NSIndexPath(forRow: row2, inSection: 0)

@@ -13,7 +13,9 @@ import Parse
 class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
 
     var window: UIWindow?
-
+    let locationManager = CLLocationManager()
+    var locationStatus : String = "unkown"
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         Parse.enableLocalDatastore()
@@ -21,14 +23,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         Parse.setApplicationId("bPx47th2SCzPkhTnnbWuoYQ3X2oeB6nq5aK007T8", clientKey: "bBMvgqmIMqsAHESMqZfk2GdRfv4WTsYZcBB7YUXj")
         
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
-        Location().getUserLocation()
         
         login()
-        
-        var feedView = FeedViewController(style: UITableViewStyle.Plain)
-        var navView = RootNavViewController(rootViewController: feedView)
-        self.window?.rootViewController = navView
-        
+        /* View controllers rendered from this function call- see function saveUserLocation */
+        getUserLocation()
         return true
     }
 
@@ -46,10 +44,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
-        
         NSNotificationCenter.defaultCenter().postNotificationName("ReloadFeed", object: nil)
-        Location().getUserLocation()
-        
+        getUserLocation()
         login()
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     }
@@ -65,15 +61,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     func login() {
         
         //PFUser.enableAutomaticUser()
-        
-        //login
+        /* Login */
         if (PFAnonymousUtils.isLinkedWithUser(PFUser.currentUser())) {
-            println("logged in")
         }
         else {
             PFAnonymousUtils.logInWithBlock { (user, error) -> Void in
                 var test = PFUser.currentUser()
-                println(test.objectId)
                 
                 //set acl
                 var defaultACL = PFACL()
@@ -85,11 +78,82 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 if let appDomain = NSBundle.mainBundle().bundleIdentifier {
                     NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
                 }
-                
             }
         }
-
     }
     
+    func getUserLocation() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.requestWhenInUseAuthorization()
+
+        /* Is user's location available? */
+        if let userLocation = locationManager.location {
+            saveUserLocation(userLocation)
+        }
+        else {
+            /* Calls didUpdateLocations when user's location is available */
+            locationManager.startUpdatingLocation()
+        }
+    }
+    /* Waits for user's location to become available */
+    func locationManager(manager: CLLocationManager!, didUpdateLocations
+                         locations: [AnyObject]!) {
+        if let userLocation = manager.location {
+            saveUserLocation(userLocation)
+        }
+        /* Just need their location once */
+        manager.stopUpdatingLocation()
+    }
+    func saveUserLocation(userLocation: CLLocation) {
+        println("Saved Location")
+        CLGeocoder().reverseGeocodeLocation(userLocation, completionHandler: {
+                                           (placemarks: [AnyObject]!, error: NSError!) in
+            if error == nil && placemarks.count > 0 {
+                let geoLocation = placemarks[0] as CLPlacemark
+                let country = geoLocation.country
+                let state = geoLocation.administrativeArea
+                let defaults = NSUserDefaults.standardUserDefaults()
+                if country == "United States" {
+                    defaults.setObject(state, forKey: "state")
+                    /* Only show user's state at the top of the list */
+                    if let foundIndex = find(Location.States.list, state) {
+                        Location.States.list.removeAtIndex(foundIndex)
+                    }
+                }
+                else {
+                    defaults.setObject(state, forKey: "foreign")
+                }
+                self.window?.rootViewController?.presentedViewController?.dismissViewControllerAnimated(true, completion: nil)
+                var feedView = FeedViewController(style: UITableViewStyle.Plain)
+                var navView = RootNavViewController(rootViewController: feedView)
+                self.window?.rootViewController = navView
+            }
+        })
+    }
+    func locationManager(manager: CLLocationManager!,
+         didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+            
+        if (status == CLAuthorizationStatus.NotDetermined ||
+            status == CLAuthorizationStatus.AuthorizedWhenInUse ||
+            status == CLAuthorizationStatus.AuthorizedAlways) {
+            return
+        } else {
+            let alertController = UIAlertController(
+                title: "Location Access Disabled",
+                message: "To contribute to the fun, we need your location. All your data will be kept private",
+                preferredStyle: .Alert)
+            
+            let openAction = UIAlertAction(title: "Open Settings", style: .Default) { (action) in
+                if let url = NSURL(string:UIApplicationOpenSettingsURLString) {
+                    UIApplication.sharedApplication().openURL(url)
+                }
+            }
+            alertController.addAction(openAction)
+            
+            self.window?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+        }
+    }
+
 }
 

@@ -11,6 +11,7 @@ import Foundation
 import Parse
 
 class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
+    let locationManager = CLLocationManager()
     var bottomToolbar: UITabBar!
     
     override init(rootViewController: UIViewController) {
@@ -38,7 +39,6 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
         
         self.view.backgroundColor = UIColor.whiteColor()
         self.navigationBar.barTintColor = UIColorFromRGB(PURPLE_SELECTED)
-        
         renderElements()
     }
 
