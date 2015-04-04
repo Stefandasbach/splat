@@ -58,18 +58,39 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
                 }
             })
         }
+        
+        /* Ask for access to photos */
+        var photosEnabled = PHPhotoLibrary.authorizationStatus()
+        
+//        if (photosEnabled != PHAuthorizationStatus.Authorized) {
+        
+        /* Temporary change to always request for authorization */
+        PHPhotoLibrary.requestAuthorization({ (status) -> Void in
+            if (status != PHAuthorizationStatus.Authorized) {
+                dispatch_async(dispatch_get_main_queue(), {
+                    println("Not authorized")
+                })
+            }
+            else {
+                println("Authorized")
+                dispatch_async(dispatch_get_main_queue(), {
+                    //check if the camera is available
+                    if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)) {
+                        self.sourceType = UIImagePickerControllerSourceType.Camera
+                        self.showsCameraControls = false
+                        self.selectionType = "Camera"
+                        self.renderCameraElements()
+                        
+                    } else {
+                        self.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+                        self.selectionType = "Library"
+                    }
+                })
+            }
+        })
+        
 
-        //check if the camera is available
-        if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)) {
-            self.sourceType = UIImagePickerControllerSourceType.Camera
-            self.showsCameraControls = false
-            self.selectionType = "Camera"
-            renderCameraElements()
-
-        } else {
-            self.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-            self.selectionType = "Library"
-        }
+        
 
     }
     
@@ -81,6 +102,10 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
                 setFlash(flashButton)
             }
         }
+    }
+    
+    func requestAccessToPhotoLibrary() {
+        
     }
     
     func renderCameraElements() {
