@@ -134,7 +134,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         var splatScoreLabel = UILabel(frame: CGRectMake(0, 0, 100, 100))
         splatScoreLabel.textColor = UIColorFromRGB(PURPLE_SELECTED)
         splatScoreLabel.text = "Splat Score"
-        splatScoreLabel.font = UIFont(name: "Pacifico", size: 26.0)
+        splatScoreLabel.font = UIFont(name: "Pacifico", size: 30.0)
         splatScoreLabel.sizeToFit()
         splatScoreLabel.center = CGPoint(x: circleView.frame.width/2, y: 1*circleView.frame.height/3)
         
@@ -144,7 +144,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         //SETUP SCORE LABEL
         scoreLabel = UILabel(frame: CGRectMake(0, 0, 100, 100))
         scoreLabel.textColor = UIColorFromRGB(PURPLE_SELECTED)
-        scoreLabel.font = UIFont.boldSystemFontOfSize(48)
+        scoreLabel.font = UIFont.boldSystemFontOfSize(42)
         
         let oldScore = NSUserDefaults.standardUserDefaults().integerForKey("SplatScore")
             self.scoreLabel.text = "\(oldScore)"
