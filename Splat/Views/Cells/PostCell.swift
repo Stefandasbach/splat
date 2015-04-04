@@ -66,15 +66,20 @@ class PostCell: UITableViewCell {
         //flag button
         let flagSize = 40 as CGFloat
         flagButton = FlagButton(frame: CGRectMake(Image.frame.maxX + 10, cellHeight-flagSize, flagSize, flagSize))
-        self.addSubview(flagButton)
+        //MARK: removed flagButton
+        if cellWidth > 320 {
+            self.addSubview(flagButton)
+        }
         
         //Comment
         Comment = UITextView()
         Comment.frame = CGRectMake(imageWidth + 10, 0, cellWidth - Image.frame.width - voteSelector.frame.width, cellHeight-flagButton.frame.height)
         Comment.userInteractionEnabled = false
-        Comment.font = UIFont.systemFontOfSize(12.0)
+        
+        if (cellWidth > 320) {
+            Comment.font = UIFont.systemFontOfSize(12.0)
         //if smaller cell
-        if (cellWidth == 320) {
+        } else {
             Comment.font = UIFont.systemFontOfSize(9.0)
         }
         self.addSubview(Comment)
@@ -92,10 +97,16 @@ class PostCell: UITableViewCell {
         timeCreatedLabel.addSubview(clockImg)
         self.addSubview(timeCreatedLabel)
         
-        numberOfRepliesLabel = UILabel(frame: CGRect(x: flagButton.frame.maxX, y: flagButton.frame.minY, width: timeCreatedLabel.frame.minX - flagButton.frame.maxX - 10, height: 40))
+        //if iphone4s
+        if cellWidth > 320 {
+            numberOfRepliesLabel = UILabel(frame: CGRect(x: flagButton.frame.maxX, y: flagButton.frame.minY, width: timeCreatedLabel.frame.minX - flagButton.frame.maxX - 10, height: 40))
+            numberOfRepliesLabel.textAlignment = NSTextAlignment.Center
+        } else {
+            numberOfRepliesLabel = UILabel(frame: CGRect(x: Image.frame.maxX + 10, y: flagButton.frame.minY, width: 100, height: 40))
+            numberOfRepliesLabel.textAlignment = NSTextAlignment.Left
+        }
         numberOfRepliesLabel.font = UIFont.systemFontOfSize(14.0)
         numberOfRepliesLabel.textColor = UIColorFromRGB(PURPLE_UNSELECTED)
-        numberOfRepliesLabel.textAlignment = NSTextAlignment.Center
         self.addSubview(numberOfRepliesLabel)
         
     }

@@ -65,7 +65,7 @@ class GenericPostsTableViewController : UITableViewController, UITableViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         renderNavbar()
 
     }
@@ -86,7 +86,7 @@ class GenericPostsTableViewController : UITableViewController, UITableViewDelega
     }
     
     func backButtonListener(sender: UIButton) {
-        self.navigationController?.popViewControllerAnimated(false)
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     

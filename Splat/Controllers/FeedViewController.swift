@@ -12,6 +12,7 @@ import Parse
 class FeedViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource {
     
     let dataLimit = 20;
+    let dataMaxLoadLimit = 100;
     let dataDistance = 5.0;
     let maxDaysHot = 7;
     
@@ -32,6 +33,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     var userLocation: String!
     
     var backgroundImage: UIImageView!
+    var footerView: UIView!
     
     override init() {
         super.init()
@@ -72,7 +74,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             userLocation = state!
         }
         
-        self.renderNavbar()
+        self.renderNavbarandView()
         
         self.refreshControl = UIRefreshControl()
         self.refreshControl?.addTarget(self, action: Selector("refreshFeed"), forControlEvents: UIControlEvents.ValueChanged)
@@ -82,13 +84,15 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         backgroundImage.contentMode = UIViewContentMode.ScaleAspectFit
         
         self.tableView.backgroundColor = UIColorFromRGB(BACKGROUND_GREY)
-        self.tableView.tableFooterView = UIView()
+       // self.tableView.tableFooterView = UIView()
         
         self.selected = "New"
         refreshFeed()
     }
     
-    func renderNavbar() {
+    
+    //MARK: Initialize
+    func renderNavbarandView() {
         self.navigationController?.navigationBar.translucent = false
         //NAV ICONS//
         var newItemImageButton = UIButton(frame: CGRectMake(0, 0, 20, 20))
@@ -206,6 +210,22 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         content.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
         content.addSubview(LocationBar)
         self.tableView.tableHeaderView = content
+        
+        
+        footerView = UIView(frame: CGRectMake(0.0, 0.0, self.view.frame.width, 40.0))
+        //footerView.backgroundColor = UIColor.blackColor()
+        
+        var actInd = UIActivityIndicatorView(activityIndicatorStyle:UIActivityIndicatorViewStyle.Gray)
+        
+        actInd.tag = 10;
+        
+        actInd.frame = CGRectMake(self.view.frame.width/2-20, 5.0, 20.0, 20.0);
+        
+        actInd.hidesWhenStopped = true;
+        
+        footerView.addSubview(actInd)
+        
+        self.tableView.tableFooterView = footerView
     }
     
     func createButtonListener(sender: UIButton) {
@@ -218,6 +238,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         self.navigationController?.pushViewController(discoverVC, animated: true)
     }
     
+    //MARK: Load data
     ///Gets the newest data in your area
     func loadNewData(skip: Int, limit: Int) {
         PFGeoPoint.geoPointForCurrentLocationInBackground { (geopoint, error) -> Void in
@@ -263,7 +284,9 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                     
                     self.tableView.reloadData()
                     self.refreshControl?.endRefreshing()
-                    
+                    if let av = self.footerView.viewWithTag(10) as? UIActivityIndicatorView {
+                        av.stopAnimating()
+                    }
                 })
             }
         }
@@ -319,7 +342,9 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                     
                     self.tableView.reloadData()
                     self.refreshControl?.endRefreshing()
-                    
+                    if let av = self.footerView.viewWithTag(10) as? UIActivityIndicatorView {
+                        av.stopAnimating()
+                    }
                 })
             }
         }
@@ -372,6 +397,9 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                     
                     self.tableView.reloadData()
                     self.refreshControl?.endRefreshing()
+                    if let av = self.footerView.viewWithTag(10) as? UIActivityIndicatorView {
+                        av.stopAnimating()
+                    }
                     
                 })
             }
@@ -380,6 +408,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     
     }
     
+    //MARK: Table methods
     func toggleBackgroundImage() {
         if (self.feedData.count == 0) {
             self.tableView.backgroundColor = UIColorFromRGB(BACKGROUND_GREY)
@@ -441,6 +470,21 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    //adds data to the feed
+    override func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        var currentOffset = scrollView.contentOffset.y;
+        var maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
+        
+        if (maximumOffset - currentOffset <= -40) {
+            if let av = self.footerView.viewWithTag(10) as? UIActivityIndicatorView {
+                av.startAnimating()
+            }
+            addDataToFeed()
+        }
+    }
+    
+    ///hides the statepicker
     override func scrollViewDidScroll(scrollView: UIScrollView) {
         var rect = self.LocationBar.frame
         
@@ -457,6 +501,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         self.selectButton.frame.origin.y = origin2 + self.view.frame.height+20-240
     }
 
+    //MARK: State picker
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if (row == 0) {
             /* Could probably just set this to the user's current state here */
@@ -702,7 +747,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         self.tableView.reloadRowsAtIndexPaths([path1, path2], withRowAnimation: UITableViewRowAnimation.Top)
         
     }
-    
+
     // MARK: Flag
     func flag(sender: UIButton) {
         let pointInTable: CGPoint = sender.convertPoint(sender.bounds.origin, toView: self.tableView)
@@ -735,6 +780,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
 
     }
     
+    ///handles notifications from other controllers
     func receivedNotification(notification: NSNotification) {
         dispatch_async(dispatch_get_main_queue(), {
             
@@ -754,6 +800,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         });
     }
     
+    //refreshes the feed with an initial 20 posts
     func refreshFeed() {
         switch(selected) {
             case "New":
@@ -768,6 +815,40 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             default:
                 break
         }
+    }
+    
+    ///Adds data to the feed
+    func addDataToFeed() {
+        
+        if (feedData.count < dataLimit || feedData.count % dataLimit != 0) {
+            println("not enough posts")
+            if let av = self.footerView.viewWithTag(10) as? UIActivityIndicatorView {
+                av.stopAnimating()
+            }
+        } else if(feedData.count > dataMaxLoadLimit) {
+            println("too many posts")
+            if let av = self.footerView.viewWithTag(10) as? UIActivityIndicatorView {
+                av.stopAnimating()
+            }
+        } else {
+            println("loading more data...")
+            switch(selected) {
+            case "New":
+                loadNewData(feedData.count, limit: dataLimit)
+                break
+            case "Hot":
+                loadHotData(feedData.count, limit: dataLimit)
+                break
+            case "Best":
+                loadBestData(feedData.count, limit: dataLimit)
+                break
+            default:
+                break
+            }
+
+        }
+        
+        
     }
     
 }

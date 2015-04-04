@@ -71,9 +71,14 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         renderElements()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        
         
         PFGeoPoint.geoPointForCurrentLocationInBackground { (geopoint, error) -> Void in
             if (error == nil){
@@ -159,7 +164,6 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         var posts = user.getPosts()
         var score = 0;
         userPosts = NSMutableArray()
-        userReplies = NSMutableArray()
         currentUser = user
         
         //Get objects for the pointer data to posts
@@ -198,7 +202,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                         for obj in replies {
                             if let pfobj = obj as? PFObject {
                                 var reply = Reply(pfObject: pfobj)
-                                self.userReplies.addObject(reply)
+                                //self.userReplies.addObject(reply)
                                 if reply.getScore() != nil {
                                     score = self.replyScoreWeighting*reply.getScore() + score
                                 }
@@ -207,7 +211,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                         }
                         
                 
-                        self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
+                        //self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
                         
                     }
                 }
@@ -486,8 +490,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     
     private func pushToRated() {
         var ratedPostsVC = GenericPostsTableViewController(posts: ratedPosts, title: "Upvoted")
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.pushViewController(ratedPostsVC, animated: false)
+        self.navigationController?.pushViewController(ratedPostsVC, animated: true)
     }
     
     func postsButtonListener(sender: UIButton) {
@@ -533,8 +536,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     
     private func pushToPast() {
         var pastPostsVC = GenericPostsTableViewController(posts: userPosts, title: "Past")
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.pushViewController(pastPostsVC, animated: false)
+        self.navigationController?.pushViewController(pastPostsVC, animated: true)
     }
     
     func ratedRepliesButtonListener(sender: UIButton) {
@@ -560,7 +562,9 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                             for obj in objects {
                                 if let pfobj = obj as? PFObject {
                                     var reply = Reply(pfObject: pfobj)
-                                    self.ratedReplies.addObject(Post(pfObject:reply.getParentPost()))
+                                    if (reply.getParentPost() != nil) {
+                                        self.ratedReplies.addObject(reply.getParentPost())
+                                    }
                                     
                                 }
                             }
@@ -577,6 +581,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                                 }
                             }
                             
+                            self.ratedReplies = self.removeDuplicates(self.ratedReplies)
                             self.pushToRatedReplies()
                         })
                         
@@ -597,8 +602,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     
     func pushToRatedReplies() {
         var ratedRepliesVC = GenericPostsTableViewController(posts: ratedReplies, title: "Upvoted")
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.pushViewController(ratedRepliesVC, animated: false)
+        self.navigationController?.pushViewController(ratedRepliesVC, animated: true)
     }
     
     func repliesButtonListener(sender: UIButton) {
@@ -622,7 +626,9 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                         for obj in objects {
                             if let pfobj = obj as? PFObject {
                                 var reply = Reply(pfObject: pfobj)
-                                self.userReplies.addObject(reply.getParentPost())
+                                if (reply.getParentPost() != nil) {
+                                    self.userReplies.addObject(reply.getParentPost())
+                                }
                                 
                             }
                         }
@@ -639,6 +645,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                             }
                         }
                         
+                        self.userReplies = self.removeDuplicates(self.userReplies)
                         self.pushToUserReplies()
                     })
                     
@@ -655,14 +662,27 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     
     func pushToUserReplies() {
         var userRepliesVC = GenericPostsTableViewController(posts: userReplies, title: "Replies")
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.pushViewController(userRepliesVC, animated: false)
+        self.navigationController?.pushViewController(userRepliesVC, animated: true)
     }
 
     func highlightButton(sender: UIButton) {
         sender.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.2)
     }
     
-    
+    private func removeDuplicates(arr: NSMutableArray) -> NSMutableArray {
+        var addedObjects = NSMutableSet()
+        var result = NSMutableArray()
+        
+        for obj in arr {
+            if let post = obj as? Post {
+                if (!addedObjects.containsObject(post.object.objectId)) {
+                    result.addObject(post)
+                    addedObjects.addObject(post.object.objectId)
+                }
+            }
+        }
+        
+        return result;
+    }
 
 }

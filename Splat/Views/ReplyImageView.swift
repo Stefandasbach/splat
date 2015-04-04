@@ -41,7 +41,9 @@ class ReplyImageView: UIView {
         self.container.center = self.center
         self.container.center.y -= 40
         
-        self.container.backgroundColor = UIColorFromRGB(PURPLE_SELECTED)
+        self.container.backgroundColor = UIColorFromRGB(PURPLE_SELECTED). colorWithAlphaComponent(0.8)
+        
+        
         
         //exit BUTTON
         exitButton = UIButton(frame: CGRectMake(self.container.frame.width-40, 0, 40, 40))
@@ -61,7 +63,8 @@ class ReplyImageView: UIView {
                 self.image.image = UIImage(data: imageData)
             }
         }
-        
+        self.container.layer.cornerRadius = 6.0
+        self.container.layer.masksToBounds = true
         self.addSubview(container)
         
     }
