@@ -206,15 +206,20 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                             }
                         }
                         
+                
                         self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
                         
                     }
                 }
                 
-                NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
-                self.scoreLabel.text = "\(score)"
-                self.scoreLabel.sizeToFit()
-                self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
+                //set score
+                dispatch_async(dispatch_get_main_queue(), {
+                    NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
+                    self.scoreLabel.text = "\(score)"
+                    self.scoreLabel.sizeToFit()
+                    self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
+                })
+                
             })
 
         })
