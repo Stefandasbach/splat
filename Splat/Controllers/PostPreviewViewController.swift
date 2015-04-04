@@ -683,8 +683,8 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         //TODO: add comment image preview
         var currentReply = replyData.objectAtIndex(indexPath.row) as Reply
         if currentReply.hasPicture() {
-            var previewController = ReplyPreviewViewController(reply: currentReply)
-            self.navigationController?.pushViewController(previewController, animated: true)
+            var replyPreview = ReplyImageView(reply: currentReply)
+            fadeinSubview(replyPreview, 0.2, self.view)
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
     
