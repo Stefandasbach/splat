@@ -147,9 +147,11 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             BestButton.frame     = CGRectMake(2*buttonWidth, 0, buttonWidth,   buttonHeight)
             if (userLocation == nil) {
                 // TODO: Set default  location if foreigner
-                LocationButton.setTitle( "Location",  forState: .Normal)
+                LocationButton.setTitle( "My Location",  forState: .Normal)
             } else {
                 LocationButton.setTitle( "\(userLocation) (my location)",  forState: .Normal)
+                selectedLocation = userLocation
+                currentSelection = userLocation
             }
             
             LocationButton.titleLabel?.font = UIFont(name: "Helvetica", size: 18.0)
@@ -458,14 +460,14 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if (row == 0) {
             /* Could probably just set this to the user's current state here */
-            currentSelection = "My Location"
+            currentSelection = userLocation
         } else {
-            currentSelection = Location.States.list[row-1]
+            currentSelection = Location.getStates(userLocation)[row-1]
         }
     }
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return Location.States.list.count+1
+        return Location.getStates(userLocation).count+1
     }
 
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
@@ -480,7 +482,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                 return "My Location"
             }
         } else {
-            return Location.States.list [row-1]
+            return Location.getStates(userLocation) [row-1]
         }
     }
     
@@ -610,9 +612,16 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         if (currentSelection != "My Location") {
             LocationButton.selected = true
             LocationButton.setTitle(currentSelection, forState: UIControlState.Normal)
+            
+            if (currentSelection == userLocation) {
+                LocationButton.selected = false
+                 LocationButton.setTitle("\(userLocation!) (my location)", forState: UIControlState.Normal)
+            }
+            
         } else {
             LocationButton.selected = false
-            LocationButton.setTitle("Location", forState: UIControlState.Normal)
+            LocationButton.setTitle("My Location", forState: UIControlState.Normal)
+
         }
         locationPicker.removeFromSuperview()
         selectButton.removeFromSuperview()

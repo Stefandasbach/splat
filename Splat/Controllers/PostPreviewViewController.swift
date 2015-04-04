@@ -193,7 +193,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         
         //time created
         timeCreatedLabel = UILabel()
-        timeCreatedLabel.frame = CGRectMake(mainScrollView.frame.width-80, flagButton.frame.minY, 60, 40)
+        timeCreatedLabel.frame = CGRectMake(mainScrollView.frame.width-60, flagButton.frame.minY, 60, 40)
         timeCreatedLabel.textColor = UIColorFromRGB(PURPLE_UNSELECTED)
         timeCreatedLabel.font = UIFont.systemFontOfSize(14.0)
         var clockImg = UIImageView(frame: CGRectMake(0, 12.5, 15, 15))
@@ -205,7 +205,6 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         
         let timeSincePost = getStringTimeDiff(eventCreatedDate, today)
         timeCreatedLabel.text = "     \(timeSincePost.number)\(timeSincePost.unit)"
-        timeCreatedLabel.frame.origin = CGPoint(x: mainScrollView.frame.width - timeCreatedLabel.frame.width, y: flagButton.frame.minY)
         
         
         timeCreatedLabel.addSubview(clockImg)
@@ -670,7 +669,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     }
     
     func validateReply()->Bool {
-        if (enlargedReplyView.text == nil || enlargedReplyView.text == "") {
+        if (enlargedReplyView.text == nil || (enlargedReplyView.text == "" && replyImage.image == nil) ) {
             var alert = UIAlertView(title: "Cannot Post", message: "Error: you must add a reply to post.", delegate: self, cancelButtonTitle: "Okay, got it.")
             alert.show()
             return false
@@ -682,6 +681,11 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     {
         //selected reply
         //TODO: add comment image preview
+        var currentReply = replyData.objectAtIndex(indexPath.row) as Reply
+        if currentReply.hasPicture() {
+            var previewController = ReplyPreviewViewController(reply: currentReply)
+            self.navigationController?.pushViewController(previewController, animated: true)
+        }
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
     
     }

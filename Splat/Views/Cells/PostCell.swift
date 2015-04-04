@@ -12,6 +12,7 @@ import Parse
 class PostCell: UITableViewCell {
     
     var timeCreatedLabel: UILabel!
+    var numberOfRepliesLabel: UILabel!
     var Comment: UITextView!
     var flagButton: UIButton!
     var voteSelector: VoteSelector!
@@ -91,6 +92,12 @@ class PostCell: UITableViewCell {
         timeCreatedLabel.addSubview(clockImg)
         self.addSubview(timeCreatedLabel)
         
+        numberOfRepliesLabel = UILabel(frame: CGRect(x: flagButton.frame.maxX, y: flagButton.frame.minY, width: timeCreatedLabel.frame.minX - flagButton.frame.maxX - 10, height: 40))
+        numberOfRepliesLabel.font = UIFont.systemFontOfSize(14.0)
+        numberOfRepliesLabel.textColor = UIColorFromRGB(PURPLE_UNSELECTED)
+        numberOfRepliesLabel.textAlignment = NSTextAlignment.Center
+        self.addSubview(numberOfRepliesLabel)
+        
     }
     
     func initialize(post: Post) {
@@ -112,9 +119,27 @@ class PostCell: UITableViewCell {
         let timeSincePost = getStringTimeDiff(eventCreatedDate, today)
         timeCreatedLabel.text = "     \(timeSincePost.number)\(timeSincePost.unit)"
         
+        numberOfRepliesLabel.text = ""
+        
+        var replies = post.getReplies()
+        addReplyLabel(replies)
+        
         currentPost = post
         
         updateHighlighted()
+    }
+    
+    private func addReplyLabel(objects: [AnyObject]!) {
+        if (objects != nil && objects.count != 0) {
+            if (objects.count == 1) {
+                self.numberOfRepliesLabel.text = "\(objects.count) reply"
+            } else if (objects.count > 10) {
+                self.numberOfRepliesLabel.text = "10+ replies"
+            } else {
+                self.numberOfRepliesLabel.text = "\(objects.count) replies"
+            }
+        }
+
     }
     
     func cancelLoad() {

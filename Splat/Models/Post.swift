@@ -343,4 +343,8 @@ class Post : NSObject {
 
     }
     
+    func getReplies()->NSArray! {
+        return object["replies"] as NSArray!
+    }
+    
 }

@@ -133,14 +133,20 @@ class Reply : NSObject {
                     println("Added reply")
                     completion(success: true)
                     self.addInverseRelationshipToCurrentUser(self.object)
+                    self.addInverseRelationshipToPost()
                 } else {
-                    println("Could not create post")
+                    println("Could not create reply")
                     completion(success: false)
                 }
             } else {
                 println(error)
             }
         })
+    }
+    
+    private func addInverseRelationshipToPost(){
+        self.getParentPost().addUniqueObject(self.object.objectId, forKey: "replies")
+        self.getParentPost().saveInBackground()
     }
     
     private func addInverseRelationshipToCurrentUser(reply: PFObject) -> Void {
@@ -175,7 +181,7 @@ class Reply : NSObject {
                     completion(success: true)
                     self.removeInverseRelationshipToCurrentUser(self.object)
                 } else {
-                    println("Could not remove post")
+                    println("Could not remove reply")
                     completion(success: false)
                 }
             } else {

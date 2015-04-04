@@ -48,6 +48,7 @@
 		0284C7481ABE3FFE00E55B58 /* flipCameraIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0284C7461ABE3FFE00E55B58 /* flipCameraIcon.png */; };
 		0284C74A1ABE473C00E55B58 /* autofocusBoundingBox.png in Resources */ = {isa = PBXBuildFile; fileRef = 0284C7491ABE473C00E55B58 /* autofocusBoundingBox.png */; };
 		0284C74D1ABF2AD100E55B58 /* VoteSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0284C74C1ABF2AD100E55B58 /* VoteSelector.swift */; };
+		02ACC2F91ACF60520071A069 /* ReplyPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ACC2F81ACF60520071A069 /* ReplyPreviewViewController.swift */; };
 		02B2CA6E1AA6383300BB05B9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B2CA6D1AA6383300BB05B9 /* AppDelegate.swift */; };
 		02B2CA731AA6383300BB05B9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02B2CA711AA6383300BB05B9 /* Main.storyboard */; };
 		02B2CA751AA6383300BB05B9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02B2CA741AA6383300BB05B9 /* Images.xcassets */; };
@@ -134,6 +135,7 @@
 		0284C7461ABE3FFE00E55B58 /* flipCameraIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flipCameraIcon.png; sourceTree = "<group>"; };
 		0284C7491ABE473C00E55B58 /* autofocusBoundingBox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = autofocusBoundingBox.png; sourceTree = "<group>"; };
 		0284C74C1ABF2AD100E55B58 /* VoteSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoteSelector.swift; sourceTree = "<group>"; };
+		02ACC2F81ACF60520071A069 /* ReplyPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyPreviewViewController.swift; sourceTree = "<group>"; };
 		02B2CA681AA6383300BB05B9 /* Splat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Splat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		02B2CA6C1AA6383300BB05B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		02B2CA6D1AA6383300BB05B9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -364,6 +366,7 @@
 				0284C7311ABC858600E55B58 /* DiscoverViewController.swift */,
 				0284C73A1ABD907F00E55B58 /* GenericPostsTableViewController.swift */,
 				0284C7431ABDF3A000E55B58 /* PostPreviewViewController.swift */,
+				02ACC2F81ACF60520071A069 /* ReplyPreviewViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -497,11 +500,11 @@
 				TargetAttributes = {
 					02B2CA671AA6383300BB05B9 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = 75XP583E93;
+						DevelopmentTeam = V8V9KT2MFC;
 					};
 					02B2CA7C1AA6383300BB05B9 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = 75XP583E93;
+						DevelopmentTeam = V8V9KT2MFC;
 						TestTargetID = 02B2CA671AA6383300BB05B9;
 					};
 				};
@@ -595,6 +598,7 @@
 				02F2C6B91AB60A250041A09F /* animationUtils.swift in Sources */,
 				02F2C6BB1AB60A680041A09F /* RootNavViewController.swift in Sources */,
 				0271124A1AC0700100F6D25E /* DoneNavItem.swift in Sources */,
+				02ACC2F91ACF60520071A069 /* ReplyPreviewViewController.swift in Sources */,
 				0200A2051AC36B1C0075DA4C /* Location.swift in Sources */,
 				0284C7341ABC88AE00E55B58 /* User.swift in Sources */,
 				027112441AC06BA300F6D25E /* SettingsNavItem.swift in Sources */,

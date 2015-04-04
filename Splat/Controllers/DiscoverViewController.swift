@@ -15,6 +15,10 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     
     var statusBarStyle = UIStatusBarStyle.LightContent
     
+    //score weighting
+    let postScoreWeighting = 2
+    let replyScoreWeighting = 1
+    
     //Main views
     var mainScrollView: UIScrollView!
     var gradient: CAGradientLayer!
@@ -59,6 +63,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.hidesBackButton = true
         
         self.view.backgroundColor = UIColorFromRGB(PURPLE_SELECTED)
         
@@ -129,7 +134,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         var splatScoreLabel = UILabel(frame: CGRectMake(0, 0, 100, 100))
         splatScoreLabel.textColor = UIColorFromRGB(PURPLE_SELECTED)
         splatScoreLabel.text = "Splat Score"
-        splatScoreLabel.font = UIFont(name: "Pacifico", size: 30.0)
+        splatScoreLabel.font = UIFont(name: "Pacifico", size: 26.0)
         splatScoreLabel.sizeToFit()
         splatScoreLabel.center = CGPoint(x: circleView.frame.width/2, y: 1*circleView.frame.height/3)
         
@@ -154,34 +159,63 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         var posts = user.getPosts()
         var score = 0;
         userPosts = NSMutableArray()
+        userReplies = NSMutableArray()
         currentUser = user
         
-        //Get objects for the pointer data
+        //Get objects for the pointer data to posts
         PFObject.fetchAllIfNeededInBackground(posts, block: { (objects, error) -> Void in
             if (error != nil) {
                 println(error)
             } else {
                 if (objects == nil) {
                     println("No posts")
-                    return
-                }
-                for obj in objects {
-                    if let pfobj = obj as? PFObject {
-                        var post = Post(pfObject: pfobj)
-                        self.userPosts.addObject(post)
-                        score = post.getScore() + score
-    
+                } else {
+                    for obj in objects {
+                        if let pfobj = obj as? PFObject {
+                            var post = Post(pfObject: pfobj)
+                            self.userPosts.addObject(post)
+                            if post.getScore() != nil {
+                                score = self.postScoreWeighting*post.getScore() + score
+                            }
+        
+                        }
                     }
+                    
+                    self.userPosts = NSMutableArray(array: self.userPosts.reverseObjectEnumerator().allObjects)
                 }
-                
-                self.userPosts = NSMutableArray(array: self.userPosts.reverseObjectEnumerator().allObjects)
                 
             }
             
-            NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
-            self.scoreLabel.text = "\(score)"
-            self.scoreLabel.sizeToFit()
-            self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
+            //add replies votes to splatScore
+            PFObject.fetchAllIfNeededInBackground(user.getReplies(), block: { (replies, error2) -> Void in
+                if (error2 != nil) {
+                    println(error2)
+                } else {
+                    if (objects == nil) {
+                        println("No replies")
+                    } else {
+                        
+                        for obj in replies {
+                            if let pfobj = obj as? PFObject {
+                                var reply = Reply(pfObject: pfobj)
+                                self.userReplies.addObject(reply)
+                                if reply.getScore() != nil {
+                                    score = self.replyScoreWeighting*reply.getScore() + score
+                                }
+                                
+                            }
+                        }
+                        
+                        self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
+                        
+                    }
+                }
+                
+                NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
+                self.scoreLabel.text = "\(score)"
+                self.scoreLabel.sizeToFit()
+                self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
+            })
 
         })
 
@@ -374,7 +408,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     
     //** BUTTON LISTENERS **//
     func backButtonListener(sender: UIButton) {
-        self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.popViewControllerAnimated(true)
        
     }
@@ -394,7 +428,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     
     func caretUpButtonListener(sender: UIButton) {
         screen = "Score"
-        var bottomOffset = CGPointMake(0, 0);
+        var bottomOffset = CGPointMake(0, -UIApplication.sharedApplication().statusBarFrame.height);
         self.mainScrollView.setContentOffset(bottomOffset, animated: true)
         statusBarStyle = UIStatusBarStyle.LightContent
         self.setNeedsStatusBarAppearanceUpdate()

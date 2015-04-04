@@ -117,9 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 if country == "United States" {
                     defaults.setObject(state, forKey: "state")
                     /* Only show user's state at the top of the list */
-                    if let foundIndex = find(Location.States.list, state) {
-                        Location.States.list.removeAtIndex(foundIndex)
-                    }
+                   Location.getStates(state)
                 }
                 else {
                     defaults.setObject(state, forKey: "foreign")
