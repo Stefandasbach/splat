@@ -113,7 +113,7 @@ class PostCell: UITableViewCell {
     
     func initialize(post: Post) {
         
-        //self.Image.image = nil
+        self.Image.image = nil
         voteSelector.initialize(post)
         self.actInd.startAnimating()
         post.getEventPicture { (imageData) -> Void in
