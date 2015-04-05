@@ -834,13 +834,13 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             println("loading more data...")
             switch(selected) {
             case "New":
-                loadNewData(feedData.count, limit: dataLimit)
+                loadNewData(0, limit: (feedData.count + dataLimit))
                 break
             case "Hot":
-                loadHotData(feedData.count, limit: dataLimit)
+                loadHotData(0, limit: (feedData.count + dataLimit))
                 break
             case "Best":
-                loadBestData(feedData.count, limit: dataLimit)
+                loadBestData(0, limit: (feedData.count + dataLimit))
                 break
             default:
                 break

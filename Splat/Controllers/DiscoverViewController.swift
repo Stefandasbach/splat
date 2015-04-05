@@ -580,7 +580,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                                 if let pfobj = obj as? PFObject {
                                     var reply = Reply(pfObject: pfobj)
                                     if (reply.getParentPost() != nil) {
-                                        self.ratedReplies.addObject(reply.getParentPost())
+                                        self.ratedReplies.addObject(reply.getParentPost().objectId)
                                     }
                                     
                                 }
@@ -589,7 +589,9 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                         
                         self.ratedReplies = NSMutableArray(array: self.ratedReplies.reverseObjectEnumerator().allObjects)
                         
-                        PFObject.fetchAllIfNeededInBackground(self.ratedReplies, block: { (objects, error) -> Void in
+                        var query = PFQuery(className: "Post")
+                        query.whereKey("objectId", containedIn: self.ratedReplies)
+                        query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
                             self.ratedReplies.removeAllObjects()
                             
                             for obj in objects {
@@ -600,7 +602,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                             
                             self.ratedReplies = self.removeDuplicates(self.ratedReplies)
                             self.pushToRatedReplies()
-                        })
+                        }
                         
 
                     }
@@ -644,7 +646,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                             if let pfobj = obj as? PFObject {
                                 var reply = Reply(pfObject: pfobj)
                                 if (reply.getParentPost() != nil) {
-                                    self.userReplies.addObject(reply.getParentPost())
+                                    self.userReplies.addObject(reply.getParentPost().objectId)
                                 }
                                 
                             }
@@ -653,7 +655,9 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                     
                     self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
                     
-                    PFObject.fetchAllIfNeededInBackground(self.userReplies, block: { (objects, error) -> Void in
+                    var query = PFQuery(className: "Post")
+                    query.whereKey("objectId", containedIn: self.userReplies)
+                    query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
                         self.userReplies.removeAllObjects()
                         
                         for obj in objects {
@@ -664,7 +668,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                         
                         self.userReplies = self.removeDuplicates(self.userReplies)
                         self.pushToUserReplies()
-                    })
+                    }
                     
 
                 }

@@ -132,8 +132,10 @@ class Reply : NSObject {
                 if (succeeded == true) {
                     println("Added reply")
                     completion(success: true)
-                    self.addInverseRelationshipToCurrentUser(self.object)
-                    self.addInverseRelationshipToPost()
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.addInverseRelationshipToCurrentUser(self.object)
+                        self.addInverseRelationshipToPost()
+                    })
                 } else {
                     println("Could not create reply")
                     completion(success: false)

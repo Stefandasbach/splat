@@ -661,7 +661,9 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
             reply.saveObjectInBackgroundForCurrentUser { (success) -> Void in
                 if success {
                     println("saved reply!")
-                    self.loadReplyData(0, limit: 100)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.loadReplyData(0, limit: 100)
+                    })
                 }
             }
         }
