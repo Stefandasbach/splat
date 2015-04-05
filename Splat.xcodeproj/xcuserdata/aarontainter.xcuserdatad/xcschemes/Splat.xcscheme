@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "02B2CA671AA6383300BB05B9"
-               BuildableName = "Splat.app"
+               BuildableName = "SplatIt.app"
                BlueprintName = "Splat"
                ReferencedContainer = "container:Splat.xcodeproj">
             </BuildableReference>
@@ -29,7 +29,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "02B2CA7C1AA6383300BB05B9"
-               BuildableName = "SplatTests.xctest"
+               BuildableName = "SplatItTests.xctest"
                BlueprintName = "SplatTests"
                ReferencedContainer = "container:Splat.xcodeproj">
             </BuildableReference>
@@ -47,7 +47,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "02B2CA7C1AA6383300BB05B9"
-               BuildableName = "SplatTests.xctest"
+               BuildableName = "SplatItTests.xctest"
                BlueprintName = "SplatTests"
                ReferencedContainer = "container:Splat.xcodeproj">
             </BuildableReference>
@@ -57,7 +57,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "02B2CA671AA6383300BB05B9"
-            BuildableName = "Splat.app"
+            BuildableName = "SplatIt.app"
             BlueprintName = "Splat"
             ReferencedContainer = "container:Splat.xcodeproj">
          </BuildableReference>
@@ -77,7 +77,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "02B2CA671AA6383300BB05B9"
-            BuildableName = "Splat.app"
+            BuildableName = "SplatIt.app"
             BlueprintName = "Splat"
             ReferencedContainer = "container:Splat.xcodeproj">
          </BuildableReference>
@@ -100,7 +100,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "02B2CA671AA6383300BB05B9"
-            BuildableName = "Splat.app"
+            BuildableName = "SplatIt.app"
             BlueprintName = "Splat"
             ReferencedContainer = "container:Splat.xcodeproj">
          </BuildableReference>

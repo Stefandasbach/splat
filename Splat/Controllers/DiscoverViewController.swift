@@ -138,7 +138,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         
         var splatScoreLabel = UILabel(frame: CGRectMake(0, 0, 100, 100))
         splatScoreLabel.textColor = UIColorFromRGB(PURPLE_SELECTED)
-        splatScoreLabel.text = "Splat Score"
+        splatScoreLabel.text = "SplatIt Score"
         splatScoreLabel.font = UIFont(name: "Pacifico", size: 30.0)
         splatScoreLabel.sizeToFit()
         splatScoreLabel.center = CGPoint(x: circleView.frame.width/2, y: 1*circleView.frame.height/3)
@@ -424,7 +424,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     
     //TODO:
     func shareButtonListener(sender: UIButton) {
-        println("Share splat score here")
+        println("Share SplatIt score here")
     }
     
     func caretButtonListener(sender: UIButton) {
