@@ -166,67 +166,84 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         userPosts = NSMutableArray()
         currentUser = user
         
-        //Get objects for the pointer data to posts
-        PFObject.fetchAllIfNeededInBackground(posts, block: { (objects, error) -> Void in
-            if (error != nil) {
-                println(error)
-            } else {
-                if (objects == nil) {
-                    println("No posts")
-                } else {
-                    for obj in objects {
-                        if let pfobj = obj as? PFObject {
-                            var post = Post(pfObject: pfobj)
-                            self.userPosts.addObject(post)
-                            if post.getScore() != nil {
-                                score = self.postScoreWeighting*post.getScore() + score
-                            }
-        
-                        }
-                    }
-                    
-                    self.userPosts = NSMutableArray(array: self.userPosts.reverseObjectEnumerator().allObjects)
-                }
-                
-            }
-            
-            //add replies votes to splatScore
-            PFObject.fetchAllIfNeededInBackground(user.getReplies(), block: { (replies, error2) -> Void in
-                if (error2 != nil) {
-                    println(error2)
+        if (posts != nil) {
+            //Get objects for the pointer data to posts
+            PFObject.fetchAllIfNeededInBackground(posts, block: { (objects, error) -> Void in
+                if (error != nil) {
+                    println(error)
                 } else {
                     if (objects == nil) {
-                        println("No replies")
+                        println("No posts")
                     } else {
-                        
-                        for obj in replies {
+                        for obj in objects {
                             if let pfobj = obj as? PFObject {
-                                var reply = Reply(pfObject: pfobj)
-                                //self.userReplies.addObject(reply)
-                                if reply.getScore() != nil {
-                                    score = self.replyScoreWeighting*reply.getScore() + score
+                                var post = Post(pfObject: pfobj)
+                                self.userPosts.addObject(post)
+                                if post.getScore() != nil {
+                                    score = self.postScoreWeighting*post.getScore() + score
                                 }
+            
+                            }
+                        }
+                        
+                        self.userPosts = NSMutableArray(array: self.userPosts.reverseObjectEnumerator().allObjects)
+                    }
+                    
+                }
+                
+                if (user.getReplies() != nil) {
+                    //add replies votes to splatScore
+                    PFObject.fetchAllIfNeededInBackground(user.getReplies(), block: { (replies, error2) -> Void in
+                        if (error2 != nil) {
+                            println(error2)
+                        } else {
+                            if (objects == nil) {
+                                println("No replies")
+                            } else {
+                                
+                                for obj in replies {
+                                    if let pfobj = obj as? PFObject {
+                                        var reply = Reply(pfObject: pfobj)
+                                        //self.userReplies.addObject(reply)
+                                        if reply.getScore() != nil {
+                                            score = self.replyScoreWeighting*reply.getScore() + score
+                                        }
+                                        
+                                    }
+                                }
+                                
+                        
+                                //self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
                                 
                             }
                         }
                         
-                
-                        //self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
+                        //set score
+                        dispatch_async(dispatch_get_main_queue(), {
+                            NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
+                            self.scoreLabel.text = "\(score)"
+                            self.scoreLabel.sizeToFit()
+                            self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
+                        })
                         
-                    }
-                }
-                
-                //set score
-                dispatch_async(dispatch_get_main_queue(), {
-                    NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
-                    self.scoreLabel.text = "\(score)"
-                    self.scoreLabel.sizeToFit()
-                    self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
-                })
-                
-            })
+                    })
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
+                        self.scoreLabel.text = "\(score)"
+                        self.scoreLabel.sizeToFit()
+                        self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
+                    })
 
-        })
+                }
+
+            })
+        } else {
+            NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
+            self.scoreLabel.text = "\(score)"
+            self.scoreLabel.sizeToFit()
+            self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
+        }
 
         
         //Scrolls to the profile area
