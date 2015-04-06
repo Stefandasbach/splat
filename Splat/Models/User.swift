@@ -22,6 +22,7 @@ class User: NSObject {
         super.init()
         
         object = PFUser.currentUser()
+        object.fetch()
     }
     
     init(pfObject: PFObject) {

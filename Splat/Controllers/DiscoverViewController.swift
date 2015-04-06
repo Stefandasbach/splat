@@ -589,6 +589,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                         
                         self.ratedReplies = NSMutableArray(array: self.ratedReplies.reverseObjectEnumerator().allObjects)
                         
+                        //in case of broken pointers
                         var query = PFQuery(className: "Post")
                         query.whereKey("objectId", containedIn: self.ratedReplies)
                         query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
@@ -655,6 +656,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                     
                     self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
                     
+                    //in case of broken pointers
                     var query = PFQuery(className: "Post")
                     query.whereKey("objectId", containedIn: self.userReplies)
                     query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in

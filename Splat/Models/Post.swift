@@ -125,9 +125,11 @@ class Post : NSObject {
             (succeeded: Bool!, error: NSError!) -> Void in
             if(error == nil) {
                 if (succeeded == true) {
-                    println("Added post")
-                    completion(success: true)
-                    self.addInverseRelationshipToCurrentUser(self.object)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        println("Added post")
+                        self.addInverseRelationshipToCurrentUser(self.object)
+                        completion(success: true)
+                    })
                 } else {
                     println("Could not create post")
                     completion(success: false)
@@ -139,7 +141,7 @@ class Post : NSObject {
     }
     
     private func addInverseRelationshipToCurrentUser(post: PFObject) -> Void {
-        var user = PFUser.currentUser()
+        var user = User().getObject()
         user.addUniqueObject(post, forKey: "Posts")
         user.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
@@ -166,9 +168,11 @@ class Post : NSObject {
             (succeeded: Bool!, error: NSError!) -> Void in
             if(error == nil) {
                 if (succeeded == true) {
-                    println("Removed post")
-                    completion(success: true)
-                    self.removeInverseRelationshipToCurrentUser(self.object)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        println("Removed post")
+                        self.removeInverseRelationshipToCurrentUser(self.object)
+                        completion(success: true)
+                    })
                 } else {
                     println("Could not remove post")
                     completion(success: false)
@@ -182,7 +186,8 @@ class Post : NSObject {
     
     private func removeInverseRelationshipToCurrentUser(post: PFObject) -> Void {
             
-        var user = PFUser.currentUser()
+        var user = User().getObject()
+       // println(user.objectId)
         user.removeObject(post, forKey: "Posts")
         user.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
