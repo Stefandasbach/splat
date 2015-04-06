@@ -510,7 +510,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                             }
                         }
                     
-                        self.ratedPosts = NSMutableArray(array: self.ratedPosts.reverseObjectEnumerator().allObjects)
+                       // self.ratedPosts = NSMutableArray(array: self.ratedPosts.reverseObjectEnumerator().allObjects)
                     
                         self.pushToRated()
                     }
@@ -549,6 +549,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
             userPosts = NSMutableArray()
             var query = PFQuery(className: "Post")
             query.whereKey("objectId", containedIn: posts)
+            query.orderByDescending("createdAt")
             //Get objects for the pointer data
             query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
                 if (error != nil) {
@@ -566,8 +567,6 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                             }
                         }
                     }
-                    
-                    self.userPosts = NSMutableArray(array: self.userPosts.reverseObjectEnumerator().allObjects)
                     
                     self.pushToPast()
                     
@@ -598,6 +597,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
             if (posts != nil) {
                 var query = PFQuery(className: "Reply")
                 query.whereKey("objectId", containedIn: posts)
+                query.includeKey("parent")
                 //Get objects for the pointer data
                 query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
                     if (error != nil) {
@@ -610,31 +610,15 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                                 if let pfobj = obj as? PFObject {
                                     var reply = Reply(pfObject: pfobj)
                                     if (reply.getParentPost() != nil) {
-                                        self.ratedReplies.addObject(reply.getParentPost().objectId)
+                                        self.ratedReplies.addObject(Post(pfObject: reply.getParentPost()))
                                     }
                                     
                                 }
                             }
                         }
                         
-                        self.ratedReplies = NSMutableArray(array: self.ratedReplies.reverseObjectEnumerator().allObjects)
-                        
-                        //in case of broken pointers
-                        var query = PFQuery(className: "Post")
-                        query.whereKey("objectId", containedIn: self.ratedReplies)
-                        query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
-                            self.ratedReplies.removeAllObjects()
-                            
-                            for obj in objects {
-                                if let pfobj = obj as? PFObject {
-                                    self.ratedReplies.addObject(Post(pfObject: pfobj))
-                                }
-                            }
-                            
-                            self.ratedReplies = self.removeDuplicates(self.ratedReplies)
-                            self.pushToRatedReplies()
-                        }
-                        
+                        self.ratedReplies = self.removeDuplicates(self.ratedReplies)
+                        self.pushToRatedReplies()
 
                     }
                     
@@ -672,6 +656,8 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
             userReplies = NSMutableArray()
             var query = PFQuery(className: "Reply")
             query.whereKey("objectId", containedIn: replies)
+            query.orderByDescending("createdAt")
+            query.includeKey("parent")
             //Get objects for the pointer data
             query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
                 if (error != nil) {
@@ -684,31 +670,15 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                             if let pfobj = obj as? PFObject {
                                 var reply = Reply(pfObject: pfobj)
                                 if (reply.getParentPost() != nil) {
-                                    self.userReplies.addObject(reply.getParentPost().objectId)
+                                    self.userReplies.addObject(Post(pfObject: reply.getParentPost()))
                                 }
                                 
                             }
                         }
                     }
                     
-                    self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
-                    
-                    //in case of broken pointers
-                    var query = PFQuery(className: "Post")
-                    query.whereKey("objectId", containedIn: self.userReplies)
-                    query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
-                        self.userReplies.removeAllObjects()
-                        
-                        for obj in objects {
-                            if let pfobj = obj as? PFObject {
-                                self.userReplies.addObject(Post(pfObject: pfobj))
-                            }
-                        }
-                        
-                        self.userReplies = self.removeDuplicates(self.userReplies)
-                        self.pushToUserReplies()
-                    }
-                    
+                    self.userReplies = self.removeDuplicates(self.userReplies)
+                    self.pushToUserReplies()
 
                 }
                     
