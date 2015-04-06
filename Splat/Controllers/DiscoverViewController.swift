@@ -161,15 +161,24 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         
         //GET USER DATA
         var user = User()
-        var posts = user.getPosts()
+        var posts = NSMutableArray()
         var score = 0;
         userPosts = NSMutableArray()
         currentUser = user
         
-        if (posts != nil) {
-            //Get objects for the pointer data to posts
-            PFObject.fetchAllIfNeededInBackground(posts, block: { (objects, error) -> Void in
-                if (error != nil) {
+        if (currentUser.getPosts() != nil) {
+            if let arr = currentUser.getPosts() {
+                posts = NSMutableArray(array: arr)
+            }
+            
+            for var i = 0; i < posts.count; i++ {
+                posts[i] = posts[i].objectId
+            }
+            
+            var query = PFQuery(className: "Post")
+            query.whereKey("objectId", containedIn: posts)
+            //Get objects for the pointer data
+            query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in                if (error != nil) {
                     println(error)
                 } else {
                     if (objects == nil) {
@@ -193,7 +202,19 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                 
                 if (user.getReplies() != nil) {
                     //add replies votes to splatScore
-                    PFObject.fetchAllIfNeededInBackground(user.getReplies(), block: { (replies, error2) -> Void in
+                    var replyOIDs = NSMutableArray()
+                    if let arr = self.currentUser.getReplies() {
+                        replyOIDs = NSMutableArray(array: arr)
+                    }
+                    
+                    for var i = 0; i < replyOIDs.count; i++ {
+                        replyOIDs[i] = replyOIDs[i].objectId
+                    }
+                    
+                    var query = PFQuery(className: "Reply")
+                    query.whereKey("objectId", containedIn: replyOIDs)
+                    //Get objects for the pointer data
+                    query.findObjectsInBackgroundWithBlock({ (replies, error2) -> Void in
                         if (error2 != nil) {
                             println(error2)
                         } else {
@@ -516,11 +537,20 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         //if there is not data, get it
         if (userPosts == nil) {
             //GET USER DATA
-            var posts = currentUser.getPosts()
-            userPosts = NSMutableArray()
+            var posts = NSMutableArray()
+            if let arr = currentUser.getPosts() {
+                posts = NSMutableArray(array: arr)
+            }
             
+            for var i = 0; i < posts.count; i++ {
+                posts[i] = posts[i].objectId
+            }
+            
+            userPosts = NSMutableArray()
+            var query = PFQuery(className: "Post")
+            query.whereKey("objectId", containedIn: posts)
             //Get objects for the pointer data
-            PFObject.fetchAllIfNeededInBackground(posts, block: { (objects, error) -> Void in
+            query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
                 if (error != nil) {
                     println(error)
                 } else {
@@ -630,13 +660,20 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         
         //if there is not data, get it
         if (userReplies == nil) {
-            //GET USER DATA
-            var replies = currentUser.getReplies()
-            userReplies = NSMutableArray()
+            var replies = NSMutableArray()
+            if let arr = currentUser.getReplies() {
+                replies = NSMutableArray(array: arr)
+            }
             
+            for var i = 0; i < replies.count; i++ {
+                replies[i] = replies[i].objectId
+            }
+            
+            userReplies = NSMutableArray()
+            var query = PFQuery(className: "Reply")
+            query.whereKey("objectId", containedIn: replies)
             //Get objects for the pointer data
-            PFObject.fetchAllIfNeededInBackground(replies, block: { (objects, error) -> Void in
-
+            query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
                 if (error != nil) {
                     println(error)
                 } else {
