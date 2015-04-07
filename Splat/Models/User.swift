@@ -27,7 +27,7 @@ class User: NSObject {
     init(pfObject: PFObject) {
         super.init()
         
-        if pfObject.parseClassName != "User" {
+        if pfObject.parseClassName != "_User" {
             println("Not correct class type.")
         } else {
             object = pfObject

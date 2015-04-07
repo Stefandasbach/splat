@@ -26,6 +26,8 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     //Navigation
     var backButton: UIButton!
     var shareButton: UIButton!
+    var notificationsButton: UIButton!
+    var notificationsBadge: NotificationBadge!
     var caretButton:UIButton!
     var caretButtonUp:UIButton!
     
@@ -131,6 +133,17 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         shareButton.tintColor = UIColor.whiteColor()
         shareButton.addTarget(self, action: "shareButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         
+        //NOTIFICATIONS BUTTON
+        notificationsButton = UIButton(frame: CGRectMake(self.view.frame.width-50, 10, 40, 40))
+        notificationsButton.setImage(UIImage(named: "notificationsIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        notificationsButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
+        notificationsButton.tintColor = UIColor.whiteColor()
+        notificationsButton.addTarget(self, action: "notificationsButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        //get number of notifications
+        notificationsBadge = NotificationBadge(number: Notification.getNumberOfNewNotifications())
+        notificationsButton.addSubview(notificationsBadge)
+        
         //MAIN SCORE VIEW
         circleView = UIView(frame: CGRectMake(self.mainScrollView.frame.width/8, self.view.frame.height/5, 3*self.mainScrollView.frame.width/4, 3*self.mainScrollView.frame.width/4))
         circleView.layer.cornerRadius = 3*self.mainScrollView.frame.width/8;
@@ -159,6 +172,44 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         self.circleView.addSubview(self.scoreLabel)
         
         
+        //get the score and add it
+        self.getUserScore()
+
+        
+        //Scrolls to the profile area
+        caretButton = UIButton(frame: CGRectMake(7*self.mainScrollView.frame.width/16, self.view.frame.height-self.mainScrollView.frame.width/8-50, self.mainScrollView.frame.width/8, self.mainScrollView.frame.width/8))
+        caretButton.setImage(UIImage(named: "caretImageFlipped.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        caretButton.tintColor = UIColorFromRGB(BACKGROUND_GREY)
+        caretButton.addTarget(self, action: "caretButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        //Scrolls back to the score area
+        caretButtonUp = UIButton(frame: CGRectMake(7*self.mainScrollView.frame.width/16, 0.6 * mainScrollView.contentSize.height + 20, self.mainScrollView.frame.width/8, self.mainScrollView.frame.width/8))
+        caretButtonUp.setImage(UIImage(named: "caretImage.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        caretButtonUp.tintColor = UIColorFromRGB(PURPLE_SELECTED)
+        caretButtonUp.addTarget(self, action: "caretUpButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        //creates a particle system for the splat score
+        initParticles()
+        
+        //renders the elements for user profile
+        renderProfile()
+        
+        //Add Subviews
+        mainScrollView.addSubview(backButton)
+        mainScrollView.addSubview(notificationsButton)
+        //mainScrollView.addSubview(shareButton)
+        mainScrollView.addSubview(circleView)
+        mainScrollView.addSubview(caretButton)
+        mainScrollView.addSubview(caretButtonUp)
+        
+        //set gradients for background
+        mainScrollView.layer.insertSublayer(gradient, atIndex: 0)
+        
+        //add the main views
+        self.view.addSubview(mainScrollView)
+    }
+    
+    func getUserScore() {
         //GET USER DATA
         var user = User()
         var posts = NSMutableArray()
@@ -179,25 +230,25 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
             query.whereKey("objectId", containedIn: posts)
             //Get objects for the pointer data
             query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in                if (error != nil) {
-                    println(error)
+                println(error)
+            } else {
+                if (objects == nil) {
+                    println("No posts")
                 } else {
-                    if (objects == nil) {
-                        println("No posts")
-                    } else {
-                        for obj in objects {
-                            if let pfobj = obj as? PFObject {
-                                var post = Post(pfObject: pfobj)
-                                self.userPosts.addObject(post)
-                                if post.getScore() != nil {
-                                    score = self.postScoreWeighting*post.getScore() + score
-                                }
-            
+                    for obj in objects {
+                        if let pfobj = obj as? PFObject {
+                            var post = Post(pfObject: pfobj)
+                            self.userPosts.addObject(post)
+                            if post.getScore() != nil {
+                                score = self.postScoreWeighting*post.getScore() + score
                             }
+                            
                         }
-                        
-                        self.userPosts = NSMutableArray(array: self.userPosts.reverseObjectEnumerator().allObjects)
                     }
                     
+                    self.userPosts = NSMutableArray(array: self.userPosts.reverseObjectEnumerator().allObjects)
+                }
+                
                 }
                 
                 if (user.getReplies() != nil) {
@@ -233,7 +284,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                                     }
                                 }
                                 
-                        
+                                
                                 //self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
                                 
                             }
@@ -255,9 +306,9 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                         self.scoreLabel.sizeToFit()
                         self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
                     })
-
+                    
                 }
-
+                
             })
         } else {
             NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
@@ -265,38 +316,6 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
             self.scoreLabel.sizeToFit()
             self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
         }
-
-        
-        //Scrolls to the profile area
-        caretButton = UIButton(frame: CGRectMake(7*self.mainScrollView.frame.width/16, self.view.frame.height-self.mainScrollView.frame.width/8-50, self.mainScrollView.frame.width/8, self.mainScrollView.frame.width/8))
-        caretButton.setImage(UIImage(named: "caretImageFlipped.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
-        caretButton.tintColor = UIColorFromRGB(BACKGROUND_GREY)
-        caretButton.addTarget(self, action: "caretButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
-        
-        //Scrolls back to the score area
-        caretButtonUp = UIButton(frame: CGRectMake(7*self.mainScrollView.frame.width/16, 0.6 * mainScrollView.contentSize.height + 20, self.mainScrollView.frame.width/8, self.mainScrollView.frame.width/8))
-        caretButtonUp.setImage(UIImage(named: "caretImage.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
-        caretButtonUp.tintColor = UIColorFromRGB(PURPLE_SELECTED)
-        caretButtonUp.addTarget(self, action: "caretUpButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
-        
-        //creates a particle system for the splat score
-        initParticles()
-        
-        //renders the elements for user profile
-        renderProfile()
-        
-        //Add Subviews
-        mainScrollView.addSubview(backButton)
-        //mainScrollView.addSubview(shareButton)
-        mainScrollView.addSubview(circleView)
-        mainScrollView.addSubview(caretButton)
-        mainScrollView.addSubview(caretButtonUp)
-        
-        //set gradients for background
-        mainScrollView.layer.insertSublayer(gradient, atIndex: 0)
-        
-        //add the main views
-        self.view.addSubview(mainScrollView)
     }
     
     ///Adds the profile elements
@@ -463,6 +482,11 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     //TODO:
     func shareButtonListener(sender: UIButton) {
         println("Share SplatIt score here")
+    }
+    
+    func notificationsButtonListener(sender: UIButton) {
+        println("Visit notifications page here")
+        Notification.resetIconBadgeNumber(UIApplication.sharedApplication())
     }
     
     func caretButtonListener(sender: UIButton) {

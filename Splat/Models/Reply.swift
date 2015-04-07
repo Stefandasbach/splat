@@ -93,6 +93,7 @@ class Reply : NSObject {
     
     func getComment() -> String? {
         return object["comment"] as String?
+        
     }
     
     func editComment(text: String, completion: ()->Void) {

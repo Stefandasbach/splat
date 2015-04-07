@@ -24,9 +24,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         
+        //MARK: Push notifications
+        initPushNotifications(application, launchOptions: launchOptions)
+        
+        //MARK: Login
         login()
+        
         /* View controllers rendered from this function call- see function saveUserLocation */
         getUserLocation()
+        
         return true
     }
 
@@ -58,11 +64,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
+    //--------------------------------------
+    // MARK: Push Notifications
+    //--------------------------------------
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        let installation = PFInstallation.currentInstallation()
+        installation.setDeviceTokenFromData(deviceToken)
+        installation.saveInBackground()
+        
+        PFPush.subscribeToChannelInBackground("", block: { (succeeded: Bool, error: NSError!) -> Void in
+            if succeeded {
+                println("SplatIt successfully subscribed to push notifications on the broadcast channel.");
+            } else {
+                println("SplatIt failed to subscribe to push notifications on the broadcast channel with error = %@.", error)
+            }
+        })
+    }
+    
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        if error.code == 3010 {
+            println("Push notifications are not supported in the iOS Simulator.")
+        } else {
+            println("application:didFailToRegisterForRemoteNotificationsWithError: %@", error)
+        }
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        PFPush.handlePush(userInfo)
+        if application.applicationState == UIApplicationState.Inactive {
+            PFAnalytics.trackAppOpenedWithRemoteNotificationPayload(userInfo)
+        }
+    }
+
+    //MARK: login functions
     func login() {
         
         //PFUser.enableAutomaticUser()
         /* Login */
         if (PFAnonymousUtils.isLinkedWithUser(PFUser.currentUser())) {
+            Notification.enableNotificationsForUser(User(pfObject: PFUser.currentUser()))
         }
         else {
             PFAnonymousUtils.logInWithBlock { (user, error) -> Void in
@@ -73,6 +114,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 defaultACL.setPublicReadAccess(true)
                 defaultACL.setPublicWriteAccess(true)
                 PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser:true)
+                
+                Notification.enableNotificationsForUser(User(pfObject: PFUser.currentUser()))
                 
                 //remove old user defaults
                 if let appDomain = NSBundle.mainBundle().bundleIdentifier {
@@ -151,6 +194,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             
             self.window?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
         }
+    }
+    
+    func initPushNotifications(application: UIApplication, launchOptions: [NSObject: AnyObject]?) {
+        if application.applicationState != UIApplicationState.Background {
+            // Track an app open here if we launch with a push, unless
+            // "content_available" was used to trigger a background push (introduced in iOS 7).
+            // In that case, we skip tracking here to avoid double counting the app-open.
+            
+            let preBackgroundPush = !application.respondsToSelector("backgroundRefreshStatus")
+            let oldPushHandlerOnly = !self.respondsToSelector("application:didReceiveRemoteNotification:fetchCompletionHandler:")
+            var noPushPayload = false;
+            if let options = launchOptions {
+                noPushPayload = options[UIApplicationLaunchOptionsRemoteNotificationKey] != nil;
+            }
+            if (preBackgroundPush || oldPushHandlerOnly || noPushPayload) {
+                PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
+            }
+        }
+        if application.respondsToSelector("registerUserNotificationSettings:") {
+            let userNotificationTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
+            let settings = UIUserNotificationSettings(forTypes: userNotificationTypes, categories: nil)
+            application.registerUserNotificationSettings(settings)
+            application.registerForRemoteNotifications()
+        } else {
+            let types = UIRemoteNotificationType.Badge | UIRemoteNotificationType.Alert | UIRemoteNotificationType.Sound
+            application.registerForRemoteNotificationTypes(types)
+        }
+
     }
 
 }
