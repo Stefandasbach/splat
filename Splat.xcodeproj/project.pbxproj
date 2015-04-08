@@ -759,7 +759,7 @@
 				INFOPLIST_FILE = Splat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = SplatIt;
-				PROVISIONING_PROFILE = "73fcc1ea-4552-4294-9d07-0578876f6ead";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Splat/Splat-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -780,7 +780,7 @@
 				INFOPLIST_FILE = Splat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = SplatIt;
-				PROVISIONING_PROFILE = "73fcc1ea-4552-4294-9d07-0578876f6ead";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Splat/Splat-Bridging-Header.h";
 			};
 			name = Release;
