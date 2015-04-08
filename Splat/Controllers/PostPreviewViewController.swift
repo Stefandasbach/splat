@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Photos
 import Parse
 
 class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDelegate, UITextFieldDelegate, UIActionSheetDelegate, UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate, UIGestureRecognizerDelegate, cameraViewDelegate {
@@ -805,8 +806,11 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
             cameraVC = CameraViewController()
             cameraVC.cameraDelegate = self
         }
-        self.presentViewController(cameraVC, animated: true, completion: nil)
+        if cameraEnabled() && photosEnabled() {
+            self.presentViewController(cameraVC, animated: true, completion: nil)
+        }
     }
+    
     
     //CameraViewController Delegate methods
     func pickedImage(image: UIImage!) {
@@ -822,6 +826,46 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         if (cameraVC != nil) {
             cameraVC.dismissViewControllerAnimated(false, completion: nil)
         }
+    }
+    
+    func cameraEnabled() -> Bool {
+        /* Ask for access to camera */
+        var cameraStatus = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        if (cameraStatus != AVAuthorizationStatus.Authorized) {
+            self.showAlert("Use your camera?", message: "Splat does not have permission to use the camera. Please update your privacy settings to get in on the fun!", yesTitle: "Yes", noTitle: "Later")
+            return false
+        }
+        /* If we reached here, either cameraStatus was authorized, or
+        the alertview was accepted */
+        return true
+    }
+    
+    func photosEnabled() -> Bool {
+        /* Ask for access to photos */
+        var photosEnabled = PHPhotoLibrary.authorizationStatus()
+        if (photosEnabled != PHAuthorizationStatus.Authorized) {
+            showAlert("Use Images from Photos?", message: "Splat needs access to your photos so you can upload from your camera roll", yesTitle: "Yes", noTitle: "Later")
+            return false
+        }
+        /* Authorized photos access */
+        return true
+    }
+    
+    func showAlert(title: String, message: String, yesTitle: String, noTitle: String) {
+        var alertController = UIAlertController (title: title, message: message, preferredStyle: .Alert)
+        
+        var settingsAction = UIAlertAction(title: yesTitle, style: .Default) { (_) -> Void in
+            let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
+            if let url = settingsUrl {
+                UIApplication.sharedApplication().openURL(url)
+            }
+        }
+        
+        var cancelAction = UIAlertAction(title: noTitle, style: .Default, handler: nil)
+        alertController.addAction(cancelAction)
+        alertController.addAction(settingsAction)
+        
+        self.presentViewController(alertController, animated: true, completion: nil);
     }
     
     override func keyboardWillShow(notification: NSNotification)

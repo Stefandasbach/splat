@@ -14,7 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     var window: UIWindow?
     let locationManager = CLLocationManager()
-    var locationStatus : String = "unkown"
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.

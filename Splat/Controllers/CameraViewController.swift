@@ -31,72 +31,14 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
         super.viewDidLoad()
         
         self.allowsEditing = true
-        initView()
-    
         self.delegate = self
-    }
-    
-    func initView() {
-        /* Ask for access to camera */
-        var cameraEnabled = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
         
-        if (cameraEnabled == AVAuthorizationStatus.Authorized) {
-            //Proceed
-        } else {
-            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: {(granted) -> Void in
-                if(granted){
-                    println("Granted camera access")
-                } else {
-                    println("Not granted camera access")
-                    dispatch_async(dispatch_get_main_queue(), {
-                        UIAlertView(
-                            title: "Could not use camera",
-                            message: "Splat does not have permission to use the camera. Please update your privacy settings.",
-                            delegate: self,
-                            cancelButtonTitle: "OK").show()
-                    })
-                }
-            })
-        }
-        
-        /* Ask for access to photos */
-        var photosEnabled = PHPhotoLibrary.authorizationStatus()
-        
-//        if (photosEnabled != PHAuthorizationStatus.Authorized) {
-        
-        /* Temporary change to always request for authorization */
-        PHPhotoLibrary.requestAuthorization({ (status) -> Void in
-            if (status != PHAuthorizationStatus.Authorized) {
-                dispatch_async(dispatch_get_main_queue(), {
-                    println("Not authorized")
-                })
-            }
-            else {
-                println("Authorized")
-                dispatch_async(dispatch_get_main_queue(), {
-                    //check if the camera is available
-                    if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)) {
-                        self.sourceType = UIImagePickerControllerSourceType.Camera
-                        self.showsCameraControls = false
-                        self.selectionType = "Camera"
-                        self.renderCameraElements()
-                        
-                    } else {
-                        self.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-                        self.selectionType = "Library"
-                    }
-                })
-            }
-        })
-        
-
-        
-
+        initView()
     }
     
     override func viewDidAppear(animated: Bool) {
         //Kind of a hack. Want to reinit the camera settings
-         if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)) {
+        if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)) {
             if (self.sourceType == UIImagePickerControllerSourceType.Camera) {
                 orientCamera(flipCamera)
                 setFlash(flashButton)
@@ -104,8 +46,18 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
         }
     }
     
-    func requestAccessToPhotoLibrary() {
-        
+    func initView() {
+        //check if the camera is available
+        if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)) {
+            self.sourceType = UIImagePickerControllerSourceType.Camera
+            self.showsCameraControls = false
+            self.selectionType = "Camera"
+            self.renderCameraElements()
+            
+        } else {
+            self.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+            self.selectionType = "Library"
+        }
     }
     
     func renderCameraElements() {
@@ -123,7 +75,6 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
         
         //set gallery image thumbnail
         getGalleryThumbnail()
-        
         
         //CAPTURE BUTTON
         capturePictureButton = UIButton(frame: CGRectMake(self.view.frame.width/2 - bottomPadding, self.view.frame.height - captureButtonSize - bottomPadding, captureButtonSize, captureButtonSize))
@@ -144,7 +95,6 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
         flipCamera.addTarget(self, action: Selector("flipCamera:"), forControlEvents: UIControlEvents.TouchUpInside)
         flipCamera.setImage(UIImage(named: "flipCameraIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         flipCamera.tintColor = UIColor.whiteColor()
-        
         
         //CAMERA TOOLBAR
         cameraToolbar = UIToolbar(frame: CGRectMake(0, 0, self.view.frame.width, 60))
@@ -199,11 +149,9 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
             selectionType = "Camera"
             addCameraElements()
             self.sourceType = UIImagePickerControllerSourceType.Camera
-            
             orientCamera(flipCamera)
             setFlash(flashButton)
         }
-
     }
     
     func exitButtonPressed() {
@@ -257,7 +205,6 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
             sender.tintColor = UIColor.whiteColor()
             sender.selected = false
         }
-        
         setFlash(sender)
     }
     
@@ -269,9 +216,7 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
             sender.tintColor = UIColor.whiteColor()
             sender.selected = false
         }
-        
         orientCamera(sender)
-
     }
     
     func orientCamera(sender:UIButton) {
