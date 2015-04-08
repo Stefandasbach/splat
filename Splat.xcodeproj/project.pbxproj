@@ -515,11 +515,11 @@
 				TargetAttributes = {
 					02B2CA671AA6383300BB05B9 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = 75XP583E93;
+						DevelopmentTeam = V8V9KT2MFC;
 					};
 					02B2CA7C1AA6383300BB05B9 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = 75XP583E93;
+						DevelopmentTeam = V8V9KT2MFC;
 						TestTargetID = 02B2CA671AA6383300BB05B9;
 					};
 				};
@@ -763,7 +763,7 @@
 				INFOPLIST_FILE = Splat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = SplatIt;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "73fcc1ea-4552-4294-9d07-0578876f6ead";
 				SWIFT_OBJC_BRIDGING_HEADER = "Splat/Splat-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -784,7 +784,7 @@
 				INFOPLIST_FILE = Splat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = SplatIt;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "73fcc1ea-4552-4294-9d07-0578876f6ead";
 				SWIFT_OBJC_BRIDGING_HEADER = "Splat/Splat-Bridging-Header.h";
 			};
 			name = Release;

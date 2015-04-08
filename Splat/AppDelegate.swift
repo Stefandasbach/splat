@@ -32,6 +32,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         /* View controllers rendered from this function call- see function saveUserLocation */
         getUserLocation()
         
+        //reset the selected location
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        userDefaults.setValue("", forKey: "SelectedLocation")
+        
         return true
     }
 
@@ -49,7 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
-        NSNotificationCenter.defaultCenter().postNotificationName("ReloadFeed", object: nil)
+       /* NSNotificationCenter.defaultCenter().postNotificationName("ReloadFeed", object: nil) */
         getUserLocation()
         login()
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
