@@ -505,6 +505,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         var query = PFQuery(className: "Notification")
         query.limit = 20
         query.orderByDescending("createdAt")
+        query.whereKey("receiver", equalTo: User().getObject().objectId)
         query.includeKey("post")
         
         query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
