@@ -28,8 +28,8 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     var selected: String!
     var feedData = NSMutableArray()
     
-    var selectedLocation = "My Location"
-    var currentSelection = "My Location"
+    var selectedLocation = ""
+    var currentSelection = ""
     var userLocation: String!
     
     var backgroundImage: UIImageView!
@@ -67,11 +67,14 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        selectedLocation = NSUserDefaults.standardUserDefaults().objectForKey("SelectedLocation") as String
+        
         /* Get user's location */
         let defaults = NSUserDefaults.standardUserDefaults()
         var state = defaults.objectForKey("state") as? String
         if (state? != nil) {
             userLocation = state!
+            currentSelection = userLocation
         }
         
         self.renderNavbarandView()
@@ -120,6 +123,14 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         locationPicker.dataSource = self
         locationPicker.showsSelectionIndicator = true
         locationPicker.backgroundColor = UIColor.whiteColor()
+        /*if (userLocation == selectedLocation) {
+            locationPicker.selectedRowInComponent(0)
+        } else {
+            if let foundIndex = find(Location.getStates(userLocation), currentSelection) {
+                locationPicker.selectedRowInComponent(foundIndex + 1)
+            }
+            
+        }*/
         
         
         selectButton = UIButton(frame: CGRect(x: 0, y: self.view.frame.height-20-240, width: self.view.frame.width, height: 40))
@@ -149,19 +160,29 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             NewButton.frame      = CGRectMake(0*buttonWidth, 0, buttonWidth,   buttonHeight)
             HotButton.frame      = CGRectMake(1*buttonWidth, 0, buttonWidth,   buttonHeight)
             BestButton.frame     = CGRectMake(2*buttonWidth, 0, buttonWidth,   buttonHeight)
+            
+            //If there is no location
             if (userLocation == nil) {
                 // TODO: Set default  location if foreigner
                 LocationButton.setTitle( "My Location",  forState: .Normal)
+                LocationButton.selected = false
+                
+            //If the location is not the user location
+            } else if (selectedLocation != "" && selectedLocation != userLocation){
+                LocationButton.setTitle( "\(selectedLocation)",  forState: .Normal)
+                LocationButton.selected = true
+                
+            //If it is the user location
             } else {
                 LocationButton.setTitle( "\(userLocation) (my location)",  forState: .Normal)
                 selectedLocation = userLocation
                 currentSelection = userLocation
+                LocationButton.selected = false
             }
             
             LocationButton.titleLabel?.font = UIFont(name: "Helvetica", size: 18.0)
             LocationButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Selected)
             LocationButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.5), forState: UIControlState.Normal)
-            LocationButton.selected = false
             
             NewButton.setTitle( "New",  forState: .Normal)
             NewButton.titleLabel?.font = UIFont(name: "Pacifico", size: 18.0)
@@ -654,6 +675,9 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     
     func selectLocation(sender: UIButton) {
         selectedLocation = currentSelection
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        userDefaults.setValue(selectedLocation, forKey: "SelectedLocation")
+        
         if (currentSelection != "My Location") {
             LocationButton.selected = true
             LocationButton.setTitle(currentSelection, forState: UIControlState.Normal)
