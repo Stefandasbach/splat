@@ -123,6 +123,10 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
         
         if myImage == nil {
             myImage = info[UIImagePickerControllerOriginalImage] as UIImage!
+            /* Correctly flip the mirrored image of front-facing camera */
+            if self.cameraDevice == UIImagePickerControllerCameraDevice.Front {
+                myImage = UIImage(CGImage: myImage.CGImage, scale: myImage.scale, orientation: UIImageOrientation.LeftMirrored)
+            }
         }
         
         if (cameraDelegate != nil) {
