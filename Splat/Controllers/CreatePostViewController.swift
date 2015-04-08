@@ -265,6 +265,7 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
                 post.setState((NSUserDefaults.standardUserDefaults().objectForKey("state") as String!))
                 post.saveObjectInBackgroundForCurrentUser { (success) -> Void in
                     if success {
+                        
                         println("Success creating post!")
                     NSNotificationCenter.defaultCenter().postNotificationName("DoneAddingPost", object: nil)
                         

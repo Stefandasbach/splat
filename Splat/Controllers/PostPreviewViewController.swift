@@ -663,6 +663,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                 if success {
                     println("saved reply!")
                     dispatch_async(dispatch_get_main_queue(), {
+                        Notification.sendNotificationForReply(reply, parentPost: self.currentPost)
                         self.loadReplyData(0, limit: 100)
                     })
                 }

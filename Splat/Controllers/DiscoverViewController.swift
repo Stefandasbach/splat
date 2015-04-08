@@ -26,6 +26,8 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     //Navigation
     var backButton: UIButton!
     var shareButton: UIButton!
+    var notificationsButton: UIButton!
+    var notificationsBadge: NotificationBadge!
     var caretButton:UIButton!
     var caretButtonUp:UIButton!
     
@@ -131,6 +133,17 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         shareButton.tintColor = UIColor.whiteColor()
         shareButton.addTarget(self, action: "shareButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         
+        //NOTIFICATIONS BUTTON
+        notificationsButton = UIButton(frame: CGRectMake(self.view.frame.width-50, 10, 40, 40))
+        notificationsButton.setImage(UIImage(named: "notificationsIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        notificationsButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
+        notificationsButton.tintColor = UIColor.whiteColor()
+        notificationsButton.addTarget(self, action: "notificationsButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        //get number of notifications
+        notificationsBadge = NotificationBadge(number: Notification.getNumberOfNewNotifications())
+        notificationsButton.addSubview(notificationsBadge)
+        
         //MAIN SCORE VIEW
         circleView = UIView(frame: CGRectMake(self.mainScrollView.frame.width/8, self.view.frame.height/5, 3*self.mainScrollView.frame.width/4, 3*self.mainScrollView.frame.width/4))
         circleView.layer.cornerRadius = 3*self.mainScrollView.frame.width/8;
@@ -159,91 +172,8 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         self.circleView.addSubview(self.scoreLabel)
         
         
-        //GET USER DATA
-        var user = User()
-        var posts = user.getPosts()
-        var score = 0;
-        userPosts = NSMutableArray()
-        currentUser = user
-        
-        if (posts != nil) {
-            //Get objects for the pointer data to posts
-            PFObject.fetchAllIfNeededInBackground(posts, block: { (objects, error) -> Void in
-                if (error != nil) {
-                    println(error)
-                } else {
-                    if (objects == nil) {
-                        println("No posts")
-                    } else {
-                        for obj in objects {
-                            if let pfobj = obj as? PFObject {
-                                var post = Post(pfObject: pfobj)
-                                self.userPosts.addObject(post)
-                                if post.getScore() != nil {
-                                    score = self.postScoreWeighting*post.getScore() + score
-                                }
-            
-                            }
-                        }
-                        
-                        self.userPosts = NSMutableArray(array: self.userPosts.reverseObjectEnumerator().allObjects)
-                    }
-                    
-                }
-                
-                if (user.getReplies() != nil) {
-                    //add replies votes to splatScore
-                    PFObject.fetchAllIfNeededInBackground(user.getReplies(), block: { (replies, error2) -> Void in
-                        if (error2 != nil) {
-                            println(error2)
-                        } else {
-                            if (objects == nil) {
-                                println("No replies")
-                            } else {
-                                
-                                for obj in replies {
-                                    if let pfobj = obj as? PFObject {
-                                        var reply = Reply(pfObject: pfobj)
-                                        //self.userReplies.addObject(reply)
-                                        if reply.getScore() != nil {
-                                            score = self.replyScoreWeighting*reply.getScore() + score
-                                        }
-                                        
-                                    }
-                                }
-                                
-                        
-                                //self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
-                                
-                            }
-                        }
-                        
-                        //set score
-                        dispatch_async(dispatch_get_main_queue(), {
-                            NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
-                            self.scoreLabel.text = "\(score)"
-                            self.scoreLabel.sizeToFit()
-                            self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
-                        })
-                        
-                    })
-                } else {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
-                        self.scoreLabel.text = "\(score)"
-                        self.scoreLabel.sizeToFit()
-                        self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
-                    })
-
-                }
-
-            })
-        } else {
-            NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
-            self.scoreLabel.text = "\(score)"
-            self.scoreLabel.sizeToFit()
-            self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
-        }
+        //get the score and add it
+        self.getUserScore()
 
         
         //Scrolls to the profile area
@@ -266,6 +196,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         
         //Add Subviews
         mainScrollView.addSubview(backButton)
+        mainScrollView.addSubview(notificationsButton)
         //mainScrollView.addSubview(shareButton)
         mainScrollView.addSubview(circleView)
         mainScrollView.addSubview(caretButton)
@@ -276,6 +207,115 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         
         //add the main views
         self.view.addSubview(mainScrollView)
+    }
+    
+    func getUserScore() {
+        //GET USER DATA
+        var user = User()
+        var posts = NSMutableArray()
+        var score = 0;
+        userPosts = NSMutableArray()
+        currentUser = user
+        
+        if (currentUser.getPosts() != nil) {
+            if let arr = currentUser.getPosts() {
+                posts = NSMutableArray(array: arr)
+            }
+            
+            for var i = 0; i < posts.count; i++ {
+                posts[i] = posts[i].objectId
+            }
+            
+            var query = PFQuery(className: "Post")
+            query.whereKey("objectId", containedIn: posts)
+            //Get objects for the pointer data
+            query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in                if (error != nil) {
+                println(error)
+            } else {
+                if (objects == nil) {
+                    println("No posts")
+                } else {
+                    for obj in objects {
+                        if let pfobj = obj as? PFObject {
+                            var post = Post(pfObject: pfobj)
+                            self.userPosts.addObject(post)
+                            if post.getScore() != nil {
+                                score = self.postScoreWeighting*post.getScore() + score
+                            }
+                            
+                        }
+                    }
+                    
+                    self.userPosts = NSMutableArray(array: self.userPosts.reverseObjectEnumerator().allObjects)
+                }
+                
+                }
+                
+                if (user.getReplies() != nil) {
+                    //add replies votes to splatScore
+                    var replyOIDs = NSMutableArray()
+                    if let arr = self.currentUser.getReplies() {
+                        replyOIDs = NSMutableArray(array: arr)
+                    }
+                    
+                    for var i = 0; i < replyOIDs.count; i++ {
+                        replyOIDs[i] = replyOIDs[i].objectId
+                    }
+                    
+                    var query = PFQuery(className: "Reply")
+                    query.whereKey("objectId", containedIn: replyOIDs)
+                    //Get objects for the pointer data
+                    query.findObjectsInBackgroundWithBlock({ (replies, error2) -> Void in
+                        if (error2 != nil) {
+                            println(error2)
+                        } else {
+                            if (objects == nil) {
+                                println("No replies")
+                            } else {
+                                
+                                for obj in replies {
+                                    if let pfobj = obj as? PFObject {
+                                        var reply = Reply(pfObject: pfobj)
+                                        //self.userReplies.addObject(reply)
+                                        if reply.getScore() != nil {
+                                            score = self.replyScoreWeighting*reply.getScore() + score
+                                        }
+                                        
+                                    }
+                                }
+                                
+                                
+                                //self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
+                                
+                            }
+                        }
+                        
+                        //set score
+                        dispatch_async(dispatch_get_main_queue(), {
+                            NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
+                            self.scoreLabel.text = "\(score)"
+                            self.scoreLabel.sizeToFit()
+                            self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
+                        })
+                        
+                    })
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
+                        self.scoreLabel.text = "\(score)"
+                        self.scoreLabel.sizeToFit()
+                        self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
+                    })
+                    
+                }
+                
+            })
+        } else {
+            NSUserDefaults.standardUserDefaults().setInteger(score, forKey: "SplatScore")
+            self.scoreLabel.text = "\(score)"
+            self.scoreLabel.sizeToFit()
+            self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
+        }
     }
     
     ///Adds the profile elements
@@ -444,6 +484,11 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         println("Share SplatIt score here")
     }
     
+    func notificationsButtonListener(sender: UIButton) {
+        println("Visit notifications page here")
+        Notification.resetIconBadgeNumber(UIApplication.sharedApplication())
+    }
+    
     func caretButtonListener(sender: UIButton) {
         screen = "Profile"
         var bottomOffset = CGPointMake(0, self.mainScrollView.contentSize.height - self.mainScrollView.bounds.size.height);
@@ -489,7 +534,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                             }
                         }
                     
-                        self.ratedPosts = NSMutableArray(array: self.ratedPosts.reverseObjectEnumerator().allObjects)
+                       // self.ratedPosts = NSMutableArray(array: self.ratedPosts.reverseObjectEnumerator().allObjects)
                     
                         self.pushToRated()
                     }
@@ -516,11 +561,21 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         //if there is not data, get it
         if (userPosts == nil) {
             //GET USER DATA
-            var posts = currentUser.getPosts()
-            userPosts = NSMutableArray()
+            var posts = NSMutableArray()
+            if let arr = currentUser.getPosts() {
+                posts = NSMutableArray(array: arr)
+            }
             
+            for var i = 0; i < posts.count; i++ {
+                posts[i] = posts[i].objectId
+            }
+            
+            userPosts = NSMutableArray()
+            var query = PFQuery(className: "Post")
+            query.whereKey("objectId", containedIn: posts)
+            query.orderByDescending("createdAt")
             //Get objects for the pointer data
-            PFObject.fetchAllIfNeededInBackground(posts, block: { (objects, error) -> Void in
+            query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
                 if (error != nil) {
                     println(error)
                 } else {
@@ -536,8 +591,6 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                             }
                         }
                     }
-                    
-                    self.userPosts = NSMutableArray(array: self.userPosts.reverseObjectEnumerator().allObjects)
                     
                     self.pushToPast()
                     
@@ -568,6 +621,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
             if (posts != nil) {
                 var query = PFQuery(className: "Reply")
                 query.whereKey("objectId", containedIn: posts)
+                query.includeKey("parent")
                 //Get objects for the pointer data
                 query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
                     if (error != nil) {
@@ -580,30 +634,15 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                                 if let pfobj = obj as? PFObject {
                                     var reply = Reply(pfObject: pfobj)
                                     if (reply.getParentPost() != nil) {
-                                        self.ratedReplies.addObject(reply.getParentPost().objectId)
+                                        self.ratedReplies.addObject(Post(pfObject: reply.getParentPost()))
                                     }
                                     
                                 }
                             }
                         }
                         
-                        self.ratedReplies = NSMutableArray(array: self.ratedReplies.reverseObjectEnumerator().allObjects)
-                        
-                        var query = PFQuery(className: "Post")
-                        query.whereKey("objectId", containedIn: self.ratedReplies)
-                        query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
-                            self.ratedReplies.removeAllObjects()
-                            
-                            for obj in objects {
-                                if let pfobj = obj as? PFObject {
-                                    self.ratedReplies.addObject(Post(pfObject: pfobj))
-                                }
-                            }
-                            
-                            self.ratedReplies = self.removeDuplicates(self.ratedReplies)
-                            self.pushToRatedReplies()
-                        }
-                        
+                        self.ratedReplies = self.removeDuplicates(self.ratedReplies)
+                        self.pushToRatedReplies()
 
                     }
                     
@@ -629,13 +668,22 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         
         //if there is not data, get it
         if (userReplies == nil) {
-            //GET USER DATA
-            var replies = currentUser.getReplies()
-            userReplies = NSMutableArray()
+            var replies = NSMutableArray()
+            if let arr = currentUser.getReplies() {
+                replies = NSMutableArray(array: arr)
+            }
             
+            for var i = 0; i < replies.count; i++ {
+                replies[i] = replies[i].objectId
+            }
+            
+            userReplies = NSMutableArray()
+            var query = PFQuery(className: "Reply")
+            query.whereKey("objectId", containedIn: replies)
+            query.orderByDescending("createdAt")
+            query.includeKey("parent")
             //Get objects for the pointer data
-            PFObject.fetchAllIfNeededInBackground(replies, block: { (objects, error) -> Void in
-
+            query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
                 if (error != nil) {
                     println(error)
                 } else {
@@ -646,30 +694,15 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                             if let pfobj = obj as? PFObject {
                                 var reply = Reply(pfObject: pfobj)
                                 if (reply.getParentPost() != nil) {
-                                    self.userReplies.addObject(reply.getParentPost().objectId)
+                                    self.userReplies.addObject(Post(pfObject: reply.getParentPost()))
                                 }
                                 
                             }
                         }
                     }
                     
-                    self.userReplies = NSMutableArray(array: self.userReplies.reverseObjectEnumerator().allObjects)
-                    
-                    var query = PFQuery(className: "Post")
-                    query.whereKey("objectId", containedIn: self.userReplies)
-                    query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
-                        self.userReplies.removeAllObjects()
-                        
-                        for obj in objects {
-                            if let pfobj = obj as? PFObject {
-                                self.userReplies.addObject(Post(pfObject: pfobj))
-                            }
-                        }
-                        
-                        self.userReplies = self.removeDuplicates(self.userReplies)
-                        self.pushToUserReplies()
-                    }
-                    
+                    self.userReplies = self.removeDuplicates(self.userReplies)
+                    self.pushToUserReplies()
 
                 }
                     

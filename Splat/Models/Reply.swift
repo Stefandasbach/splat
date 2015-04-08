@@ -93,6 +93,7 @@ class Reply : NSObject {
     
     func getComment() -> String? {
         return object["comment"] as String?
+        
     }
     
     func editComment(text: String, completion: ()->Void) {
@@ -152,7 +153,7 @@ class Reply : NSObject {
     }
     
     private func addInverseRelationshipToCurrentUser(reply: PFObject) -> Void {
-        var user = PFUser.currentUser()
+        var user = User().getObject()
         user.addUniqueObject(reply, forKey: "Replies")
         user.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
@@ -195,7 +196,7 @@ class Reply : NSObject {
     
     private func removeInverseRelationshipToCurrentUser(reply: PFObject) -> Void {
         
-        var user = PFUser.currentUser()
+        var user = User().getObject()
         user.removeObject(reply, forKey: "Replies")
         user.saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
