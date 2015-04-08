@@ -12,9 +12,20 @@ import Parse
 class Notification: NSObject {
     
     class func enableNotificationsForUser(user: User) {
-        let currentInstallation = PFInstallation.currentInstallation()
-        currentInstallation.setObject(["profile\(user.getObject().objectId)"], forKey: "channels")
-        currentInstallation.saveInBackground()
+        if let channels = PFInstallation.currentInstallation().objectForKey("channels") as? NSArray {
+            //if the channel is set for the wrong user
+            if (channels[0] as NSString != "profile\(user.getObject().objectId)") {
+                let currentInstallation = PFInstallation.currentInstallation()
+                currentInstallation.setObject(["profile\(user.getObject().objectId)"], forKey: "channels")
+                currentInstallation.saveInBackground()
+            }
+            //if a channel is not set
+        } else {
+            let currentInstallation = PFInstallation.currentInstallation()
+            currentInstallation.setObject(["profile\(user.getObject().objectId)"], forKey: "channels")
+            currentInstallation.saveInBackground()
+        }
+        
     }
     
     class func resetIconBadgeNumber(application: UIApplication) {

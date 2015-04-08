@@ -76,6 +76,20 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: true)
+        
+        if (notificationsBadge == nil && notificationsButton != nil) {
+            //get number of notifications
+            notificationsBadge = NotificationBadge(number: Notification.getNumberOfNewNotifications())
+            notificationsButton.addSubview(notificationsBadge)
+        }
+    
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        self.notificationsBadge.removeFromSuperview()
+        self.notificationsBadge = nil
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -228,6 +242,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
             
             var query = PFQuery(className: "Post")
             query.whereKey("objectId", containedIn: posts)
+            query.orderByDescending("createdAt")
             //Get objects for the pointer data
             query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in                if (error != nil) {
                 println(error)
@@ -246,7 +261,6 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
                         }
                     }
                     
-                    self.userPosts = NSMutableArray(array: self.userPosts.reverseObjectEnumerator().allObjects)
                 }
                 
                 }
@@ -487,6 +501,41 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     func notificationsButtonListener(sender: UIButton) {
         println("Visit notifications page here")
         Notification.resetIconBadgeNumber(UIApplication.sharedApplication())
+        
+        var query = PFQuery(className: "Notification")
+        query.limit = 20
+        query.orderByDescending("createdAt")
+        query.includeKey("post")
+        
+        query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
+            var notifications = NSMutableArray()
+            
+            
+            if (error != nil) {
+                println(error)
+            } else {
+                if (objects == nil) {
+                    println("No posts")
+                } else {
+                    
+                    for obj in objects {
+                        if let pfobj = obj as? PFObject {
+                            var post = Notification(pfObject: pfobj)
+                            notifications.addObject(post)
+                            
+                        }
+                    }
+                    
+                    var notificationVC = NotificationsViewController(notifications: notifications)
+                    self.navigationController?.pushViewController(notificationVC, animated: true)
+                    
+                }
+            }
+            
+            
+        }
+        
+        
     }
     
     func caretButtonListener(sender: UIButton) {

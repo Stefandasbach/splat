@@ -52,6 +52,7 @@
 		0295EF761AD47AFF009DA6DC /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295EF751AD47AFF009DA6DC /* NotificationCell.swift */; };
 		0295EF781AD484C4009DA6DC /* notificationsIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0295EF771AD484C4009DA6DC /* notificationsIcon.png */; };
 		0295EF7A1AD48704009DA6DC /* NotificationBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295EF791AD48704009DA6DC /* NotificationBadge.swift */; };
+		0295EF7E1AD4D865009DA6DC /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295EF7D1AD4D865009DA6DC /* NotificationsViewController.swift */; };
 		02B22EFF1AD03F8600A6F2E4 /* ReplyImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B22EFE1AD03F8600A6F2E4 /* ReplyImageView.swift */; };
 		02B2CA6E1AA6383300BB05B9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B2CA6D1AA6383300BB05B9 /* AppDelegate.swift */; };
 		02B2CA731AA6383300BB05B9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02B2CA711AA6383300BB05B9 /* Main.storyboard */; };
@@ -143,6 +144,7 @@
 		0295EF751AD47AFF009DA6DC /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		0295EF771AD484C4009DA6DC /* notificationsIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notificationsIcon.png; sourceTree = "<group>"; };
 		0295EF791AD48704009DA6DC /* NotificationBadge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationBadge.swift; sourceTree = "<group>"; };
+		0295EF7D1AD4D865009DA6DC /* NotificationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
 		02B22EFE1AD03F8600A6F2E4 /* ReplyImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyImageView.swift; sourceTree = "<group>"; };
 		02B2CA681AA6383300BB05B9 /* SplatIt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplatIt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		02B2CA6C1AA6383300BB05B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -374,6 +376,7 @@
 				0284C7311ABC858600E55B58 /* DiscoverViewController.swift */,
 				0284C73A1ABD907F00E55B58 /* GenericPostsTableViewController.swift */,
 				0284C7431ABDF3A000E55B58 /* PostPreviewViewController.swift */,
+				0295EF7D1AD4D865009DA6DC /* NotificationsViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -599,6 +602,7 @@
 				0295EF7A1AD48704009DA6DC /* NotificationBadge.swift in Sources */,
 				02F2C6B11AB5DB210041A09F /* CustomViews.swift in Sources */,
 				0271124E1AC0A27F00F6D25E /* FlagButton.swift in Sources */,
+				0295EF7E1AD4D865009DA6DC /* NotificationsViewController.swift in Sources */,
 				0271124C1AC070C800F6D25E /* Reply.swift in Sources */,
 				02F2C6A81AB48ED40041A09F /* CreatePostViewController.swift in Sources */,
 				021B75BC1AB8CA5A007D5CA4 /* PostCell.swift in Sources */,
