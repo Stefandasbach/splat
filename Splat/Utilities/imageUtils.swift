@@ -51,3 +51,31 @@ func scaleImage(image: UIImage!, size: CGSize) ->UIImage! {
     
     return scaledImage
 }
+
+func getScreenshot(controller: UIViewController)->UIImage{
+    //UIGraphicsBeginImageContext(controller.view.bounds.size)
+    //var ctx = UIGraphicsGetCurrentContext()
+    UIGraphicsBeginImageContextWithOptions(controller.view.bounds.size, true, UIScreen.mainScreen().scale);
+    //controller.view.layer.renderInContext(ctx)
+    controller.view.drawViewHierarchyInRect(controller.view.bounds, afterScreenUpdates: true)
+    var image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image
+}
+
+//used to crop images to a specified height and width from x and y
+func cropImage(image: UIImage, rect: CGRect)->UIImage {
+    var newRect = rect
+    if (image.scale > 1.0) {
+        newRect = CGRectMake(rect.origin.x * image.scale,
+            rect.origin.y * image.scale,
+            rect.size.width * image.scale,
+            rect.size.height * image.scale);
+    }
+
+    
+    var imageRef = CGImageCreateWithImageInRect(image.CGImage, newRect);
+    var newImage = UIImage(CGImage: imageRef);
+    
+    return newImage!
+}
