@@ -35,6 +35,8 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     var backgroundImage: UIImageView!
     var footerView: UIView!
     
+    let transitionManager = TransitionManager()
+    
     override init() {
         super.init()
     }
@@ -72,6 +74,9 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         /* Get user's location */
         let defaults = NSUserDefaults.standardUserDefaults()
         var state = defaults.objectForKey("state") as? String
+        /* === Uncomment for simulator === */
+        state = "CO"
+        /* === Uncomment for simulator === */
         if (state? != nil) {
             userLocation = state!
             currentSelection = userLocation
@@ -249,14 +254,49 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         self.tableView.tableFooterView = footerView
     }
     
+    /* Putting here so you, AA, can see it, prolly show go up with other override funcs */
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        println("Preparing for segue")
+        println("Preparing for segue")
+        println("Preparing for segue")
+        let toViewController = segue.destinationViewController as UIViewController
+        toViewController.transitioningDelegate = self.transitionManager
+    }
+    
     func createButtonListener(sender: UIButton) {
         var createPostVC = CreatePostViewController()
         self.navigationController?.pushViewController(createPostVC, animated: true)
     }
     
     func discoverButtonListener(sender: UIButton) {
-        var discoverVC = DiscoverViewController()
-        self.navigationController?.pushViewController(discoverVC, animated: true)
+//        let discoverVC = DiscoverViewController()
+//        discoverVC.transitioningDelegate = transitionManager
+//        discoverVC.modalPresentationStyle = UIModalPresentationStyle.Custom
+//        self.navigationController?.presentViewController(discoverVC, animated: true, completion: nil)
+//        UIViewController *newVC = ...;
+//        NSMutableArray *vcs =  [NSMutableArray arrayWithArray:self.navigationController.viewControllers];
+//        [vcs insertObject:newVC atIndex:[vcs count]-1];
+//        [self.navigationController setViewControllers:vcs animated:NO];
+//        [self.navigationController popViewControllerAnimated:YES];
+        /*
+        let discoverVC = DiscoverViewController()
+        let currentVC = self
+        var vcStack = NSMutableArray(array: self.navigationController?.viewControllers! as [UIViewController])
+        vcStack.insertObject(discoverVC, atIndex: vcStack.count-1)
+        println(vcStack)
+        self.navigationController?.setViewControllers(vcStack, animated: false)
+        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.setViewControllers(vcStack, animated: false)
+        vcStack = NSMutableArray(array: self.navigationController?.viewControllers! as [UIViewController])
+        vcStack.insertObject(currentVC, atIndex: vcStack.count-1)
+        self.navigationController?.setViewControllers(vcStack, animated: false)
+//        self.navigationController?.setViewControllers(vcStack, animated: false)
+        println(vcStack)
+        println(NSMutableArray(array: self.navigationController?.viewControllers! as [UIViewController]))\
+        */
+        transitionManager.slideViewController(.Left, navigationController: self.navigationController!, fromViewController: self, toViewController: DiscoverViewController())
+        
+//        self.navigationController?.pushViewController(discoverVC, animated: true)
     }
     
     //MARK: Load data
