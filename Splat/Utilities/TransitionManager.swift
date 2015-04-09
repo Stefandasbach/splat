@@ -14,20 +14,58 @@ class TransitionManager: NSObject, UIViewControllerAnimatedTransitioning, UIView
         case Left
         case Right
     }
-    func slideViewController(direction: SlideDirection, navigationController: UINavigationController, fromViewController: UIViewController, toViewController: UIViewController) {
+    
+    func pushViewController(direction: SlideDirection, navigationController: UINavigationController, fromViewController: UIViewController, toViewController: UIViewController) {
+        switch direction {
+        case .Left: // Push motion
+            navigationController.pushViewController(toViewController, animated: true)
+        case .Right: // Pop motion
+            var vcStack = NSMutableArray(array: navigationController.viewControllers! as [UIViewController])
+            println("Before insert:\(vcStack)")
+            vcStack.insertObject(toViewController, atIndex: vcStack.count-1)
+            println("After insert:\(vcStack)")
+            navigationController.setViewControllers(vcStack, animated: false)
+            navigationController.popViewControllerAnimated(true)
+            navigationController.setViewControllers(vcStack, animated: false)
+            
+            vcStack = NSMutableArray(array: navigationController.viewControllers! as [UIViewController])
+            vcStack.insertObject(fromViewController, atIndex: vcStack.count-1)
+            navigationController.setViewControllers(vcStack, animated: false)
+        }
         
-        var vcStack = NSMutableArray(array: navigationController.viewControllers! as [UIViewController])
-        println("Before insert:\(vcStack)")
-        vcStack.insertObject(toViewController, atIndex: vcStack.count-1)
-        println("After insert:\(vcStack)")
-        navigationController.setViewControllers(vcStack, animated: false)
-        navigationController.popViewControllerAnimated(true)
-        navigationController.setViewControllers(vcStack, animated: false)
-        
-        vcStack = NSMutableArray(array: navigationController.viewControllers! as [UIViewController])
-        vcStack.insertObject(fromViewController, atIndex: vcStack.count-1)
-        navigationController.setViewControllers(vcStack, animated: false)
     }
+    
+    func popViewController(direction: SlideDirection, navigationController: UINavigationController) {
+        switch direction {
+        case .Left: // Push motion
+            var vcStack = NSMutableArray(array: navigationController.viewControllers! as [UIViewController])
+            println("vcStack before: \(vcStack)")
+            if (vcStack.count < 2) {
+                NSException(name: "Array index out of bounds", reason: "Too few ViewControllers on stack to pop. Push instead.", userInfo: nil).raise()
+            }
+            
+            let toViewController = vcStack.objectAtIndex(vcStack.count-2) as UIViewController
+            
+            navigationController.popViewControllerAnimated(false)
+            navigationController.popViewControllerAnimated(false)
+            vcStack.removeObjectAtIndex(vcStack.count-1)
+            vcStack.removeObjectAtIndex(vcStack.count-1)
+            navigationController.setViewControllers(vcStack, animated: false)
+            
+//            navigationController.pushViewController(toViewController, animated: false)
+            vcStack.addObject(toViewController)
+            navigationController.setViewControllers(vcStack, animated: true)
+            
+//            vcStack = NSMutableArray(array: navigationController.viewControllers! as [UIViewController])
+            
+//            println("After:\(vcStack)")
+        case .Right: // Pop motion
+            navigationController.popViewControllerAnimated(true)
+        }
+        
+    }
+    
+
 
     func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
         let container = transitionContext.containerView()

@@ -51,6 +51,8 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     
     var screen = "Score"
     
+    let transitionManager = TransitionManager()
+    
     override init() {
         super.init()
     }
@@ -134,8 +136,8 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         gradient.anchorPoint = CGPointZero;
         
         //BACK BUTTON
-        backButton = UIButton(frame: CGRectMake(10, 10, 40, 40))
-        backButton.setImage(UIImage(named: "backIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        backButton = UIButton(frame: CGRectMake(self.view.frame.width-50, 10, 40, 40))
+        backButton.setImage(UIImage(named: "backIconFlipped.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         backButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
         backButton.tintColor = UIColor.whiteColor()
         backButton.addTarget(self, action: "backButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
@@ -148,7 +150,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         shareButton.addTarget(self, action: "shareButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         
         //NOTIFICATIONS BUTTON
-        notificationsButton = UIButton(frame: CGRectMake(self.view.frame.width-50, 10, 40, 40))
+        notificationsButton = UIButton(frame: CGRectMake(10, 10, 40, 40))
         notificationsButton.setImage(UIImage(named: "notificationsIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         notificationsButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
         notificationsButton.tintColor = UIColor.whiteColor()
@@ -489,8 +491,8 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     //** BUTTON LISTENERS **//
     func backButtonListener(sender: UIButton) {
         self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.popViewControllerAnimated(true)
-       
+        transitionManager.popViewController(.Left, navigationController: self.navigationController!)
+//        self.navigationController?.popViewControllerAnimated(true)
     }
     
     //TODO:

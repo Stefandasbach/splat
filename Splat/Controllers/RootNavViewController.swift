@@ -13,7 +13,6 @@ import Parse
 class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
     var bottomToolbar: UITabBar!
-        let transitionManager = TransitionManager()
     
     override init(rootViewController: UIViewController) {
         super.init(rootViewController: rootViewController)
@@ -33,13 +32,6 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-    }
-    
-    /* Putting here so you, AA, can see it, prolly show go up with other override funcs */
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        println("Preparing for segue")
-        let toViewController = segue.destinationViewController as UIViewController
-        toViewController.transitioningDelegate = self.transitionManager
     }
     
     override func viewDidLoad() {

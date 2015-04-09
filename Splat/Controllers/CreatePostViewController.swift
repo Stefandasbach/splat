@@ -27,6 +27,8 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
     
     var cameraVC: CameraViewController!
     
+    let transitionManager = TransitionManager()
+    
     override init() {
         super.init()
         cameraVC = CameraViewController()
@@ -182,7 +184,8 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
         }
         
         //cameraVC.dismissViewControllerAnimated(false, completion: nil)
-        self.navigationController?.popViewControllerAnimated(true)
+        transitionManager.popViewController(.Right, navigationController: self.navigationController!)
+//        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func getPicture() {
