@@ -39,19 +39,28 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
         
     }
     
+    override func viewWillAppear(animated: Bool) {
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.setNavigationBarHidden(false, animated: true)
         renderNavbar()
         
     }
     
     func renderNavbar() {
-        var backItem = BackNavItem(orientation: BackNavItemOrientation.Left)
-        backItem.button.addTarget(self, action: "backButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+        var backNavItem = BackNavItem(orientation: BackNavItemOrientation.Right)
+        backNavItem.button.addTarget(self, action: "backButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         
-        self.navigationItem.leftBarButtonItem = backItem
+        var discoverButton = UIButton(frame: CGRectMake(0, 0, 20, 20))
+        discoverButton.setImage(UIImage(named: "bucketIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        discoverButton.tintColor = UIColor.whiteColor()
+        discoverButton.addTarget(self, action: Selector("discoverButtonListener:"), forControlEvents: UIControlEvents.TouchUpInside)
+        var discoverNavItem = UIBarButtonItem(customView: discoverButton)
+        
+        self.navigationItem.leftBarButtonItem = discoverNavItem
+        self.navigationItem.rightBarButtonItem = backNavItem
         
         var titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         titleLabel.text = navTitle
@@ -63,9 +72,11 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
     }
     
     func backButtonListener(sender: UIButton) {
-        self.navigationController?.popViewControllerAnimated(true)
+        (self.navigationController? as RootNavViewController).popVC(.Left)
     }
-    
+    func discoverButtonListener(sender: UIButton) {
+        (self.navigationController? as RootNavViewController).pushVC(.Right, viewController: DiscoverViewController())
+    }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         var currentNotification = tableData.objectAtIndex(indexPath.row) as Notification

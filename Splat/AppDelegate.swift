@@ -37,10 +37,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         userDefaults.setValue("", forKey: "SelectedLocation")
         
         /* === Uncomment for simulator testing === */
-        self.window?.rootViewController?.presentedViewController?.dismissViewControllerAnimated(true, completion: nil)
-        var feedView = FeedViewController(style: UITableViewStyle.Plain)
-        var navView = RootNavViewController(rootViewController: feedView)
-        self.window?.rootViewController = navView
+//        self.window?.rootViewController?.presentedViewController?.dismissViewControllerAnimated(true, completion: nil)
+//        var feedView = FeedViewController(style: UITableViewStyle.Plain)
+//        var navView = RootNavViewController(rootViewController: feedView)
+//        self.window?.rootViewController = navView
         /* === Uncomment for simulator testing === */
         return true
     }

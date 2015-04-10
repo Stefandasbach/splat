@@ -24,7 +24,6 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     var gradient: CAGradientLayer!
     
     //Navigation
-    var backButton: UIButton!
     var shareButton: UIButton!
     var notificationsButton: UIButton!
     var notificationsBadge: NotificationBadge!
@@ -50,9 +49,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     var map: MKMapView!
     
     var screen = "Score"
-    
-    let transitionManager = TransitionManager()
-    
+        
     override init() {
         super.init()
     }
@@ -135,13 +132,6 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
             self.mainScrollView.contentSize.height);
         gradient.anchorPoint = CGPointZero;
         
-        //BACK BUTTON
-        backButton = UIButton(frame: CGRectMake(self.view.frame.width-50, 10, 40, 40))
-        backButton.setImage(UIImage(named: "backIconFlipped.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
-        backButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
-        backButton.tintColor = UIColor.whiteColor()
-        backButton.addTarget(self, action: "backButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
-        
         //SHARE BUTTON
         shareButton = UIButton(frame: CGRectMake(10, 10, 40, 40))
         shareButton.setImage(UIImage(named: "shareIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
@@ -150,7 +140,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         shareButton.addTarget(self, action: "shareButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         
         //NOTIFICATIONS BUTTON
-        notificationsButton = UIButton(frame: CGRectMake(10, 10, 40, 40))
+        notificationsButton = UIButton(frame: CGRectMake(self.view.frame.width-50, 10, 40, 40))
         notificationsButton.setImage(UIImage(named: "notificationsIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         notificationsButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
         notificationsButton.tintColor = UIColor.whiteColor()
@@ -211,7 +201,6 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         renderProfile()
         
         //Add Subviews
-        mainScrollView.addSubview(backButton)
         mainScrollView.addSubview(notificationsButton)
         //mainScrollView.addSubview(shareButton)
         mainScrollView.addSubview(circleView)
@@ -489,11 +478,6 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     }
     
     //** BUTTON LISTENERS **//
-    func backButtonListener(sender: UIButton) {
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
-        transitionManager.popViewController(.Left, navigationController: self.navigationController!)
-//        self.navigationController?.popViewControllerAnimated(true)
-    }
     
     //TODO:
     func shareButtonListener(sender: UIButton) {
@@ -501,44 +485,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func notificationsButtonListener(sender: UIButton) {
-        println("Visit notifications page here")
-        Notification.resetIconBadgeNumber(UIApplication.sharedApplication())
-        
-        var query = PFQuery(className: "Notification")
-        query.limit = 20
-        query.orderByDescending("createdAt")
-        query.whereKey("receiver", equalTo: User().getObject().objectId)
-        query.includeKey("post")
-        
-        query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
-            var notifications = NSMutableArray()
-            
-            
-            if (error != nil) {
-                println(error)
-            } else {
-                if (objects == nil) {
-                    println("No posts")
-                } else {
-                    
-                    for obj in objects {
-                        if let pfobj = obj as? PFObject {
-                            var post = Notification(pfObject: pfobj)
-                            notifications.addObject(post)
-                            
-                        }
-                    }
-                    
-                    var notificationVC = NotificationsViewController(notifications: notifications)
-                    self.navigationController?.pushViewController(notificationVC, animated: true)
-                    
-                }
-            }
-            
-            
-        }
-        
-        
+        (self.navigationController? as RootNavViewController).popVC(.Left)
     }
     
     func caretButtonListener(sender: UIButton) {

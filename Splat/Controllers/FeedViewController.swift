@@ -34,9 +34,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     
     var backgroundImage: UIImageView!
     var footerView: UIView!
-    
-    let transitionManager = TransitionManager()
-    
+        
     override init() {
         super.init()
     }
@@ -75,7 +73,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         let defaults = NSUserDefaults.standardUserDefaults()
         var state = defaults.objectForKey("state") as? String
         /* === Uncomment for simulator === */
-        state = "CO"
+//        state = "CO"
         /* === Uncomment for simulator === */
         if (state? != nil) {
             userLocation = state!
@@ -108,14 +106,14 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         newItemImageButton.tintColor = UIColor.whiteColor()
         newItemImageButton.addTarget(self, action: Selector("createButtonListener:"), forControlEvents: UIControlEvents.TouchUpInside)
         var newItemNavItem = UIBarButtonItem(customView: newItemImageButton)
+
+        var notificationsButton = UIButton(frame: CGRectMake(0, 0, 20, 20))
+        notificationsButton.setImage(UIImage(named: "notificationsIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        notificationsButton.tintColor = UIColor.whiteColor()
+        notificationsButton.addTarget(self, action: "notificationsButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+        var notificationsNavItem = UIBarButtonItem(customView: notificationsButton)
         
-        var discoverImageButton = UIButton(frame: CGRectMake(0, 0, 20, 20))
-        discoverImageButton.setImage(UIImage(named: "bucketIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
-        discoverImageButton.tintColor = UIColor.whiteColor()
-        discoverImageButton.addTarget(self, action: Selector("discoverButtonListener:"), forControlEvents: UIControlEvents.TouchUpInside)
-        var discoverNavItem = UIBarButtonItem(customView: discoverImageButton)
-        
-        self.navigationItem.leftBarButtonItem = discoverNavItem
+        self.navigationItem.leftBarButtonItem = notificationsNavItem
         self.navigationItem.rightBarButtonItem = newItemNavItem
         
         let navBarHeight:CGFloat = 40.0
@@ -128,22 +126,12 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         locationPicker.dataSource = self
         locationPicker.showsSelectionIndicator = true
         locationPicker.backgroundColor = UIColor.whiteColor()
-        /*if (userLocation == selectedLocation) {
-            locationPicker.selectedRowInComponent(0)
-        } else {
-            if let foundIndex = find(Location.getStates(userLocation), currentSelection) {
-                locationPicker.selectedRowInComponent(foundIndex + 1)
-            }
-            
-        }*/
-        
         
         selectButton = UIButton(frame: CGRect(x: 0, y: self.view.frame.height-20-240, width: self.view.frame.width, height: 40))
         selectButton.backgroundColor = UIColorFromRGB(PURPLE_SELECTED)
         selectButton.setTitle("Select Location", forState: UIControlState.Normal)
         selectButton.titleLabel?.textAlignment = NSTextAlignment.Center
         selectButton.addTarget(self, action: "selectLocation:", forControlEvents: UIControlEvents.TouchUpInside)
-        //self.view.addSubview(locationPicker)
         
         
         //FEED BUTTONS//
@@ -255,11 +243,31 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     }
     
     func createButtonListener(sender: UIButton) {
-        transitionManager.pushViewController(.Left, navigationController: self.navigationController!, fromViewController: self, toViewController: CreatePostViewController())
+        (self.navigationController? as RootNavViewController).pushVC(.Left, viewController: CreatePostViewController())
     }
     
-    func discoverButtonListener(sender: UIButton) {
-        transitionManager.pushViewController(.Right, navigationController: self.navigationController!, fromViewController: self, toViewController: DiscoverViewController())
+    func notificationsButtonListener(sender: UIButton) {
+        Notification.resetIconBadgeNumber(UIApplication.sharedApplication())
+        var query = PFQuery(className: "Notification")
+        query.limit = 20
+        query.orderByDescending("createdAt")
+        query.whereKey("receiver", equalTo: User().getObject().objectId)
+        query.includeKey("post")
+        query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
+            var notifications = NSMutableArray()
+            if (error != nil) { println(error) } else {
+                if (objects == nil) { println("No posts") } else {
+                    for obj in objects {
+                        if let pfobj = obj as? PFObject {
+                            var post = Notification(pfObject: pfobj)
+                            notifications.addObject(post)
+                        }
+                    }
+                    var notificationsVC = NotificationsViewController(notifications: notifications)
+                    (self.navigationController? as RootNavViewController).pushVC(.Right, viewController: notificationsVC)
+                }
+            }
+        }
     }
     
     

@@ -27,8 +27,6 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
     
     var cameraVC: CameraViewController!
     
-    let transitionManager = TransitionManager()
-    
     override init() {
         super.init()
         cameraVC = CameraViewController()
@@ -183,9 +181,7 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
             nav.enableBottomToolbar()
         }
         
-        //cameraVC.dismissViewControllerAnimated(false, completion: nil)
-        transitionManager.popViewController(.Right, navigationController: self.navigationController!)
-//        self.navigationController?.popViewControllerAnimated(true)
+        (self.navigationController? as RootNavViewController).popVC(.Right)
     }
     
     func getPicture() {
