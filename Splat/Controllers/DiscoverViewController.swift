@@ -10,8 +10,9 @@ import Foundation
 import UIKit
 import Parse
 import MapKit
+import FBSDKShareKit
 
-class DiscoverViewController: UIViewController, UIScrollViewDelegate {
+class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKSharingDelegate {
     
     var statusBarStyle = UIStatusBarStyle.LightContent
     
@@ -133,7 +134,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         gradient.anchorPoint = CGPointZero;
         
         //SHARE BUTTON
-        shareButton = UIButton(frame: CGRectMake(10, 10, 40, 40))
+        shareButton = UIButton(frame: CGRectMake(10, self.view.frame.height - 50 - UIApplication.sharedApplication().statusBarFrame.height, 40, 40))
         shareButton.setImage(UIImage(named: "shareIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         shareButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
         shareButton.tintColor = UIColor.whiteColor()
@@ -202,7 +203,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
         
         //Add Subviews
         mainScrollView.addSubview(notificationsButton)
-        //mainScrollView.addSubview(shareButton)
+        mainScrollView.addSubview(shareButton)
         mainScrollView.addSubview(circleView)
         mainScrollView.addSubview(caretButton)
         mainScrollView.addSubview(caretButtonUp)
@@ -480,8 +481,36 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate {
     //** BUTTON LISTENERS **//
     
     //TODO:
+    ///Shares on facebook
     func shareButtonListener(sender: UIButton) {
         println("Share SplatIt score here")
+        var scoreImage = getScreenshot(self)
+        println(scoreImage.size)
+        println(circleView.frame)
+        println(self.view.frame.size)
+        scoreImage = cropImage(scoreImage, CGRectMake(0, self.circleView.center.y + UIApplication.sharedApplication().statusBarFrame.height - self.view.frame.width/2, self.view.frame.width, self.view.frame.width))
+        
+        var fbimage = FBSDKSharePhoto()
+        fbimage.image = scoreImage
+        fbimage.userGenerated = true
+        
+        var content = FBSDKSharePhotoContent()
+        content.photos = [fbimage]
+        
+        var shareDialog = FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+    }
+    
+    //MARK: FBSharing
+    func sharer(sharer: FBSDKSharing!, didCompleteWithResults results: [NSObject : AnyObject]!) {
+        //do something
+    }
+    
+    func sharerDidCancel(sharer: FBSDKSharing!) {
+        //do something
+    }
+    
+    func sharer(sharer: FBSDKSharing!, didFailWithError error: NSError!) {
+        //do something
     }
     
     func notificationsButtonListener(sender: UIButton) {
