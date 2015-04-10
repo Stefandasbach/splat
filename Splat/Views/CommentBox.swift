@@ -49,7 +49,7 @@ class CommentBox: ContainerView {
         
         var triColor: UIColor = UIColor.clearColor()
         
-        override init() {
+        init() {
             super.init(frame:CGRectZero)
             self.opaque = false
         }

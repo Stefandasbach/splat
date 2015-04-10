@@ -14,10 +14,8 @@ class ProfileButton: UIButton {
 
     
     init(y: CGFloat, text: String, value: Int) {
-        super.init()
-        //arbitrary frame
-        self.frame = CGRectMake(-5, y, 100, 50)
-        
+        super.init(frame: CGRectMake(-5, y, 100, 50))
+
         buttonText = text
         buttonIntegerValue = value
     }

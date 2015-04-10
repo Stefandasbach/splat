@@ -19,7 +19,7 @@ class GenericPostsTableViewController : UITableViewController, UITableViewDelega
     var navTitle: String!
     
     init(posts: NSMutableArray!, title: String!) {
-        super.init()
+        super.init(style: .Plain)
         
         if posts != nil {
             tableData = posts
@@ -92,7 +92,7 @@ class GenericPostsTableViewController : UITableViewController, UITableViewDelega
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        var currentPost = tableData.objectAtIndex(indexPath.row) as Post
+        var currentPost = tableData.objectAtIndex(indexPath.row) as! Post
         var previewController = PostPreviewViewController(post: currentPost)
         self.navigationController?.pushViewController(previewController, animated: true)
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
@@ -119,9 +119,9 @@ class GenericPostsTableViewController : UITableViewController, UITableViewDelega
         
         var cell: PostCell!
         
-        let post = tableData.objectAtIndex(indexPath.row) as Post
+        let post = tableData.objectAtIndex(indexPath.row) as! Post
         
-        cell = tableView.dequeueReusableCellWithIdentifier("PostCell") as PostCell!
+        cell = tableView.dequeueReusableCellWithIdentifier("PostCell") as? PostCell
         
         
         if (cell == nil) {
@@ -145,7 +145,7 @@ class GenericPostsTableViewController : UITableViewController, UITableViewDelega
     override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         if let postCell = cell as? PostCell {
             postCell.cancelLoad()
-            postCell.Image.image = nil
+            postCell.myImage.image = nil
         }
     }
     
@@ -156,24 +156,24 @@ class GenericPostsTableViewController : UITableViewController, UITableViewDelega
         if (cellIndexPath != nil) {
             var cellIndexPathExists: NSIndexPath
             cellIndexPathExists = cellIndexPath as NSIndexPath!
-            let cell = self.tableView.cellForRowAtIndexPath(cellIndexPathExists) as PostCell
+            let cell = self.tableView.cellForRowAtIndexPath(cellIndexPathExists) as! PostCell
             
             if let post = tableData[cellIndexPathExists.row] as? Post {
-                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as NSArray!
-                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as NSArray!
+                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as? NSArray
+                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as? NSArray
                 
                 if var existingScore = cell.voteSelector.Score.text?.toInt() {
                 
                     if let oID = post.object.objectId {
                         //if downvote already selected
-                        if (downvotes != nil && downvotes.containsObject(oID)) {
+                        if (downvotes != nil && downvotes!.containsObject(oID)) {
                             //remove downvote
                             post.removeDownvote()
                             removeArchivedDownvote(oID, downvotes)
                             existingScore = existingScore + 1
                             
                             //if Upvote already selected
-                        } else if (upvotes != nil && upvotes.containsObject(oID)) {
+                        } else if (upvotes != nil && upvotes!.containsObject(oID)) {
                             //remove Upvote
                             post.removeUpvote()
                             removeArchivedUpvote(oID, upvotes)
@@ -207,24 +207,24 @@ class GenericPostsTableViewController : UITableViewController, UITableViewDelega
         if (cellIndexPath != nil) {
             var cellIndexPathExists: NSIndexPath
             cellIndexPathExists = cellIndexPath as NSIndexPath!
-            let cell = self.tableView.cellForRowAtIndexPath(cellIndexPathExists) as PostCell
+            let cell = self.tableView.cellForRowAtIndexPath(cellIndexPathExists) as! PostCell
             
             if let post = tableData[cellIndexPathExists.row] as? Post {
-                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as NSArray!
-                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as NSArray!
+                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as? NSArray
+                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as? NSArray
                 
                 if var existingScore = cell.voteSelector.Score.text?.toInt() {
                 
                     if let oID = post.object.objectId {
                         //if upvote already selected
-                        if (upvotes != nil && upvotes.containsObject(oID)) {
+                        if (upvotes != nil && upvotes!.containsObject(oID)) {
                             //remove upvote
                             post.removeUpvote()
                             removeArchivedUpvote(oID, upvotes)
                             existingScore = existingScore - 1
                             
                             //if downvote already selected
-                        } else if (downvotes != nil && downvotes.containsObject(oID)) {
+                        } else if (downvotes != nil && downvotes!.containsObject(oID)) {
                             //remove downvote
                             post.removeDownvote()
                             removeArchivedDownvote(oID, downvotes)
@@ -257,13 +257,13 @@ class GenericPostsTableViewController : UITableViewController, UITableViewDelega
         if (cellIndexPath != nil) {
             var cellIndexPathExists: NSIndexPath
             cellIndexPathExists = cellIndexPath as NSIndexPath!
-            let cell = self.tableView.cellForRowAtIndexPath(cellIndexPathExists) as PostCell
+            let cell = self.tableView.cellForRowAtIndexPath(cellIndexPathExists) as! PostCell
             
             var post = tableData[cellIndexPathExists.row] as? Post
-            var flags = NSUserDefaults.standardUserDefaults().objectForKey("SplatFlags") as NSArray!
+            var flags = NSUserDefaults.standardUserDefaults().objectForKey("SplatFlags") as? NSArray
             if let oID = post?.object.objectId {
                 
-                if (flags != nil && flags.containsObject(oID)) {
+                if (flags != nil && flags!.containsObject(oID)) {
                     //remove flag
                     println("removeflag")
                     post?.removeFlag()

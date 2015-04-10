@@ -21,9 +21,8 @@ class FlagButton: UIButton {
         super.init(coder: aDecoder)
     }
     
-    override init() {
-        super.init()
-        
+    init() {
+        super.init(frame: CGRectZero)
         self.setImage(UIImage(named: "flagIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         self.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
 

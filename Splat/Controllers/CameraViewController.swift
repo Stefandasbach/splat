@@ -119,13 +119,15 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        var myImage = info[UIImagePickerControllerEditedImage] as UIImage!
+        var myImage = info[UIImagePickerControllerEditedImage] as? UIImage
         
         if myImage == nil {
-            myImage = info[UIImagePickerControllerOriginalImage] as UIImage!
+            myImage = info[UIImagePickerControllerOriginalImage] as? UIImage
             /* Correctly flip the mirrored image of front-facing camera */
             if self.cameraDevice == UIImagePickerControllerCameraDevice.Front {
-                myImage = UIImage(CGImage: myImage.CGImage, scale: myImage.scale, orientation: UIImageOrientation.LeftMirrored)
+                if let im = myImage {
+                    myImage = UIImage(CGImage: im.CGImage, scale: im.scale, orientation: UIImageOrientation.LeftMirrored)
+                }
             }
         }
         
@@ -166,7 +168,7 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
         var fetchOptions = PHFetchOptions()
         fetchOptions.sortDescriptors =  [NSSortDescriptor(key: "creationDate", ascending: true)]
         var fetchResult = PHAsset.fetchAssetsWithMediaType(PHAssetMediaType.Image, options: fetchOptions)
-        var lastAsset = fetchResult.lastObject as PHAsset
+        var lastAsset = fetchResult.lastObject as! PHAsset
         var requestOptions = PHImageRequestOptions()
         requestOptions.version = PHImageRequestOptionsVersion.Current
         PHImageManager.defaultManager().requestImageForAsset(lastAsset, targetSize: self.galleryImage.frame.size, contentMode: PHImageContentMode.AspectFill, options: requestOptions) { (image, info) -> Void in
@@ -238,13 +240,5 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
             self.cameraFlashMode = UIImagePickerControllerCameraFlashMode.Off
         }
     }
-    
-    // TODO:
-    //add autofocus bounding box
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-
-    }
-    
-    
     
 }

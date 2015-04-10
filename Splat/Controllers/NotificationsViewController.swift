@@ -14,7 +14,7 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
     var navTitle = "Notifications"
     
     init(notifications: NSMutableArray!) {
-        super.init()
+        super.init(style: .Plain)
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         
         if notifications != nil {
@@ -47,7 +47,7 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
     override func viewDidLoad() {
         super.viewDidLoad()
         renderNavbar()
-        
+        Notification.resetIconBadgeNumber(UIApplication.sharedApplication())
     }
     
     func renderNavbar() {
@@ -73,14 +73,14 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
     }
     
     func backButtonListener(sender: UIButton) {
-        (self.navigationController? as RootNavViewController).popVC(.Left)
+        (self.navigationController as! RootNavViewController).popVC(.Left)
     }
     func discoverButtonListener(sender: UIButton) {
-        (self.navigationController? as RootNavViewController).pushVC(.Right, viewController: DiscoverViewController())
+        (self.navigationController as! RootNavViewController).pushVC(.Right, viewController: DiscoverViewController())
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        var currentNotification = tableData.objectAtIndex(indexPath.row) as Notification
+        var currentNotification = tableData.objectAtIndex(indexPath.row) as! Notification
         if let post = currentNotification.getPost() {
             var previewController = PostPreviewViewController(post: post)
             self.navigationController?.pushViewController(previewController, animated: true)
@@ -109,9 +109,9 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
         
         var cell: NotificationCell!
         
-        let notification = tableData.objectAtIndex(indexPath.row) as Notification
+        let notification = tableData.objectAtIndex(indexPath.row) as! Notification
         
-        cell = tableView.dequeueReusableCellWithIdentifier("NotificationCell") as NotificationCell!
+        cell = tableView.dequeueReusableCellWithIdentifier("NotificationCell") as? NotificationCell
         
         
         if (cell == nil) {

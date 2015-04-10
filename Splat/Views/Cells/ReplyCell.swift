@@ -13,7 +13,7 @@ class ReplyCell: UITableViewCell {
     var timeCreatedLabel: UILabel!
     var Comment: UITextView!
     var voteSelector: VoteSelector!
-    var Image : UIImageView!
+    var myImage : UIImageView!
     let imageTag = 3
     
     var actInd: UIActivityIndicatorView!
@@ -47,17 +47,17 @@ class ReplyCell: UITableViewCell {
         //image
         let imageWidth  = cellHeight
         let imageHeight = cellHeight
-        Image = UIImageView(frame: CGRectMake(0, 0, imageWidth, imageHeight))
-        Image.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.5)
-        Image.contentMode = UIViewContentMode.ScaleAspectFill
-        Image.clipsToBounds = true
-        self.addSubview(Image)
+        myImage = UIImageView(frame: CGRectMake(0, 0, imageWidth, imageHeight))
+        myImage.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.5)
+        myImage.contentMode = UIViewContentMode.ScaleAspectFill
+        myImage.clipsToBounds = true
+        self.addSubview(myImage)
         
         //add loading circle
         actInd = UIActivityIndicatorView(activityIndicatorStyle:UIActivityIndicatorViewStyle.Gray)
-        actInd.frame = Image.frame
+        actInd.frame = myImage.frame
         
-        Image.addSubview(actInd)
+        myImage.addSubview(actInd)
         actInd.hidesWhenStopped = true;
         
         //time created
@@ -75,7 +75,7 @@ class ReplyCell: UITableViewCell {
         
         //Comment
         Comment = UITextView()
-        Comment.frame = CGRectMake(imageWidth + 10, 0, cellWidth - Image.frame.width - voteSelector.frame.width, cellHeight-timeCreatedLabel.frame.height)
+        Comment.frame = CGRectMake(imageWidth + 10, 0, cellWidth - myImage.frame.width - voteSelector.frame.width, cellHeight-timeCreatedLabel.frame.height)
         Comment.userInteractionEnabled = false
         Comment.font = UIFont.systemFontOfSize(12.0)
         //if smaller cell
@@ -90,17 +90,17 @@ class ReplyCell: UITableViewCell {
     func initialize(reply: Reply) {
         
         //self.Image.image = nil
-        voteSelector.initialize(reply)
+        voteSelector.initializeWithReply(reply)
         if (reply.hasPicture()) {
-            self.Image.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.5)
-             Comment.frame = CGRectMake(Image.frame.maxX + 10, 0, cellWidth - Image.frame.width - voteSelector.frame.width, cellHeight-timeCreatedLabel.frame.height)
+            self.myImage.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.5)
+             Comment.frame = CGRectMake(myImage.frame.maxX + 10, 0, cellWidth - myImage.frame.width - voteSelector.frame.width, cellHeight-timeCreatedLabel.frame.height)
             self.actInd.startAnimating()
             reply.getReplyPicture { (imageData) -> Void in
                 self.actInd.stopAnimating()
-                self.Image.image = UIImage(data: imageData)
+                self.myImage.image = UIImage(data: imageData)
             }
         } else {
-            self.Image.backgroundColor = UIColor.clearColor()
+            self.myImage.backgroundColor = UIColor.clearColor()
             Comment.frame = CGRectMake(10, 0, cellWidth - voteSelector.frame.width, cellHeight-timeCreatedLabel.frame.height)
         }
         
@@ -110,7 +110,7 @@ class ReplyCell: UITableViewCell {
         var eventCreatedDate = reply.object.createdAt
         var today = NSDate()
         
-        let timeSincePost = getStringTimeDiff(eventCreatedDate, today)
+        let timeSincePost = getStringTimeDiff(eventCreatedDate!, today)
         timeCreatedLabel.text = "     \(timeSincePost.number)\(timeSincePost.unit)"
         
         currentReply = reply

@@ -16,7 +16,7 @@ class PostCell: UITableViewCell {
     var Comment: UITextView!
     var flagButton: UIButton!
     var voteSelector: VoteSelector!
-    var Image : UIImageView!
+    var myImage : UIImageView!
     let imageTag = 3
     
     var actInd: UIActivityIndicatorView!
@@ -50,22 +50,22 @@ class PostCell: UITableViewCell {
         //image
         let imageWidth  = 150 as CGFloat
         let imageHeight = 150 as CGFloat
-        Image = UIImageView(frame: CGRectMake(0, 0, imageWidth, imageHeight))
-        Image.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.5)
-        Image.contentMode = UIViewContentMode.ScaleAspectFill
-        Image.clipsToBounds = true
-        self.addSubview(Image)
+        myImage = UIImageView(frame: CGRectMake(0, 0, imageWidth, imageHeight))
+        myImage.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.5)
+        myImage.contentMode = UIViewContentMode.ScaleAspectFill
+        myImage.clipsToBounds = true
+        self.addSubview(myImage)
         
         //add loading circle
         actInd = UIActivityIndicatorView(activityIndicatorStyle:UIActivityIndicatorViewStyle.Gray)
-        actInd.frame = Image.frame
+        actInd.frame = myImage.frame
         
-        Image.addSubview(actInd)
+        myImage.addSubview(actInd)
         actInd.hidesWhenStopped = true;
         
         //flag button
         let flagSize = 40 as CGFloat
-        flagButton = FlagButton(frame: CGRectMake(Image.frame.maxX + 10, cellHeight-flagSize, flagSize, flagSize))
+        flagButton = FlagButton(frame: CGRectMake(myImage.frame.maxX + 10, cellHeight-flagSize, flagSize, flagSize))
         //MARK: removed flagButton
         if cellWidth > 320 {
             self.addSubview(flagButton)
@@ -73,7 +73,7 @@ class PostCell: UITableViewCell {
         
         //Comment
         Comment = UITextView()
-        Comment.frame = CGRectMake(imageWidth + 10, 0, cellWidth - Image.frame.width - voteSelector.frame.width, cellHeight-flagButton.frame.height)
+        Comment.frame = CGRectMake(imageWidth + 10, 0, cellWidth - myImage.frame.width - voteSelector.frame.width, cellHeight-flagButton.frame.height)
         Comment.userInteractionEnabled = false
         
         if (cellWidth > 320) {
@@ -102,7 +102,7 @@ class PostCell: UITableViewCell {
             numberOfRepliesLabel = UILabel(frame: CGRect(x: flagButton.frame.maxX, y: flagButton.frame.minY, width: timeCreatedLabel.frame.minX - flagButton.frame.maxX - 10, height: 40))
             numberOfRepliesLabel.textAlignment = NSTextAlignment.Center
         } else {
-            numberOfRepliesLabel = UILabel(frame: CGRect(x: Image.frame.maxX + 10, y: flagButton.frame.minY, width: 100, height: 40))
+            numberOfRepliesLabel = UILabel(frame: CGRect(x: myImage.frame.maxX + 10, y: flagButton.frame.minY, width: 100, height: 40))
             numberOfRepliesLabel.textAlignment = NSTextAlignment.Left
         }
         numberOfRepliesLabel.font = UIFont.systemFontOfSize(14.0)
@@ -113,12 +113,12 @@ class PostCell: UITableViewCell {
     
     func initialize(post: Post) {
         
-        self.Image.image = nil
+        self.myImage.image = nil
         voteSelector.initialize(post)
         self.actInd.startAnimating()
         post.getEventPicture { (imageData) -> Void in
             self.actInd.stopAnimating()
-            self.Image.image = UIImage(data: imageData)
+            self.myImage.image = UIImage(data: imageData)
         }
         
         Comment.text = post.getComment()
@@ -127,7 +127,7 @@ class PostCell: UITableViewCell {
         var eventCreatedDate = post.object.createdAt
         var today = NSDate()
         
-        let timeSincePost = getStringTimeDiff(eventCreatedDate, today)
+        let timeSincePost = getStringTimeDiff(eventCreatedDate!, today)
         timeCreatedLabel.text = "     \(timeSincePost.number)\(timeSincePost.unit)"
         
         numberOfRepliesLabel.text = ""
@@ -140,7 +140,7 @@ class PostCell: UITableViewCell {
         updateHighlighted()
     }
     
-    private func addReplyLabel(objects: [AnyObject]!) {
+    private func addReplyLabel(objects: NSArray!) {
         if (objects != nil && objects.count != 0) {
             if (objects.count == 1) {
                 self.numberOfRepliesLabel.text = "\(objects.count) reply"
@@ -161,10 +161,10 @@ class PostCell: UITableViewCell {
         //highlight selected
         voteSelector.updateHighlighted()
         
-        var flags = NSUserDefaults.standardUserDefaults().objectForKey("SplatFlags") as NSArray!
+        var flags = NSUserDefaults.standardUserDefaults().objectForKey("SplatFlags") as? NSArray
         if let oID = currentPost.object.objectId {
             
-            if (flags != nil && flags.containsObject(oID)) {
+            if (flags != nil && flags!.containsObject(oID)) {
                 flagButton.tintColor = UIColorFromRGB(PURPLE_SELECTED)
             } else {
                 flagButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)

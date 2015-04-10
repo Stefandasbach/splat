@@ -51,8 +51,8 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     
     var screen = "Score"
         
-    override init() {
-        super.init()
+    init() {
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -98,19 +98,21 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         
         PFGeoPoint.geoPointForCurrentLocationInBackground { (geopoint, error) -> Void in
             if (error == nil){
-                let location = CLLocationCoordinate2D(
-                    latitude: geopoint.latitude,
-                    longitude: geopoint.longitude
-                )
-                
-                let span = MKCoordinateSpanMake(0.05, 0.05)
-                let region = MKCoordinateRegion(center: location, span: span)
-                self.map.setRegion(region, animated: true)
-                
-               
-                let annotation = MKPointAnnotation()
-                annotation.setCoordinate(location)
-                self.map.addAnnotation(annotation)
+                if let geo = geopoint {
+                    let location = CLLocationCoordinate2D(
+                        latitude: geo.latitude,
+                        longitude: geo.longitude
+                    )
+                    
+                    let span = MKCoordinateSpanMake(0.05, 0.05)
+                    let region = MKCoordinateRegion(center: location, span: span)
+                    self.map.setRegion(region, animated: true)
+                    
+                    
+                    let annotation = MKPointAnnotation()
+                    annotation.coordinate = location
+                    self.map.addAnnotation(annotation)
+                }
             }
         }
     }
@@ -134,7 +136,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         gradient.anchorPoint = CGPointZero;
         
         //SHARE BUTTON
-        shareButton = UIButton(frame: CGRectMake(10, self.view.frame.height - 50 - UIApplication.sharedApplication().statusBarFrame.height, 40, 40))
+        shareButton = UIButton(frame: CGRectMake(10, 10, 40, 40))
         shareButton.setImage(UIImage(named: "shareIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         shareButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
         shareButton.tintColor = UIColor.whiteColor()
@@ -229,11 +231,16 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             }
             
             for var i = 0; i < posts.count; i++ {
-                posts[i] = posts[i].objectId
+                if let post = posts[i] as? PFObject {
+                    if let oid = post.objectId {
+                        posts[i] = oid
+                    }
+                }
+                
             }
             
             var query = PFQuery(className: "Post")
-            query.whereKey("objectId", containedIn: posts)
+            query.whereKey("objectId", containedIn: posts as [AnyObject])
             query.orderByDescending("createdAt")
             //Get objects for the pointer data
             query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in                if (error != nil) {
@@ -242,14 +249,16 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                 if (objects == nil) {
                     println("No posts")
                 } else {
-                    for obj in objects {
-                        if let pfobj = obj as? PFObject {
-                            var post = Post(pfObject: pfobj)
-                            self.userPosts.addObject(post)
-                            if post.getScore() != nil {
-                                score = self.postScoreWeighting*post.getScore() + score
+                    if let objs = objects {
+                        for obj in objs {
+                            if let pfobj = obj as? PFObject {
+                                var post = Post(pfObject: pfobj)
+                                self.userPosts.addObject(post)
+                                if post.getScore() != nil {
+                                    score = self.postScoreWeighting*post.getScore() + score
+                                }
+                                
                             }
-                            
                         }
                     }
                     
@@ -265,11 +274,16 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                     }
                     
                     for var i = 0; i < replyOIDs.count; i++ {
-                        replyOIDs[i] = replyOIDs[i].objectId
+                        if let reply = replyOIDs[i] as? PFObject {
+                            if let oid = reply.objectId {
+                                replyOIDs[i] = oid
+                            }
+                        }
+                        
                     }
                     
                     var query = PFQuery(className: "Reply")
-                    query.whereKey("objectId", containedIn: replyOIDs)
+                    query.whereKey("objectId", containedIn: replyOIDs as [AnyObject])
                     //Get objects for the pointer data
                     query.findObjectsInBackgroundWithBlock({ (replies, error2) -> Void in
                         if (error2 != nil) {
@@ -279,14 +293,16 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                                 println("No replies")
                             } else {
                                 
-                                for obj in replies {
-                                    if let pfobj = obj as? PFObject {
-                                        var reply = Reply(pfObject: pfobj)
-                                        //self.userReplies.addObject(reply)
-                                        if reply.getScore() != nil {
-                                            score = self.replyScoreWeighting*reply.getScore() + score
+                                if let objs = replies {
+                                    for obj in objs {
+                                        if let pfobj = obj as? PFObject {
+                                            var reply = Reply(pfObject: pfobj)
+                                            //self.userReplies.addObject(reply)
+                                            if reply.getScore() != nil {
+                                                score = self.replyScoreWeighting*reply.getScore() + score
+                                            }
+                                            
                                         }
-                                        
                                     }
                                 }
                                 
@@ -514,7 +530,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     }
     
     func notificationsButtonListener(sender: UIButton) {
-        (self.navigationController? as RootNavViewController).popVC(.Left)
+        (self.navigationController as! RootNavViewController).popVC(.Left)
     }
     
     func caretButtonListener(sender: UIButton) {
@@ -544,7 +560,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             
             if (posts != nil) {
                 var query = PFQuery(className: "Post")
-                query.whereKey("objectId", containedIn: posts)
+                query.whereKey("objectId", containedIn: posts as! [AnyObject])
                 //Get objects for the pointer data
                 query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
                 if (error != nil) {
@@ -553,11 +569,13 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                         if (objects == nil) {
                             println("Can't find rated")
                         } else {
-                            for obj in objects {
-                                if let pfobj = obj as? PFObject {
-                                    var post = Post(pfObject: pfobj)
-                                    self.ratedPosts.addObject(post)
-                                    
+                            if let objs = objects {
+                                for obj in objs {
+                                    if let pfobj = obj as? PFObject {
+                                        var post = Post(pfObject: pfobj)
+                                        self.ratedPosts.addObject(post)
+                                        
+                                    }
                                 }
                             }
                         }
@@ -595,12 +613,17 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             }
             
             for var i = 0; i < posts.count; i++ {
-                posts[i] = posts[i].objectId
+                if let post = posts[i] as? PFObject {
+                    if let oid = post.objectId {
+                        posts[i] = oid
+                    }
+                }
+                
             }
             
             userPosts = NSMutableArray()
             var query = PFQuery(className: "Post")
-            query.whereKey("objectId", containedIn: posts)
+            query.whereKey("objectId", containedIn: posts as [AnyObject])
             query.orderByDescending("createdAt")
             //Get objects for the pointer data
             query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
@@ -611,11 +634,13 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                         println("No posts")
                     } else {
                     
-                        for obj in objects {
-                            if let pfobj = obj as? PFObject {
-                                var post = Post(pfObject: pfobj)
-                                self.userPosts.addObject(post)
-                                
+                        if let objs = objects {
+                            for obj in objs {
+                                if let pfobj = obj as? PFObject {
+                                    var post = Post(pfObject: pfobj)
+                                    self.userPosts.addObject(post)
+                                    
+                                }
                             }
                         }
                     }
@@ -648,7 +673,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             
             if (posts != nil) {
                 var query = PFQuery(className: "Reply")
-                query.whereKey("objectId", containedIn: posts)
+                query.whereKey("objectId", containedIn: posts as! [AnyObject])
                 query.includeKey("parent")
                 //Get objects for the pointer data
                 query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
@@ -658,13 +683,15 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                         if (objects == nil) {
                             println("Can't find rated")
                         } else {
-                            for obj in objects {
-                                if let pfobj = obj as? PFObject {
-                                    var reply = Reply(pfObject: pfobj)
-                                    if (reply.getParentPost() != nil) {
-                                        self.ratedReplies.addObject(Post(pfObject: reply.getParentPost()))
+                            if let objs = objects {
+                                for obj in objs {
+                                    if let pfobj = obj as? PFObject {
+                                        var reply = Reply(pfObject: pfobj)
+                                        if (reply.getParentPost() != nil) {
+                                            self.ratedReplies.addObject(Post(pfObject: reply.getParentPost()))
+                                        }
+                                        
                                     }
-                                    
                                 }
                             }
                         }
@@ -702,12 +729,17 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             }
             
             for var i = 0; i < replies.count; i++ {
-                replies[i] = replies[i].objectId
+                if let reply = replies[i] as? PFObject {
+                    if let oid = reply.objectId {
+                        replies[i] = oid
+                    }
+                }
+
             }
             
             userReplies = NSMutableArray()
             var query = PFQuery(className: "Reply")
-            query.whereKey("objectId", containedIn: replies)
+            query.whereKey("objectId", containedIn: replies as [AnyObject])
             query.orderByDescending("createdAt")
             query.includeKey("parent")
             //Get objects for the pointer data
@@ -718,13 +750,15 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                     if (objects == nil) {
                         println("Can't find replies")
                     } else {
-                        for obj in objects {
-                            if let pfobj = obj as? PFObject {
-                                var reply = Reply(pfObject: pfobj)
-                                if (reply.getParentPost() != nil) {
-                                    self.userReplies.addObject(Post(pfObject: reply.getParentPost()))
+                        if let objs = objects {
+                            for obj in objs {
+                                if let pfobj = obj as? PFObject {
+                                    var reply = Reply(pfObject: pfobj)
+                                    if (reply.getParentPost() != nil) {
+                                        self.userReplies.addObject(Post(pfObject: reply.getParentPost()))
+                                    }
+                                    
                                 }
-                                
                             }
                         }
                     }
@@ -757,9 +791,9 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         
         for obj in arr {
             if let post = obj as? Post {
-                if (!addedObjects.containsObject(post.object.objectId)) {
+                if (!addedObjects.containsObject(post.object.objectId!)) {
                     result.addObject(post)
-                    addedObjects.addObject(post.object.objectId)
+                    addedObjects.addObject(post.object.objectId!)
                 }
             }
         }

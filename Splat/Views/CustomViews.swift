@@ -10,22 +10,12 @@ import Foundation
 
 class ContainerView: UIView {
     
-    override init() {
-        super.init()
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
     override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
-        for subview in subviews as [UIView] {
-            if !subview.hidden && subview.alpha > 0 && subview.userInteractionEnabled && subview.pointInside(convertPoint(point, toView: subview), withEvent: event) {
-                return true
+        if let uiviews  = self.subviews as? [UIView] {
+            for subview in uiviews {
+                if !subview.hidden && subview.alpha > 0 && subview.userInteractionEnabled && subview.pointInside(convertPoint(point, toView: subview), withEvent: event) {
+                    return true
+                }
             }
         }
         return false
@@ -76,7 +66,7 @@ class FormScrollable: UIScrollView {
     }
     
     override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
-        for subview in subviews as [UIView] {
+        for subview in subviews as! [UIView] {
             if !subview.hidden && subview.alpha > 0 && subview.userInteractionEnabled && subview.pointInside(convertPoint(point, toView: subview), withEvent: event) {
                 return true
             }

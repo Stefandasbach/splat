@@ -40,7 +40,7 @@ class Post : NSObject {
     }
     
     func getCreator()-> PFUser {
-        return object["creator"] as PFUser
+        return object["creator"] as! PFUser
     }
     
     func setPicture(pngImage: NSData) {
@@ -53,13 +53,14 @@ class Post : NSObject {
             println("Post picture not present")
             return
         }
-        var file = object["pictureFile"] as PFFile!
-        file.getDataInBackgroundWithBlock {
-            (imageData: NSData!, error: NSError!) -> Void in
-            if error == nil {
-                completion(imageData: imageData)
-            } else {
-                println(error)
+        if var file = object["pictureFile"] as? PFFile {
+            file.getDataInBackgroundWithBlock {
+                (imageData, error) -> Void in
+                if error == nil {
+                    completion(imageData: imageData)
+                } else {
+                    println(error)
+                }
             }
         }
     }
@@ -69,8 +70,9 @@ class Post : NSObject {
             println("Post picture not present")
             return
         }
-        var file = object["pictureFile"] as PFFile!
-        file.cancel()
+        if var file = object["pictureFile"] as? PFFile {
+            file.cancel()
+        }
     }
     
     func hasPicture() -> Bool {
@@ -85,7 +87,7 @@ class Post : NSObject {
     }
     
     func getComment() -> String? {
-        return object["comment"] as String?
+        return object["comment"] as? String
     }
     
     func editComment(text: String, completion: ()->Void) {
@@ -108,7 +110,7 @@ class Post : NSObject {
     
     func saveObjectInBackground(completion: (success: Bool) -> Void) {
         object.saveInBackgroundWithBlock({
-            (succeeded: Bool!, error: NSError!) -> Void in
+            (succeeded, error) -> Void in
             if(error == nil) {
                 if (succeeded == true) {
                     completion(success: true)
@@ -122,7 +124,7 @@ class Post : NSObject {
 
     func saveObjectInBackgroundForCurrentUser(completion: (success: Bool) -> Void) {
         object.saveInBackgroundWithBlock({
-            (succeeded: Bool!, error: NSError!) -> Void in
+            (succeeded, error) -> Void in
             if(error == nil) {
                 if (succeeded == true) {
                     dispatch_async(dispatch_get_main_queue(), {
@@ -159,13 +161,13 @@ class Post : NSObject {
     
     //still testing
     func deleteObjectInBackground(completion: (success: Bool) -> Void) {
-        if (self.getCreator().objectId != PFUser.currentUser().objectId) {
+        if (self.getCreator().objectId != PFUser.currentUser()!.objectId) {
             println("Error: cannot delete a post that is not yours.")
             return
         }
         
         object.deleteInBackgroundWithBlock({
-            (succeeded: Bool!, error: NSError!) -> Void in
+            (succeeded, error) -> Void in
             if(error == nil) {
                 if (succeeded == true) {
                     dispatch_async(dispatch_get_main_queue(), {
@@ -209,7 +211,7 @@ class Post : NSObject {
     }
     
     func getGeopoint() -> PFGeoPoint! {
-        return object["geopoint"] as PFGeoPoint!
+        return object["geopoint"] as? PFGeoPoint
     }
 
     func setState(state: String!) {
@@ -217,7 +219,7 @@ class Post : NSObject {
     }
     
     func getState() -> String! {
-        return object["state"] as String!
+        return object["state"] as? String
     }
     
     func setScore(score: Int) {
@@ -225,7 +227,7 @@ class Post : NSObject {
     }
     
     func getScore() -> Int! {
-        return object["score"] as Int!
+        return object["score"] as! Int
     }
     
     func addUpvote() {
@@ -306,7 +308,7 @@ class Post : NSObject {
         }
     
     func getFlags()->Int! {
-        return object["flags"] as Int!
+        return object["flags"] as? Int
     }
     
     func setFlags(value: Int) {
@@ -349,7 +351,7 @@ class Post : NSObject {
     }
     
     func getReplies()->NSArray! {
-        return object["replies"] as NSArray!
+        return object["replies"] as? NSArray
     }
     
 }

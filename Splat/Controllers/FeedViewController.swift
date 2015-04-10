@@ -34,9 +34,12 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     
     var backgroundImage: UIImageView!
     var footerView: UIView!
-        
-    override init() {
-        super.init()
+    
+    var notificationsBadge: NotificationBadge!
+    var notificationsButton: UIButton!
+    
+    init() {
+        super.init(style: .Plain)
     }
     
     override init(nibName nibNameOrNil: String!, bundle nibBundleOrNil: NSBundle!) {
@@ -64,9 +67,27 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if (notificationsBadge == nil && notificationsButton != nil) {
+            //get number of notifications
+            notificationsBadge = NotificationBadge(number: Notification.getNumberOfNewNotifications())
+            notificationsButton.addSubview(notificationsBadge)
+        }
+        
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        self.notificationsBadge.removeFromSuperview()
+        self.notificationsBadge = nil
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        selectedLocation = NSUserDefaults.standardUserDefaults().objectForKey("SelectedLocation") as String
+        selectedLocation = NSUserDefaults.standardUserDefaults().objectForKey("SelectedLocation") as! String
         
         /* Get user's location */
         let defaults = NSUserDefaults.standardUserDefaults()
@@ -74,7 +95,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         /* === Uncomment for simulator === */
 //        state = "CO"
         /* === Uncomment for simulator === */
-        if (state? != nil) {
+        if (state != nil) {
             userLocation = state!
             currentSelection = userLocation
         }
@@ -106,11 +127,15 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         newItemImageButton.addTarget(self, action: Selector("createButtonListener:"), forControlEvents: UIControlEvents.TouchUpInside)
         var newItemNavItem = UIBarButtonItem(customView: newItemImageButton)
 
-        var notificationsButton = UIButton(frame: CGRectMake(0, 0, 20, 20))
+        notificationsButton = UIButton(frame: CGRectMake(0, 0, 20, 20))
         notificationsButton.setImage(UIImage(named: "notificationsIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         notificationsButton.tintColor = UIColor.whiteColor()
         notificationsButton.addTarget(self, action: "notificationsButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         var notificationsNavItem = UIBarButtonItem(customView: notificationsButton)
+        //get number of notifications
+        
+        notificationsBadge = NotificationBadge(number: Notification.getNumberOfNewNotifications())
+        notificationsButton.addSubview(notificationsBadge)
         
         self.navigationItem.leftBarButtonItem = notificationsNavItem
         self.navigationItem.rightBarButtonItem = newItemNavItem
@@ -242,28 +267,30 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     }
     
     func createButtonListener(sender: UIButton) {
-        (self.navigationController? as RootNavViewController).pushVC(.Left, viewController: CreatePostViewController())
+        (self.navigationController as! RootNavViewController).pushVC(.Left, viewController: CreatePostViewController())
     }
     
     func notificationsButtonListener(sender: UIButton) {
-        Notification.resetIconBadgeNumber(UIApplication.sharedApplication())
+       
         var query = PFQuery(className: "Notification")
         query.limit = 20
         query.orderByDescending("createdAt")
-        query.whereKey("receiver", equalTo: User().getObject().objectId)
+        query.whereKey("receiver", equalTo: User().getObject().objectId!)
         query.includeKey("post")
         query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
             var notifications = NSMutableArray()
             if (error != nil) { println(error) } else {
                 if (objects == nil) { println("No posts") } else {
-                    for obj in objects {
-                        if let pfobj = obj as? PFObject {
-                            var post = Notification(pfObject: pfobj)
-                            notifications.addObject(post)
+                    if let objs = objects {
+                        for obj in objs {
+                            if let pfobj = obj as? PFObject {
+                                var post = Notification(pfObject: pfobj)
+                                notifications.addObject(post)
+                            }
                         }
                     }
                     var notificationsVC = NotificationsViewController(notifications: notifications)
-                    (self.navigationController? as RootNavViewController).pushVC(.Right, viewController: notificationsVC)
+                    (self.navigationController as! RootNavViewController).pushVC(.Right, viewController: notificationsVC)
                 }
             }
         }
@@ -287,14 +314,16 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                 query.skip = skip
                 
                 if (self.selectedLocation == "My Location") {
-                    query.whereKey("geopoint", nearGeoPoint: geopoint, withinMiles: self.dataDistance)
+                    if let geo = geopoint {
+                        query.whereKey("geopoint", nearGeoPoint: geo, withinMiles: self.dataDistance)
+                    }
                 } else {
                     query.whereKey("state", equalTo: self.selectedLocation)
                 }
 
                 query.orderByDescending("createdAt")
                 query.findObjectsInBackgroundWithBlock({
-                    (objects: [AnyObject]!, error: NSError!)->Void in
+                    (objects, error)->Void in
                     
                     if (skip == 0) {
                         self.feedData.removeAllObjects()
@@ -306,9 +335,11 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                         
                     }
                     
-                    for object in objects {
-                        if let obj = object as? PFObject {
-                            self.feedData.addObject(Post(pfObject: obj))
+                    if let objs = objects {
+                        for object in objs {
+                            if let obj = object as? PFObject {
+                                self.feedData.addObject(Post(pfObject: obj))
+                            }
                         }
                     }
                     
@@ -344,15 +375,17 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                 query.skip = skip
                 
                 if (self.selectedLocation == "My Location") {
-                    query.whereKey("geopoint", nearGeoPoint: geopoint, withinMiles: self.dataDistance)
+                    if let geo = geopoint {
+                        query.whereKey("geopoint", nearGeoPoint: geo, withinMiles: self.dataDistance)
+                    }
                 } else {
                     query.whereKey("state", equalTo: self.selectedLocation)
                 }
                 
                 query.orderByDescending("score")
-                query.whereKey("createdAt", greaterThan: sevenDaysAgo)
+                query.whereKey("createdAt", greaterThan: sevenDaysAgo!)
                 query.findObjectsInBackgroundWithBlock({
-                    (objects: [AnyObject]!, error: NSError!)->Void in
+                    (objects, error)->Void in
                     
                     if (skip == 0) {
                         self.feedData.removeAllObjects()
@@ -364,9 +397,11 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                         
                     }
                     
-                    for object in objects {
-                        if let obj = object as? PFObject {
-                            self.feedData.addObject(Post(pfObject: obj))
+                    if let objs = objects {
+                        for object in objs {
+                            if let obj = object as? PFObject {
+                                self.feedData.addObject(Post(pfObject: obj))
+                            }
                         }
                     }
                     
@@ -400,14 +435,16 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                 query.skip = skip
                 
                 if (self.selectedLocation == "My Location") {
-                    query.whereKey("geopoint", nearGeoPoint: geopoint, withinMiles: self.dataDistance)
+                    if let geo = geopoint {
+                        query.whereKey("geopoint", nearGeoPoint: geo, withinMiles: self.dataDistance)
+                    }
                 } else {
                     query.whereKey("state", equalTo: self.selectedLocation)
                 }
 
                 query.orderByDescending("score")
                 query.findObjectsInBackgroundWithBlock({
-                    (objects: [AnyObject]!, error: NSError!)->Void in
+                    (objects, error)->Void in
                     
                     if (skip == 0) {
                         self.feedData.removeAllObjects()
@@ -419,9 +456,11 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                         
                     }
                     
-                    for object in objects {
-                        if let obj = object as? PFObject {
-                            self.feedData.addObject(Post(pfObject: obj))
+                    if let objs = objects {
+                        for object in objs {
+                            if let obj = object as? PFObject {
+                                self.feedData.addObject(Post(pfObject: obj))
+                            }
                         }
                     }
                     
@@ -452,7 +491,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        var currentPost = feedData.objectAtIndex(indexPath.row) as Post
+        var currentPost = feedData.objectAtIndex(indexPath.row) as! Post
         var previewController = PostPreviewViewController(post: currentPost)
         self.navigationController?.pushViewController(previewController, animated: true)
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
@@ -477,12 +516,12 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         }
         
         var cell: PostCell!
-        cell = tableView.dequeueReusableCellWithIdentifier("PostCell") as PostCell!
+        cell = tableView.dequeueReusableCellWithIdentifier("PostCell") as? PostCell
         if (cell == nil) {
             cell = PostCell(style: UITableViewCellStyle.Default, reuseIdentifier: "PostCell")
         }
         
-        let post = feedData.objectAtIndex(indexPath.row) as Post
+        let post = feedData.objectAtIndex(indexPath.row) as! Post
         cell.initialize(post)
         
         cell.voteSelector.UpvoteButton.tag = indexPath.row
@@ -498,7 +537,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         if let postCell = cell as? PostCell {
             postCell.cancelLoad()
-            postCell.Image.image = nil
+            postCell.myImage.image = nil
         }
     }
     
@@ -575,17 +614,17 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         if (cellIndexPath != nil) {
             var cellIndexPathExists: NSIndexPath
             cellIndexPathExists = cellIndexPath as NSIndexPath!
-            let cell = self.tableView.cellForRowAtIndexPath(cellIndexPathExists) as PostCell
+            let cell = self.tableView.cellForRowAtIndexPath(cellIndexPathExists) as! PostCell
             
             if let post = feedData[cellIndexPathExists.row] as? Post {
-                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as NSArray!
-                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as NSArray!
+                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as? NSArray
+                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as? NSArray
                 
                 if var existingScore = cell.voteSelector.Score.text?.toInt() {
                 
                     if let oID = post.object.objectId {
                         //if downvote already selected
-                        if (downvotes != nil && downvotes.containsObject(oID)) {
+                        if (downvotes != nil && downvotes!.containsObject(oID)) {
                             //remove downvote
                             post.removeDownvote()
                             removeArchivedDownvote(oID, downvotes)
@@ -594,7 +633,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                             self.sortRowsUp(cellIndexPathExists.row)
                     
                             //if Upvote already selected
-                        } else if (upvotes != nil && upvotes.containsObject(oID)) {
+                        } else if (upvotes != nil && upvotes!.containsObject(oID)) {
                             //remove Upvote
                             post.removeUpvote()
                             removeArchivedUpvote(oID, upvotes)
@@ -630,17 +669,17 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         if (cellIndexPath != nil) {
             var cellIndexPathExists: NSIndexPath
             cellIndexPathExists = cellIndexPath as NSIndexPath!
-            let cell = self.tableView.cellForRowAtIndexPath(cellIndexPathExists) as PostCell
+            let cell = self.tableView.cellForRowAtIndexPath(cellIndexPathExists) as! PostCell
 
             if let post = feedData[cellIndexPathExists.row] as? Post {
-                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as NSArray!
-                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as NSArray!
+                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as? NSArray
+                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as? NSArray
                 
                 if var existingScore = cell.voteSelector.Score.text?.toInt() {
                 
                     if let oID = post.object.objectId {
                         //if upvote already selected
-                        if (upvotes != nil && upvotes.containsObject(oID)) {
+                        if (upvotes != nil && upvotes!.containsObject(oID)) {
                             //remove upvote
                             post.removeUpvote()
                             removeArchivedUpvote(oID, upvotes)
@@ -649,7 +688,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                             self.sortRowsDown(cellIndexPathExists.row)
                         
                             //if downvote already selected
-                        } else if (downvotes != nil && downvotes.containsObject(oID)) {
+                        } else if (downvotes != nil && downvotes!.containsObject(oID)) {
                             //remove downvote
                             post.removeDownvote()
                             removeArchivedDownvote(oID, downvotes)
@@ -790,13 +829,13 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         if (cellIndexPath != nil) {
             var cellIndexPathExists: NSIndexPath
             cellIndexPathExists = cellIndexPath as NSIndexPath!
-            let cell = self.tableView.cellForRowAtIndexPath(cellIndexPathExists) as PostCell
+            let cell = self.tableView.cellForRowAtIndexPath(cellIndexPathExists) as! PostCell
             
             var post = feedData[cellIndexPathExists.row] as? Post
-            var flags = NSUserDefaults.standardUserDefaults().objectForKey("SplatFlags") as NSArray!
+            var flags = NSUserDefaults.standardUserDefaults().objectForKey("SplatFlags") as? NSArray
             if let oID = post?.object.objectId {
             
-                if (flags != nil && flags.containsObject(oID)) {
+                if (flags != nil && flags!.containsObject(oID)) {
                     //remove flag
                     println("removeflag")
                     post?.removeFlag()

@@ -9,8 +9,8 @@
 import Foundation
 
 func calculateDateDifference(start: NSDate, end: NSDate) -> NSDateComponents? {
-    var calendar = NSCalendar(calendarIdentifier: NSGregorianCalendar)
-    var components = calendar?.components(NSCalendarUnit.DayCalendarUnit, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
+    var calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)
+    var components = calendar?.components(.CalendarUnitDay, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
     
     return components
 }
@@ -18,18 +18,18 @@ func calculateDateDifference(start: NSDate, end: NSDate) -> NSDateComponents? {
 //should probably clean these methods up
 func getStringTimeDiff(start: NSDate, end: NSDate)->(number: Int, unit: String) {
     
-    var calendar = NSCalendar(calendarIdentifier: NSGregorianCalendar)
+    var calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)
     
-    var difference = calendar?.components(NSCalendarUnit.DayCalendarUnit, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
+    var difference = calendar?.components(.CalendarUnitDay, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
     if let days = difference?.day {
         if (days == 0) {
-            var difference = calendar?.components(NSCalendarUnit.HourCalendarUnit, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
+            var difference = calendar?.components(.CalendarUnitHour, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
             if let hours = difference?.hour {
                 if (hours == 0) {
-                    var difference = calendar?.components(NSCalendarUnit.MinuteCalendarUnit, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
+                    var difference = calendar?.components(.CalendarUnitMinute, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
                     if let minutes = difference?.minute {
                         if (minutes == 0) {
-                            var difference = calendar?.components(NSCalendarUnit.SecondCalendarUnit, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
+                            var difference = calendar?.components(.CalendarUnitSecond, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
                             if let seconds = difference?.second {
                                 return (seconds, "s")
                             }
@@ -55,22 +55,22 @@ func getStringTimeTo(start: NSDate, end: NSDate)->(number: Int, unit: String) {
         return (0, "Ended")
     }
     
-    var calendar = NSCalendar(calendarIdentifier: NSGregorianCalendar)
+    var calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)
     
-    var difference = calendar?.components(NSCalendarUnit.MonthCalendarUnit, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
+    var difference = calendar?.components(.CalendarUnitMonth, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
     if let months = difference?.month {
         if (months == 0) {
             
-            var difference = calendar?.components(NSCalendarUnit.DayCalendarUnit, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
+            var difference = calendar?.components(.CalendarUnitDay, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
             if let days = difference?.day {
                 if (days == 0) {
-                    var difference = calendar?.components(NSCalendarUnit.HourCalendarUnit, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
+                    var difference = calendar?.components(.CalendarUnitHour, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
                     if let hours = difference?.hour {
                         if (hours == 0) {
-                            var difference = calendar?.components(NSCalendarUnit.MinuteCalendarUnit, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
+                            var difference = calendar?.components(.CalendarUnitMinute, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
                             if let minutes = difference?.minute {
                                 if (minutes == 0) {
-                                    var difference = calendar?.components(NSCalendarUnit.SecondCalendarUnit, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
+                                    var difference = calendar?.components(.CalendarUnitSecond, fromDate: start, toDate: end, options: NSCalendarOptions.allZeros)
                                     if let seconds = difference?.second {
                                         if (seconds == 1) {
                                             return (seconds, "second")
