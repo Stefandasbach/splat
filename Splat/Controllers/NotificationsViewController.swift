@@ -15,6 +15,7 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
     
     init(notifications: NSMutableArray!) {
         super.init()
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
         
         if notifications != nil {
             tableData = notifications
@@ -26,17 +27,17 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
     
     override init(style: UITableViewStyle) {
         super.init(style: style)
-        
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     override func viewWillAppear(animated: Bool) {

@@ -66,7 +66,6 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         selectedLocation = NSUserDefaults.standardUserDefaults().objectForKey("SelectedLocation") as String
         
         /* Get user's location */

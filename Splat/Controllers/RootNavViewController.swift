@@ -97,9 +97,15 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
     func pushVC(direction: Direction, viewController: UIViewController) {
         switch direction {
         case .Left:
-            self.pushViewController(viewController, animated: true)
-        case .Right:
+            var animation = CATransition()
+            animation.duration = 1.0
+            animation.type = kCATransitionPush
+            animation.subtype = kCATransitionFromRight
+            animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+            self.view.layer.addAnimation(animation, forKey: nil)
             
+            self.pushViewController(viewController, animated: false)
+        case .Right:
             /* Attempt to fix */
 //            let width = UIScreen.mainScreen().bounds.width
 //            viewController.view.frame = CGRectOffset(viewController.view.frame, width, 0)
@@ -109,7 +115,7 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
             
             /* Animation with fade */
             var animation = CATransition()
-            animation.duration = 0.45
+            animation.duration = 1.0
             animation.type = kCATransitionPush
             animation.subtype = kCATransitionFromLeft
             animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
@@ -122,7 +128,7 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
         switch direction {
         case .Left:
             var animation = CATransition()
-            animation.duration = 0.45
+            animation.duration = 1.0
             animation.type = kCATransitionPush
             animation.subtype = kCATransitionFromRight
             animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
@@ -130,7 +136,14 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
             
             return self.popViewControllerAnimated(false)!
         case .Right:
-            return self.popViewControllerAnimated(true)!
+            var animation = CATransition()
+            animation.duration = 1.0
+            animation.type = kCATransitionPush
+            animation.subtype = kCATransitionFromLeft
+            animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+            self.view.layer.addAnimation(animation, forKey: nil)
+            
+            return self.popViewControllerAnimated(false)!
         }
     }
     
