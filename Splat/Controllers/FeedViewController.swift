@@ -121,14 +121,16 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     func renderNavbarandView() {
         self.navigationController?.navigationBar.translucent = false
         //NAV ICONS//
-        var newItemImageButton = UIButton(frame: CGRectMake(0, 0, 20, 20))
+        var newItemImageButton = UIButton(frame: CGRectMake(0, 0, 40, 40))
         newItemImageButton.setImage(UIImage(named: "createPostIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         newItemImageButton.tintColor = UIColor.whiteColor()
+        newItemImageButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         newItemImageButton.addTarget(self, action: Selector("createButtonListener:"), forControlEvents: UIControlEvents.TouchUpInside)
         var newItemNavItem = UIBarButtonItem(customView: newItemImageButton)
 
-        notificationsButton = UIButton(frame: CGRectMake(0, 0, 20, 20))
+        notificationsButton = UIButton(frame: CGRectMake(0, 0, 40, 40))
         notificationsButton.setImage(UIImage(named: "notificationsIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        notificationsButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         notificationsButton.tintColor = UIColor.whiteColor()
         notificationsButton.addTarget(self, action: "notificationsButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         var notificationsNavItem = UIBarButtonItem(customView: notificationsButton)
@@ -285,7 +287,9 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                         for obj in objs {
                             if let pfobj = obj as? PFObject {
                                 var post = Notification(pfObject: pfobj)
-                                notifications.addObject(post)
+                                if (post.getPost() != nil) {
+                                    notifications.addObject(post)
+                                }
                             }
                         }
                     }

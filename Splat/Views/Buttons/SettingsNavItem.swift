@@ -15,8 +15,9 @@ class SettingsNavItem: UIBarButtonItem{
     override init() {
         super.init()
         
-        button = UIButton(frame: CGRectMake(0, 0, 20, 20))
+        button = UIButton(frame: CGRectMake(0, 0, 40, 40))
         button.setImage(UIImage(named: "gearIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        button.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         button.tintColor = UIColor.whiteColor()
         
         self.customView = button

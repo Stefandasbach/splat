@@ -54,8 +54,9 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
         var backNavItem = BackNavItem(orientation: BackNavItemOrientation.Right)
         backNavItem.button.addTarget(self, action: "backButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         
-        var discoverButton = UIButton(frame: CGRectMake(0, 0, 20, 20))
+        var discoverButton = UIButton(frame: CGRectMake(0, 0, 40, 40))
         discoverButton.setImage(UIImage(named: "bucketIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        discoverButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         discoverButton.tintColor = UIColor.whiteColor()
         discoverButton.addTarget(self, action: Selector("discoverButtonListener:"), forControlEvents: UIControlEvents.TouchUpInside)
         var discoverNavItem = UIBarButtonItem(customView: discoverButton)

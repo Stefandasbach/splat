@@ -40,8 +40,8 @@ class NotificationBadge: UIView {
             numberLabel.frame.size.width += 10
             numberLabel.frame.size.height = self.frame.height
             self.frame.size.width = numberLabel.frame.width
-            self.center.x = 0
-            self.center.y = 0
+            self.center.x = 6
+            //self.center.y = 0
             
             self.addSubview(numberLabel)
         }
