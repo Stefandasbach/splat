@@ -14,7 +14,7 @@ class Notification: NSObject {
     class func enableNotificationsForUser(user: User) {
         if let channels = PFInstallation.currentInstallation().objectForKey("channels") as? NSArray {
             //if the channel is set for the wrong user
-            if ((channels[0] as? String) != ("profile\(user.getObject().objectId)")) {
+            if ((channels[0] as? String) != ("profile\(user.getObject().objectId!)")) {
                 let currentInstallation = PFInstallation.currentInstallation()
                 currentInstallation.setObject(["profile\(user.getObject().objectId!)"], forKey: "channels")
                 currentInstallation.saveInBackground()

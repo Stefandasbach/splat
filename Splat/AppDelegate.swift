@@ -229,8 +229,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             application.registerUserNotificationSettings(settings)
             application.registerForRemoteNotifications()
         } else {
-           /* let types = UIRemoteNotificationType.Badge | UIRemoteNotificationType.Alert | UIRemoteNotificationType.Sound
-            application.registerForRemoteNotificationTypes(types)*/
+            let types = UIRemoteNotificationType.Badge | UIRemoteNotificationType.Alert | UIRemoteNotificationType.Sound
+            application.registerForRemoteNotificationTypes(types)
         }
 
     }

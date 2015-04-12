@@ -273,31 +273,10 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     }
     
     func notificationsButtonListener(sender: UIButton) {
+        
+        var notificationsVC = NotificationsViewController()
+        (self.navigationController as! RootNavViewController).pushVC(.Right, viewController: notificationsVC)
        
-        var query = PFQuery(className: "Notification")
-        query.limit = 20
-        query.orderByDescending("createdAt")
-        query.whereKey("receiver", equalTo: User().getObject().objectId!)
-        query.includeKey("post")
-        query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
-            var notifications = NSMutableArray()
-            if (error != nil) { println(error) } else {
-                if (objects == nil) { println("No posts") } else {
-                    if let objs = objects {
-                        for obj in objs {
-                            if let pfobj = obj as? PFObject {
-                                var post = Notification(pfObject: pfobj)
-                                if (post.getPost() != nil) {
-                                    notifications.addObject(post)
-                                }
-                            }
-                        }
-                    }
-                    var notificationsVC = NotificationsViewController(notifications: notifications)
-                    (self.navigationController as! RootNavViewController).pushVC(.Right, viewController: notificationsVC)
-                }
-            }
-        }
     }
     
     

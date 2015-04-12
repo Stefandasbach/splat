@@ -7,11 +7,18 @@
 //
 
 import Foundation
+import Parse
 
 class NotificationsViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var tableData: NSMutableArray!
+    var tableData = NSMutableArray()
     var navTitle = "Notifications"
+    
+    init() {
+        super.init(style: .Plain)
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        
+    }
     
     init(notifications: NSMutableArray!) {
         super.init(style: .Plain)
@@ -48,6 +55,32 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
         super.viewDidLoad()
         renderNavbar()
         Notification.resetIconBadgeNumber(UIApplication.sharedApplication())
+        
+        var query = PFQuery(className: "Notification")
+        query.limit = 20
+        query.orderByDescending("createdAt")
+        query.whereKey("receiver", equalTo: User().getObject().objectId!)
+        query.includeKey("post")
+        query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
+            var notifications = NSMutableArray()
+            if (error != nil) { println(error) } else {
+                if (objects == nil) { println("No posts") } else {
+                    if let objs = objects {
+                        for obj in objs {
+                            if let pfobj = obj as? PFObject {
+                                var post = Notification(pfObject: pfobj)
+                                if (post.getPost() != nil) {
+                                    self.tableData.addObject(post)
+                                }
+                            }
+                        }
+                    }
+                    
+                    self.tableView.reloadData()
+                }
+            }
+        }
+
     }
     
     func renderNavbar() {
