@@ -84,8 +84,8 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
     }
     
     func renderNavbar() {
-        var backNavItem = BackNavItem(orientation: BackNavItemOrientation.Right)
-        backNavItem.button.addTarget(self, action: "backButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+        var feedNavItem = FeedNavItem()
+        feedNavItem.button.addTarget(self, action: "feedButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         
         var discoverButton = UIButton(frame: CGRectMake(0, 0, 40, 40))
         discoverButton.setImage(UIImage(named: "bucketIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
@@ -95,7 +95,7 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
         var discoverNavItem = UIBarButtonItem(customView: discoverButton)
         
         self.navigationItem.leftBarButtonItem = discoverNavItem
-        self.navigationItem.rightBarButtonItem = backNavItem
+        self.navigationItem.rightBarButtonItem = feedNavItem
         
         var titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         titleLabel.text = navTitle
@@ -106,7 +106,7 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
         self.navigationItem.titleView = titleLabel
     }
     
-    func backButtonListener(sender: UIButton) {
+    func feedButtonListener(sender: UIButton) {
         (self.navigationController as! RootNavViewController).popVC(.Left)
     }
     func discoverButtonListener(sender: UIButton) {

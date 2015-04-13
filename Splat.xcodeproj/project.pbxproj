@@ -74,6 +74,10 @@
 		02B2CAA61AA658ED00BB05B9 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 02B2CAA51AA658ED00BB05B9 /* libz.dylib */; };
 		02B2CAA81AA658F600BB05B9 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 02B2CAA71AA658F600BB05B9 /* libsqlite3.dylib */; };
 		02DA526F1AD86B0E000180D4 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02DA526D1AD86B0E000180D4 /* Parse.framework */; };
+		02DDA26A1ADC2B7300474828 /* CaretSelectorBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DDA2691ADC2B7300474828 /* CaretSelectorBar.swift */; };
+		02DDA26C1ADC496F00474828 /* PostCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DDA26B1ADC496F00474828 /* PostCollectionCell.swift */; };
+		02DDA26E1ADC744E00474828 /* feedIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 02DDA26D1ADC744E00474828 /* feedIcon.png */; };
+		02DDA2701ADC747600474828 /* FeedNavItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DDA26F1ADC747600474828 /* FeedNavItem.swift */; };
 		02F2C69C1AB4840F0041A09F /* imageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C69B1AB4840F0041A09F /* imageUtils.swift */; };
 		02F2C69F1AB4850F0041A09F /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C69E1AB4850F0041A09F /* CameraViewController.swift */; };
 		02F2C6A41AB487F70041A09F /* createPostIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 02F2C6A31AB487F70041A09F /* createPostIcon.png */; };
@@ -163,6 +167,10 @@
 		02B2CAA71AA658F600BB05B9 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		02B2CAA91AA6599600BB05B9 /* Splat-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Splat-Bridging-Header.h"; sourceTree = "<group>"; };
 		02DA526D1AD86B0E000180D4 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = ../splat/Parse.framework; sourceTree = "<group>"; };
+		02DDA2691ADC2B7300474828 /* CaretSelectorBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaretSelectorBar.swift; sourceTree = "<group>"; };
+		02DDA26B1ADC496F00474828 /* PostCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCollectionCell.swift; sourceTree = "<group>"; };
+		02DDA26D1ADC744E00474828 /* feedIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = feedIcon.png; sourceTree = "<group>"; };
+		02DDA26F1ADC747600474828 /* FeedNavItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedNavItem.swift; sourceTree = "<group>"; };
 		02F2C69B1AB4840F0041A09F /* imageUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = imageUtils.swift; sourceTree = "<group>"; };
 		02F2C69E1AB4850F0041A09F /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		02F2C6A31AB487F70041A09F /* createPostIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = createPostIcon.png; sourceTree = "<group>"; };
@@ -259,6 +267,7 @@
 				027112491AC0700100F6D25E /* DoneNavItem.swift */,
 				0271124D1AC0A27F00F6D25E /* FlagButton.swift */,
 				02801ABE1AC0D7CC00CF502C /* ProfileButton.swift */,
+				02DDA26F1ADC747600474828 /* FeedNavItem.swift */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -397,6 +406,7 @@
 		02F2C6A21AB4879A0041A09F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				02DDA26D1ADC744E00474828 /* feedIcon.png */,
 				0295EF771AD484C4009DA6DC /* notificationsIcon.png */,
 				0200A1ED1AC1F5230075DA4C /* shareIcon.png */,
 				027112451AC06CE400F6D25E /* gearIcon.png */,
@@ -429,6 +439,7 @@
 		02F2C6AC1AB51A1F0041A09F /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				02DDA2691ADC2B7300474828 /* CaretSelectorBar.swift */,
 				02F2C6BC1AB701AF0041A09F /* CommentBox.swift */,
 				02F2C6B01AB5DB210041A09F /* CustomViews.swift */,
 				0284C74C1ABF2AD100E55B58 /* VoteSelector.swift */,
@@ -446,6 +457,7 @@
 				021B75BB1AB8CA5A007D5CA4 /* PostCell.swift */,
 				027112471AC06F3600F6D25E /* ReplyCell.swift */,
 				0295EF751AD47AFF009DA6DC /* NotificationCell.swift */,
+				02DDA26B1ADC496F00474828 /* PostCollectionCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -546,6 +558,7 @@
 				0200A1F11AC201C70075DA4C /* SplatThumbnail.png in Resources */,
 				026C86221AB91AE400BE67D5 /* caretImageFlipped.png in Resources */,
 				0284C7421ABDE71700E55B58 /* exitIcon.png in Resources */,
+				02DDA26E1ADC744E00474828 /* feedIcon.png in Resources */,
 				0200A1F71AC203B80075DA4C /* SplatThumbnail58.png in Resources */,
 				02B2CA751AA6383300BB05B9 /* Images.xcassets in Resources */,
 				027112461AC06CE400F6D25E /* gearIcon.png in Resources */,
@@ -574,7 +587,9 @@
 				026C86261AB99F6D00BE67D5 /* timeUtils.swift in Sources */,
 				02F2C6BD1AB701AF0041A09F /* CommentBox.swift in Sources */,
 				0284C73B1ABD907F00E55B58 /* GenericPostsTableViewController.swift in Sources */,
+				02DDA26C1ADC496F00474828 /* PostCollectionCell.swift in Sources */,
 				02F2C6B91AB60A250041A09F /* animationUtils.swift in Sources */,
+				02DDA2701ADC747600474828 /* FeedNavItem.swift in Sources */,
 				02B22EFF1AD03F8600A6F2E4 /* ReplyImageView.swift in Sources */,
 				02F2C6BB1AB60A680041A09F /* RootNavViewController.swift in Sources */,
 				0271124A1AC0700100F6D25E /* DoneNavItem.swift in Sources */,
@@ -582,6 +597,7 @@
 				0284C7341ABC88AE00E55B58 /* User.swift in Sources */,
 				027112441AC06BA300F6D25E /* SettingsNavItem.swift in Sources */,
 				02F2C69C1AB4840F0041A09F /* imageUtils.swift in Sources */,
+				02DDA26A1ADC2B7300474828 /* CaretSelectorBar.swift in Sources */,
 				0284C7321ABC858600E55B58 /* DiscoverViewController.swift in Sources */,
 				0295EF761AD47AFF009DA6DC /* NotificationCell.swift in Sources */,
 				02F2C69F1AB4850F0041A09F /* CameraViewController.swift in Sources */,

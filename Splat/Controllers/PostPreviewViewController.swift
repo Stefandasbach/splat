@@ -55,6 +55,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         
         var ylocCursor:CGFloat = 0
         var padding:CGFloat = 10
