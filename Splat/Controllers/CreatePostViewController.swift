@@ -199,7 +199,7 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
         /* Ask for access to camera */
         var cameraStatus = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
         if (cameraStatus != AVAuthorizationStatus.Authorized) {
-            self.showAlert("Use your camera?", message: "Splat does not have permission to use the camera. Please update your privacy settings to get in on the fun!", yesTitle: "Yes", noTitle: "No")
+            self.showAlert("Use your camera?", message: "SplatIt does not have permission to use the camera. Please update your privacy settings to get in on the fun!", yesTitle: "Yes", noTitle: "No")
             return false
         }
         /* If we reached here, either cameraStatus was authorized, or
@@ -211,7 +211,7 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
         /* Ask for access to photos */
         var photosEnabled = PHPhotoLibrary.authorizationStatus()
         if (photosEnabled != PHAuthorizationStatus.Authorized) {
-            showAlert("Use Images from Photos?", message: "Splat needs access to your photos so you can upload from your camera roll", yesTitle: "Yes", noTitle: "Later")
+            showAlert("Use Images from Photos?", message: "SplatIt needs access to your photos so you can upload from your camera roll", yesTitle: "Yes", noTitle: "Later")
             return false
         }
         /* Authorized photos access */

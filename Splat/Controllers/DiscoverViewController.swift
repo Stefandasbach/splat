@@ -12,7 +12,7 @@ import Parse
 import MapKit
 import FBSDKShareKit
 
-class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKSharingDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, CaretSelectorDelegate {
+class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKSharingDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, CaretSelectorDelegate, UIActionSheetDelegate, UIAlertViewDelegate {
     
     var statusBarStyle = UIStatusBarStyle.LightContent
     
@@ -706,10 +706,30 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     ///Shares on facebook
     func shareButtonListener(sender: UIButton) {
         println("Share SplatIt score here")
+        let actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil)
+        actionSheet.addButtonWithTitle("Share on Facebook")
+        
+        actionSheet.actionSheetStyle = .Default
+        actionSheet.showInView(self.view)
+    }
+    
+    func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
+        
+            switch buttonIndex {
+            case 0: //cancel
+                break;
+            case 1: //facebook
+                shareOnFacebook()
+                break;
+            default:
+                break
+            }
+    }
+
+    
+    func shareOnFacebook() {
         var scoreImage = getScreenshot(self)
-        println(scoreImage.size)
-        println(circleView.frame)
-        println(self.view.frame.size)
+        
         scoreImage = cropImage(scoreImage, CGRectMake(0, self.circleView.center.y + UIApplication.sharedApplication().statusBarFrame.height - self.view.frame.width/2, self.view.frame.width, self.view.frame.width))
         
         var fbimage = FBSDKSharePhoto()
@@ -720,6 +740,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         content.photos = [fbimage]
         
         var shareDialog = FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+
     }
     
     //MARK: FBSharing
@@ -732,7 +753,8 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     }
     
     func sharer(sharer: FBSDKSharing!, didFailWithError error: NSError!) {
-        //do something
+        let alert = UIAlertView(title: "Share on facebook?", message: "Make sure that SplatIt can access the Facebook app to spread the word!", delegate: self, cancelButtonTitle: "Got it.")
+        alert.show()
     }
     
     func notificationsButtonListener(sender: UIButton) {
