@@ -13,9 +13,8 @@ class NotificationBadge: UIView {
     var badgeNumber = 0
     
     init(number: Int) {
-        super.init()
+        super.init(frame: CGRect(x: 0, y: 0, width: 18, height: 18))
         self.badgeNumber = number
-        self.frame = CGRect(x: 0, y: 0, width: 18, height: 18)
     }
     
     private override init(frame: CGRect) {
@@ -42,6 +41,7 @@ class NotificationBadge: UIView {
             numberLabel.frame.size.height = self.frame.height
             self.frame.size.width = numberLabel.frame.width
             self.center.x = 6
+            //self.center.y = 0
             
             self.addSubview(numberLabel)
         }

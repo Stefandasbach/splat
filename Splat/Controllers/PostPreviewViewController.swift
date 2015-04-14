@@ -40,6 +40,9 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     let maxCharactersReply = 100
     var numberCharactersLeftReply: Int!
     
+    var settingsActionSheet: UIActionSheet = UIActionSheet()
+    var flagsActionSheet: UIActionSheet = UIActionSheet()
+    
     init(post: Post) {
         super.init()
         currentPost = post
@@ -53,8 +56,18 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        settingsActionSheet.dismissWithClickedButtonIndex(settingsActionSheet.cancelButtonIndex, animated: false)
+        
+        flagsActionSheet.dismissWithClickedButtonIndex(flagsActionSheet.cancelButtonIndex, animated: false)
+
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         
         var ylocCursor:CGFloat = 0
         var padding:CGFloat = 10
@@ -181,7 +194,11 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         let flagSize = 40 as CGFloat
         flagButton = FlagButton(frame: CGRectMake(padding, ylocCursor + padding, flagSize, flagSize))
         updateFlagButton()
-        mainScrollView.addSubview(flagButton)
+        
+        //if the user is not the creator, add a flag button
+        if (currentPost.getCreator().objectId != User().object.objectId) {
+            mainScrollView.addSubview(flagButton)
+        }
         
         ylocCursor = flagButton.frame.maxY
         
@@ -204,7 +221,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         var eventCreatedDate = currentPost.object.createdAt
         var today = NSDate()
         
-        let timeSincePost = getStringTimeDiff(eventCreatedDate, today)
+        let timeSincePost = getStringTimeDiff(eventCreatedDate!, today)
         timeCreatedLabel.text = "     \(timeSincePost.number)\(timeSincePost.unit)"
         
         
@@ -233,7 +250,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         loadReplyData(0, limit: 100)
         mainScrollView.addSubview(replyTable)
 
-        mainScrollView.contentSize = CGSize(width: mainScrollView.frame.size.width, height: ylocCursor+padding + 100)
+        mainScrollView.contentSize = CGSize(width: mainScrollView.frame.size.width, height: ylocCursor+padding + 20)
         
         self.view.addSubview(mainScrollView)
         
@@ -253,12 +270,12 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     }
     
     func settingsButtonListener(sender: UIButton) {
-        let actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil)
-        actionSheet.addButtonWithTitle("Delete Post")
-        actionSheet.addButtonWithTitle("Edit Post")
+        settingsActionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil)
+        settingsActionSheet.addButtonWithTitle("Delete Post")
+        settingsActionSheet.addButtonWithTitle("Edit Post")
         
-        actionSheet.actionSheetStyle = .Default
-        actionSheet.showInView(self.view)
+        settingsActionSheet.actionSheetStyle = .Default
+        settingsActionSheet.showInView(self.view)
     }
     
     func cancelReplyListener() {
@@ -269,25 +286,50 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     
     func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
         
-        switch buttonIndex {
+        if actionSheet == settingsActionSheet {
+            switch buttonIndex {
+                case 0: //cancel
+                    break;
+                case 1: //delete
+                    deletePost()
+                    break;
+                case 2: //delete
+                    editPost()
+                    break;
+                default:
+                    break
+            }
+        } else if (actionSheet == flagsActionSheet){
+            switch buttonIndex {
             case 0: //cancel
                 break;
-            case 1: //delete
-                deletePost()
+            case 1: //Inappropriate
+                Report.sendReport(currentPost, type: .Inappropriate, completion: { (success) -> Void in
+                    NSNotificationCenter.defaultCenter().postNotificationName("ReloadFeed", object: nil)
+                    self.navigationController?.popViewControllerAnimated(true)
+                })
                 break;
-            case 2: //delete
-                editPost()
+            case 2: //Without Consent
+                Report.sendReport(currentPost, type: .WithoutConsent, completion: { (success) -> Void in
+                    NSNotificationCenter.defaultCenter().postNotificationName("ReloadFeed", object: nil)
+                    self.navigationController?.popViewControllerAnimated(true)
+                })
                 break;
             default:
                 break
+            }
+            
+            
+            
         }
     }
     
     func deletePost() {
         currentPost.deleteObjectInBackground { (success) -> Void in
             if success {
-                self.navigationController?.popViewControllerAnimated(true)
                 NSNotificationCenter.defaultCenter().postNotificationName("RemovedPost", object: self.currentPost)
+                self.navigationController?.popViewControllerAnimated(true)
+                
             }
         }
     }
@@ -295,6 +337,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     func editPost() {
         commentText.editable = true
         commentText.becomeFirstResponder()
+        mainScrollView.contentSize.height += 200
         
     }
     
@@ -307,8 +350,8 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                 return false
             }
             
-            var stringLength = countElements(textView.text)
-            var textLength = countElements(text)
+            var stringLength = count(textView.text)
+            var textLength = count(text)
             var characters = stringLength + (textLength - range.length)
             
             if (characters <= maxCharacters) {
@@ -335,8 +378,8 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                 return false
             }
             
-            var stringLength = countElements(textView.text)
-            var textLength = countElements(text)
+            var stringLength = count(textView.text)
+            var textLength = count(text)
             var characters = stringLength + (textLength - range.length)
             
             if (characters <= maxCharactersReply) {
@@ -348,7 +391,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     }
 
     
-    override func textViewDidBeginEditing(textView: UITextView!) {
+    override func textViewDidBeginEditing(textView: UITextView) {
         
         if (textView == enlargedReplyView) {
             replyImageButton.enabled = true
@@ -378,7 +421,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
             
     }
     
-    override func textViewDidEndEditing(textView: UITextView!) {
+    override func textViewDidEndEditing(textView: UITextView) {
         
         if (textView == enlargedReplyView) {
             replyImageButton.enabled = false
@@ -409,6 +452,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         if (textView == commentText) {
             super.textViewDidEndEditing(textView)
             commentText.editable = false
+            mainScrollView.contentSize.height -= 200
             
             //TODO: test
             currentPost.editComment(commentText.text, completion: { () -> Void in
@@ -420,21 +464,21 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     
     func upvote(sender: UIButton) {
         if let post = currentPost {
-            var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as NSArray!
-            var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as NSArray!
+            var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as? NSArray
+            var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as? NSArray
             
             if var existingScore = voteSelector.Score.text?.toInt() {
             
                 if let oID = post.object.objectId {
                     //if upvote already selected
-                    if (upvotes != nil && upvotes.containsObject(oID)) {
+                    if (upvotes != nil && upvotes!.containsObject(oID)) {
                         //remove upvote
                         post.removeUpvote()
                         removeArchivedUpvote(oID, upvotes)
                         existingScore = existingScore - 1
 
                         //if downvote already selected
-                    } else if (downvotes != nil && downvotes.containsObject(oID)) {
+                    } else if (downvotes != nil && downvotes!.containsObject(oID)) {
                         //remove downvote
                         post.removeDownvote()
                         removeArchivedDownvote(oID, downvotes)
@@ -464,21 +508,21 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     func downvote(sender: UIButton) {
         
         if let post = currentPost {
-            var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as NSArray!
-            var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as NSArray!
+            var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatUpvotes") as? NSArray
+            var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatDownvotes") as? NSArray
             
             if var existingScore = voteSelector.Score.text?.toInt() {
             
                 if let oID = post.object.objectId {
                     //if downvote already selected
-                    if (downvotes != nil && downvotes.containsObject(oID)) {
+                    if (downvotes != nil && downvotes!.containsObject(oID)) {
                         //remove downvote
                         post.removeDownvote()
                         removeArchivedDownvote(oID, downvotes)
                         existingScore = existingScore + 1
                         
                         //if Upvote already selected
-                    } else if (upvotes != nil && upvotes.containsObject(oID)) {
+                    } else if (upvotes != nil && upvotes!.containsObject(oID)) {
                         //remove Upvote
                         post.removeUpvote()
                         removeArchivedUpvote(oID, upvotes)
@@ -505,11 +549,12 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     }
     
     func flag(sender: UIButton) {
-        var post = currentPost
-        var flags = NSUserDefaults.standardUserDefaults().objectForKey("SplatFlags") as NSArray!
+        //uncomment for ability to flag
+       /* var post = currentPost
+        var flags = NSUserDefaults.standardUserDefaults().objectForKey("SplatFlags") as? NSArray
         if let oID = post?.object.objectId {
             
-            if (flags != nil && flags.containsObject(oID)) {
+            if (flags != nil && flags!.containsObject(oID)) {
                 //remove flag
                 println("removeflag")
                 post?.removeFlag()
@@ -525,20 +570,32 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
             
             NSNotificationCenter.defaultCenter().postNotificationName("RefreshFeed", object: nil)
             
-        }
+        } */
+        
+        showReportDialog()
 
     }
     
     private func updateFlagButton() {
-        var flags = NSUserDefaults.standardUserDefaults().objectForKey("SplatFlags") as NSArray!
+        /* uncomment for ability to flag
+        var flags = NSUserDefaults.standardUserDefaults().objectForKey("SplatFlags") as? NSArray
         if let oID = currentPost.object.objectId {
             
-            if (flags != nil && flags.containsObject(oID)) {
+            if (flags != nil && flags!.containsObject(oID)) {
                 flagButton.tintColor = UIColorFromRGB(PURPLE_SELECTED)
             } else {
                 flagButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
             }
-        }
+        } */
+    }
+    
+    func showReportDialog() {
+        flagsActionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil)
+        flagsActionSheet.addButtonWithTitle("Inappropriate content")
+        flagsActionSheet.addButtonWithTitle("Posted without my consent")
+        
+        flagsActionSheet.actionSheetStyle = .Default
+        flagsActionSheet.showInView(self.view)
     }
     
     func upvoteReply(sender: UIButton) {
@@ -547,24 +604,24 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         if (cellIndexPath != nil) {
             var cellIndexPathExists: NSIndexPath
             cellIndexPathExists = cellIndexPath as NSIndexPath!
-            let cell = self.replyTable.cellForRowAtIndexPath(cellIndexPathExists) as ReplyCell
+            let cell = self.replyTable.cellForRowAtIndexPath(cellIndexPathExists) as! ReplyCell
         
             if let post = replyData[cellIndexPathExists.row] as? Reply {
-                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyUpvotes") as NSArray!
-                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyDownvotes") as NSArray!
+                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyUpvotes") as? NSArray
+                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyDownvotes") as? NSArray
                 
                 if var existingScore = cell.voteSelector.Score.text?.toInt() {
                     
                     if let oID = post.object.objectId {
                         //if upvote already selected
-                        if (upvotes != nil && upvotes.containsObject(oID)) {
+                        if (upvotes != nil && upvotes!.containsObject(oID)) {
                             //remove upvote
                             post.removeUpvote()
                             removeArchivedUpvoteReply(oID, upvotes)
                             existingScore = existingScore - 1
                             
                             //if downvote already selected
-                        } else if (downvotes != nil && downvotes.containsObject(oID)) {
+                        } else if (downvotes != nil && downvotes!.containsObject(oID)) {
                             //remove downvote
                             post.removeDownvote()
                             removeArchivedDownvoteReply(oID, downvotes)
@@ -599,24 +656,24 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         if (cellIndexPath != nil) {
             var cellIndexPathExists: NSIndexPath
             cellIndexPathExists = cellIndexPath as NSIndexPath!
-            let cell = self.replyTable.cellForRowAtIndexPath(cellIndexPathExists) as ReplyCell
+            let cell = self.replyTable.cellForRowAtIndexPath(cellIndexPathExists) as! ReplyCell
             
             if let post = replyData[cellIndexPathExists.row] as? Reply {
-                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyUpvotes") as NSArray!
-                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyDownvotes") as NSArray!
+                var upvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyUpvotes") as? NSArray
+                var downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyDownvotes") as? NSArray
                 
                 if var existingScore = cell.voteSelector.Score.text?.toInt() {
                     
                     if let oID = post.object.objectId {
                         //if downvote already selected
-                        if (downvotes != nil && downvotes.containsObject(oID)) {
+                        if (downvotes != nil && downvotes!.containsObject(oID)) {
                             //remove downvote
                             post.removeDownvote()
                             removeArchivedDownvoteReply(oID, downvotes)
                             existingScore = existingScore + 1
                             
                             //if Upvote already selected
-                        } else if (upvotes != nil && upvotes.containsObject(oID)) {
+                        } else if (upvotes != nil && upvotes!.containsObject(oID)) {
                             //remove Upvote
                             post.removeUpvote()
                             removeArchivedUpvoteReply(oID, upvotes)
@@ -685,7 +742,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     {
         //selected reply
         //TODO: add comment image preview
-        var currentReply = replyData.objectAtIndex(indexPath.row) as Reply
+        var currentReply = replyData.objectAtIndex(indexPath.row) as! Reply
         if currentReply.hasPicture() {
             var replyPreview = ReplyImageView(reply: currentReply)
             fadeinSubview(replyPreview, 0.2, self.view)
@@ -715,9 +772,9 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         
         var cell: ReplyCell!
         
-        let reply = replyData.objectAtIndex(indexPath.row) as Reply
+        let reply = replyData.objectAtIndex(indexPath.row) as! Reply
         
-        cell = tableView.dequeueReusableCellWithIdentifier("ReplyCell") as ReplyCell!
+        cell = tableView.dequeueReusableCellWithIdentifier("ReplyCell") as? ReplyCell
         
         
         if (cell == nil) {
@@ -759,7 +816,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         if let replyCell = cell as? ReplyCell {
             replyCell.cancelLoad()
-            replyCell.Image.image = nil
+            replyCell.myImage.image = nil
         }
     }
     
@@ -771,7 +828,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         query.orderByAscending("createdAt")
         query.whereKey("parent", equalTo: currentPost.object)
         query.findObjectsInBackgroundWithBlock({
-            (objects: [AnyObject]!, error: NSError!)->Void in
+            (objects, error)->Void in
             
             if (skip == 0) {
                 self.replyData.removeAllObjects()
@@ -783,15 +840,17 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                 
             }
             
-            for object in objects {
-                if let obj = object as? PFObject {
-                    self.replyData.addObject(Reply(pfObject: obj))
+            if let objs = objects {
+                for object in objs {
+                    if let obj = object as? PFObject {
+                        self.replyData.addObject(Reply(pfObject: obj))
+                    }
                 }
             }
             
             self.replyTable.reloadData()
             self.replyTable.frame.size.height = CGFloat(self.replyData.count)*100
-            self.mainScrollView.contentSize.height = self.replyTable.frame.maxY + 200
+            self.mainScrollView.contentSize.height = self.replyTable.frame.maxY + 20
             
         })
         
@@ -875,7 +934,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         
         if enlargedReplyView.isFirstResponder() {
             if let info = notification.userInfo {
-                var frame = (info[UIKeyboardFrameEndUserInfoKey] as NSValue).CGRectValue()
+                var frame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
                 scrollToY(-frame.height, self.view)
                 
             }
@@ -887,8 +946,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     {
         super.keyboardWillHide(notification)
     }
-    
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         super.touchesBegan(touches, withEvent: event)
             if (enlargedReplyView.isFirstResponder()) {
                 enlargedReplyView.resignFirstResponder()
@@ -897,7 +955,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     
     ///allows touch events to pass through
     class PostScrollView: UIScrollView {
-        override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
             super.touchesBegan(touches, withEvent: event)
             super.nextResponder()?.touchesBegan(touches, withEvent: event)
         }

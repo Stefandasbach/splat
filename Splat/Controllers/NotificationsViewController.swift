@@ -7,14 +7,21 @@
 //
 
 import Foundation
+import Parse
 
 class NotificationsViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var tableData: NSMutableArray!
+    var tableData = NSMutableArray()
     var navTitle = "Notifications"
     
+    init() {
+        super.init(style: .Plain)
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        
+    }
+    
     init(notifications: NSMutableArray!) {
-        super.init()
+        super.init(style: .Plain)
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         
         if notifications != nil {
@@ -47,21 +54,48 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
     override func viewDidLoad() {
         super.viewDidLoad()
         renderNavbar()
+        Notification.resetIconBadgeNumber(UIApplication.sharedApplication())
         
+        var query = PFQuery(className: "Notification")
+        query.limit = 20
+        query.orderByDescending("createdAt")
+        query.whereKey("receiver", equalTo: User().getObject().objectId!)
+        query.includeKey("post")
+        query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
+            var notifications = NSMutableArray()
+            if (error != nil) { println(error) } else {
+                if (objects == nil) { println("No posts") } else {
+                    if let objs = objects {
+                        for obj in objs {
+                            if let pfobj = obj as? PFObject {
+                                var post = Notification(pfObject: pfobj)
+                                if (post.getPost() != nil) {
+                                    self.tableData.addObject(post)
+                                }
+                            }
+                        }
+                    }
+                    
+                    self.tableView.reloadData()
+                }
+            }
+        }
+
     }
     
     func renderNavbar() {
-        var backNavItem = BackNavItem(orientation: BackNavItemOrientation.Right)
-        backNavItem.button.addTarget(self, action: "backButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+        var feedNavItem = FeedNavItem()
+        feedNavItem.button.addTarget(self, action: "feedButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         
-        var discoverButton = UIButton(frame: CGRectMake(0, 0, 20, 20))
+        var discoverButton = UIButton(frame: CGRectMake(0, 0, 40, 40))
         discoverButton.setImage(UIImage(named: "bucketIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
+        discoverButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         discoverButton.tintColor = UIColor.whiteColor()
         discoverButton.addTarget(self, action: Selector("discoverButtonListener:"), forControlEvents: UIControlEvents.TouchUpInside)
         var discoverNavItem = UIBarButtonItem(customView: discoverButton)
         
         self.navigationItem.leftBarButtonItem = discoverNavItem
-        self.navigationItem.rightBarButtonItem = backNavItem
+        self.navigationItem.rightBarButtonItem = feedNavItem
         
         var titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         titleLabel.text = navTitle
@@ -72,15 +106,15 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
         self.navigationItem.titleView = titleLabel
     }
     
-    func backButtonListener(sender: UIButton) {
-        (self.navigationController? as RootNavViewController).popVC(.Left)
+    func feedButtonListener(sender: UIButton) {
+        (self.navigationController as! RootNavViewController).popVC(.Left)
     }
     func discoverButtonListener(sender: UIButton) {
-        (self.navigationController? as RootNavViewController).pushVC(.Right, viewController: DiscoverViewController())
+        (self.navigationController as! RootNavViewController).pushVC(.Right, viewController: DiscoverViewController())
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        var currentNotification = tableData.objectAtIndex(indexPath.row) as Notification
+        var currentNotification = tableData.objectAtIndex(indexPath.row) as! Notification
         if let post = currentNotification.getPost() {
             var previewController = PostPreviewViewController(post: post)
             self.navigationController?.pushViewController(previewController, animated: true)
@@ -109,9 +143,9 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
         
         var cell: NotificationCell!
         
-        let notification = tableData.objectAtIndex(indexPath.row) as Notification
+        let notification = tableData.objectAtIndex(indexPath.row) as! Notification
         
-        cell = tableView.dequeueReusableCellWithIdentifier("NotificationCell") as NotificationCell!
+        cell = tableView.dequeueReusableCellWithIdentifier("NotificationCell") as? NotificationCell
         
         
         if (cell == nil) {

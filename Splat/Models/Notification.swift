@@ -14,15 +14,15 @@ class Notification: NSObject {
     class func enableNotificationsForUser(user: User) {
         if let channels = PFInstallation.currentInstallation().objectForKey("channels") as? NSArray {
             //if the channel is set for the wrong user
-            if (channels[0] as NSString != "profile\(user.getObject().objectId)") {
+            if ((channels[0] as? String) != ("profile\(user.getObject().objectId!)")) {
                 let currentInstallation = PFInstallation.currentInstallation()
-                currentInstallation.setObject(["profile\(user.getObject().objectId)"], forKey: "channels")
+                currentInstallation.setObject(["profile\(user.getObject().objectId!)"], forKey: "channels")
                 currentInstallation.saveInBackground()
             }
             //if a channel is not set
         } else {
             let currentInstallation = PFInstallation.currentInstallation()
-            currentInstallation.setObject(["profile\(user.getObject().objectId)"], forKey: "channels")
+            currentInstallation.setObject(["profile\(user.getObject().objectId!)"], forKey: "channels")
             currentInstallation.saveInBackground()
         }
         
@@ -47,7 +47,7 @@ class Notification: NSObject {
         notification.setType("Reply")
         notification.setPost(parentPost.getObject())
         notification.setReply(reply.getObject())
-        notification.setReceiver(parentPost.getCreator().objectId)
+        notification.setReceiver(parentPost.getCreator().objectId!)
         
         notification.getObject().saveInBackgroundWithBlock { (success, error) -> Void in
             if (error != nil) {
@@ -56,7 +56,7 @@ class Notification: NSObject {
                 if (success) {
                     println("Sent notification for reply.")
                     let push = PFPush()
-                    push.setChannel("profile\(parentPost.getCreator().objectId)")
+                    push.setChannel("profile\(parentPost.getCreator().objectId!)")
                     push.setData(["alert":"Someone replied to your post!", "badge":"Increment"])
                     push.sendPushInBackground()
                 }
@@ -92,7 +92,7 @@ class Notification: NSObject {
     }
     
     func getType() -> String? {
-        return object["type"] as String?
+        return object["type"] as? String
     }
     
     func setReply(reply: PFObject) {
@@ -100,7 +100,7 @@ class Notification: NSObject {
     }
     
     func getReply() -> Reply? {
-        if let pfObject = object["reply"] as PFObject? {
+        if let pfObject = object["reply"] as? PFObject {
             var reply = Reply(pfObject: pfObject)
             return reply
         } else {
@@ -114,7 +114,7 @@ class Notification: NSObject {
     }
     
     func getPost() -> Post? {
-        if let pfObject = object["post"] as PFObject? {
+        if let pfObject = object["post"] as? PFObject {
             var post = Post(pfObject: pfObject)
             return post
         } else {
@@ -128,6 +128,6 @@ class Notification: NSObject {
     }
     
     func getReceiver() -> String? {
-        return object["receiver"] as String?
+        return object["receiver"] as? String
     }
 }

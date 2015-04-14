@@ -18,8 +18,8 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
         super.init(rootViewController: rootViewController)
     }
 
-    override init() {
-        super.init()
+    init() {
+        super.init(nibName: nil, bundle: nil)
     }
     
     override init(navigationBarClass: AnyClass!, toolbarClass: AnyClass!) {
@@ -98,7 +98,7 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
         switch direction {
         case .Left:
             var animation = CATransition()
-            animation.duration = 1.0
+            animation.duration = 0.35
             animation.type = kCATransitionPush
             animation.subtype = kCATransitionFromRight
             animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
@@ -115,7 +115,7 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
             
             /* Animation with fade */
             var animation = CATransition()
-            animation.duration = 1.0
+            animation.duration = 0.35
             animation.type = kCATransitionPush
             animation.subtype = kCATransitionFromLeft
             animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
@@ -128,7 +128,7 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
         switch direction {
         case .Left:
             var animation = CATransition()
-            animation.duration = 1.0
+            animation.duration = 0.35
             animation.type = kCATransitionPush
             animation.subtype = kCATransitionFromRight
             animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
@@ -137,7 +137,7 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
             return self.popViewControllerAnimated(false)!
         case .Right:
             var animation = CATransition()
-            animation.duration = 1.0
+            animation.duration = 0.35
             animation.type = kCATransitionPush
             animation.subtype = kCATransitionFromLeft
             animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)

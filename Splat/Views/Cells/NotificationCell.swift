@@ -58,11 +58,11 @@ class NotificationCell: UITableViewCell {
         var eventCreatedDate = notification.object.createdAt
         var today = NSDate()
         
-        let timeSincePost = getStringTimeDiff(eventCreatedDate, today)
+        let timeSincePost = getStringTimeDiff(eventCreatedDate!, today)
         notificationTime.text = "\(timeSincePost.number)\(timeSincePost.unit)"
         
         postPicture.image = nil
-        if let post = notification.getPost()? {
+        if let post = notification.getPost() {
             post.getEventPicture { (imageData) -> Void in
                 self.postPicture.image = UIImage(data: imageData)
             }
@@ -72,7 +72,7 @@ class NotificationCell: UITableViewCell {
     }
     
     func cancelLoad() {
-        if let post = currentNotification.getPost()? {
+        if let post = currentNotification.getPost() {
             post.cancelPictureGet()
         }
     }

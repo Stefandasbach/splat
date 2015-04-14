@@ -24,8 +24,8 @@ class ResponsiveTextFieldViewController : UIViewController
     
     var keyboardToolbar: UIToolbar!
     
-    override init() {
-        super.init()
+    init() {
+        super.init(nibName: nil, bundle: nil)
         initializeView()
     }
     required init(coder aDecoder: NSCoder) {
@@ -63,7 +63,7 @@ class ResponsiveTextFieldViewController : UIViewController
         self.keyboardIsShowing = true
         
         if let info = notification.userInfo {
-            self.keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as NSValue).CGRectValue()
+            self.keyboardFrame = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
             self.arrangeViewOffsetFromKeyboard()
         }
         
@@ -96,8 +96,7 @@ class ResponsiveTextFieldViewController : UIViewController
 
     }
     
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent)
-    {
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         removeKeyboard()
     }
     
@@ -120,7 +119,7 @@ class ResponsiveTextFieldViewController : UIViewController
     }
     
     func getDatePickerData(textField: UITextField?) {
-        var datePicker = textField?.inputView as UIDatePicker
+        var datePicker = textField?.inputView as! UIDatePicker
         var date = datePicker.date
         var dateFormatter = NSDateFormatter()
         
@@ -142,7 +141,7 @@ class ResponsiveTextFieldViewController : UIViewController
         
     }
     
-    func textFieldDidBeginEditing(textField: UITextField!)
+    func textFieldDidBeginEditing(textField: UITextField)
     {
         
         if(self.activeTextView != nil) {

@@ -132,27 +132,27 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
             return false
         }
         
-        var stringLength = countElements(textView.text)
-        var textLength = countElements(text)
+        var stringLength = count(textView.text)
+        var textLength = count(text)
         var characters = stringLength + (textLength - range.length)
         
         if (characters <= maxCharacters) {
             numberCharactersLeft = maxCharacters - characters
         }
-        if let title = self.navigationItem.titleView? as? UILabel {
+        if let title = self.navigationItem.titleView as? UILabel {
             title.text = "\(numberCharactersLeft)"
         }
         return characters <= maxCharacters;
     }
     
-    override func textViewDidBeginEditing(textView: UITextView!) {
+    override func textViewDidBeginEditing(textView: UITextView) {
         super.textViewDidBeginEditing(textView)
         if (textView.text == "") {
             commentBoxPlaceholderImage.removeFromSuperview()
         }
     }
   
-    override func textViewDidEndEditing(textView: UITextView!) {
+    override func textViewDidEndEditing(textView: UITextView) {
         super.textViewDidEndEditing(textView)
         
         if (textView.text == "") {
@@ -179,9 +179,9 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
         //re-enable toolbar
         if let nav = self.navigationController as? RootNavViewController {
             nav.enableBottomToolbar()
+            nav.popVC(.Right)
         }
-        
-        (self.navigationController? as RootNavViewController).popVC(.Right)
+    
     }
     
     func getPicture() {
@@ -199,7 +199,7 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
         /* Ask for access to camera */
         var cameraStatus = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
         if (cameraStatus != AVAuthorizationStatus.Authorized) {
-            self.showAlert("Use your camera?", message: "Splat does not have permission to use the camera. Please update your privacy settings to get in on the fun!", yesTitle: "Yes", noTitle: "No")
+            self.showAlert("Use your camera?", message: "SplatIt does not have permission to use the camera. Please update your privacy settings to get in on the fun!", yesTitle: "Yes", noTitle: "No")
             return false
         }
         /* If we reached here, either cameraStatus was authorized, or
@@ -211,7 +211,7 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
         /* Ask for access to photos */
         var photosEnabled = PHPhotoLibrary.authorizationStatus()
         if (photosEnabled != PHAuthorizationStatus.Authorized) {
-            showAlert("Use Images from Photos?", message: "Splat needs access to your photos so you can upload from your camera roll", yesTitle: "Yes", noTitle: "Later")
+            showAlert("Use Images from Photos?", message: "SplatIt needs access to your photos so you can upload from your camera roll", yesTitle: "Yes", noTitle: "Later")
             return false
         }
         /* Authorized photos access */
@@ -259,9 +259,10 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
                     alert.show()
                     return
                 }
-                
-                post.setGeopoint(geopoint)
-                post.setState((NSUserDefaults.standardUserDefaults().objectForKey("state") as String!))
+                if let geo = geopoint {
+                    post.setGeopoint(geo)
+                }
+                post.setState((NSUserDefaults.standardUserDefaults().objectForKey("state") as? String))
                 post.saveObjectInBackgroundForCurrentUser { (success) -> Void in
                     if success {
                         

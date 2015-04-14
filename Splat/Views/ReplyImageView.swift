@@ -15,7 +15,7 @@ class ReplyImageView: UIView {
     var currentReply: Reply!
     
     init(reply: Reply) {
-        super.init()
+        super.init(frame: CGRectZero)
         
         currentReply = reply
     }
@@ -29,7 +29,7 @@ class ReplyImageView: UIView {
     }
     
     override func didMoveToSuperview() {
-        if let superview = self.superview? {
+        if let superview = self.superview {
             self.frame = superview.frame
             self.frame.origin.x = 0
             self.frame.origin.y = 0
@@ -70,7 +70,7 @@ class ReplyImageView: UIView {
     }
     
     func exitButtonListener(sender: UIButton) {
-        if let superview = self.superview? {
+        if let superview = self.superview {
             fadeoutSubview(self, 0.2, superview)
         }
     }

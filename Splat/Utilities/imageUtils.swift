@@ -12,6 +12,7 @@ let PURPLE_SELECTED: UInt = 0xaa2ef0
 let PURPLE_UNSELECTED: UInt = 0xe8d8f0
 let TOOLBAR_GREY: UInt = 0xf4f4f4
 let BACKGROUND_GREY: UInt = 0xe9e9e9
+let DARK_PURPLE: UInt = 0x821cbb
 
 func UIColorFromRGB(rgbHexValue: UInt) -> UIColor {
     return UIColor(

@@ -39,7 +39,7 @@ class Reply : NSObject {
     }
     
     func getCreator()-> PFUser {
-        return object["creator"] as PFUser
+        return object["creator"] as! PFUser
     }
     
     func setParentPost(post: PFObject) {
@@ -47,7 +47,7 @@ class Reply : NSObject {
     }
     
     func getParentPost() -> PFObject! {
-        return object["parent"] as PFObject!
+        return object["parent"] as? PFObject
     }
     
     func setPicture(pngImage: NSData) {
@@ -60,13 +60,14 @@ class Reply : NSObject {
             println("Reply picture not present")
             return
         }
-        var file = object["pictureFile"] as PFFile!
-        file.getDataInBackgroundWithBlock {
-            (imageData: NSData!, error: NSError!) -> Void in
-            if error == nil {
-                completion(imageData: imageData)
-            } else {
-                println(error)
+        if var file = object["pictureFile"] as? PFFile {
+            file.getDataInBackgroundWithBlock {
+                (imageData, error) -> Void in
+                if error == nil {
+                    completion(imageData: imageData)
+                } else {
+                    println(error)
+                }
             }
         }
     }
@@ -76,8 +77,9 @@ class Reply : NSObject {
             println("Post picture not present")
             return
         }
-        var file = object["pictureFile"] as PFFile!
-        file.cancel()
+        if var file = object["pictureFile"] as? PFFile {
+            file.cancel()
+        }
     }
     
     func hasPicture() -> Bool {
@@ -92,7 +94,7 @@ class Reply : NSObject {
     }
     
     func getComment() -> String? {
-        return object["comment"] as String?
+        return object["comment"] as? String
         
     }
     
@@ -114,7 +116,7 @@ class Reply : NSObject {
     
     func saveObjectInBackground(completion: (success: Bool) -> Void) {
         object.saveInBackgroundWithBlock({
-            (succeeded: Bool!, error: NSError!) -> Void in
+            (succeeded, error) -> Void in
             if(error == nil) {
                 if (succeeded == true) {
                     completion(success: true)
@@ -128,7 +130,7 @@ class Reply : NSObject {
     
     func saveObjectInBackgroundForCurrentUser(completion: (success: Bool) -> Void) {
         object.saveInBackgroundWithBlock({
-            (succeeded: Bool!, error: NSError!) -> Void in
+            (succeeded, error) -> Void in
             if(error == nil) {
                 if (succeeded == true) {
                     println("Added reply")
@@ -148,7 +150,7 @@ class Reply : NSObject {
     }
     
     private func addInverseRelationshipToPost(){
-        self.getParentPost().addUniqueObject(self.object.objectId, forKey: "replies")
+        self.getParentPost().addUniqueObject(self.object.objectId!, forKey: "replies")
         self.getParentPost().saveInBackground()
     }
     
@@ -171,13 +173,13 @@ class Reply : NSObject {
     
     //still testing
     func deleteObjectInBackground(completion: (success: Bool) -> Void) {
-        if (self.getCreator().objectId != PFUser.currentUser().objectId) {
+        if (self.getCreator().objectId != PFUser.currentUser()!.objectId) {
             println("Error: cannot delete a post that is not yours.")
             return
         }
         
         object.deleteInBackgroundWithBlock({
-            (succeeded: Bool!, error: NSError!) -> Void in
+            (succeeded, error) -> Void in
             if(error == nil) {
                 if (succeeded == true) {
                     println("Removed reply")
@@ -218,7 +220,7 @@ class Reply : NSObject {
     }
     
     func getScore() -> Int! {
-        return object["score"] as Int!
+        return object["score"] as? Int
     }
     
     func addUpvote() {

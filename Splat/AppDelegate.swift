@@ -60,6 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     func applicationWillEnterForeground(application: UIApplication) {
        /* NSNotificationCenter.defaultCenter().postNotificationName("ReloadFeed", object: nil) */
+
         getUserLocation()
         login()
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
@@ -82,7 +83,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         installation.setDeviceTokenFromData(deviceToken)
         installation.saveInBackground()
         
-        PFPush.subscribeToChannelInBackground("", block: { (succeeded: Bool, error: NSError!) -> Void in
+        PFPush.subscribeToChannelInBackground("", block: { (succeeded, error) -> Void in
             if succeeded {
                 println("SplatIt successfully subscribed to push notifications on the broadcast channel.");
             } else {
@@ -112,7 +113,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         //PFUser.enableAutomaticUser()
         /* Login */
         if (PFAnonymousUtils.isLinkedWithUser(PFUser.currentUser())) {
-            Notification.enableNotificationsForUser(User(pfObject: PFUser.currentUser()))
+            Notification.enableNotificationsForUser(User(pfObject: PFUser.currentUser()!))
         }
         else {
             PFAnonymousUtils.logInWithBlock { (user, error) -> Void in
@@ -124,7 +125,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 defaultACL.setPublicWriteAccess(true)
                 PFACL.setDefaultACL(defaultACL, withAccessForCurrentUser:true)
                 
-                Notification.enableNotificationsForUser(User(pfObject: PFUser.currentUser()))
+                Notification.enableNotificationsForUser(User(pfObject: PFUser.currentUser()!))
                 
                 //remove old user defaults
                 if let appDomain = NSBundle.mainBundle().bundleIdentifier {
@@ -162,7 +163,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         CLGeocoder().reverseGeocodeLocation(userLocation, completionHandler: {
                                            (placemarks: [AnyObject]!, error: NSError!) in
             if error == nil && placemarks.count > 0 {
-                let geoLocation = placemarks[0] as CLPlacemark
+                let geoLocation = placemarks[0] as! CLPlacemark
                 let country = geoLocation.country
                 let state = geoLocation.administrativeArea
                 let defaults = NSUserDefaults.standardUserDefaults()
@@ -232,6 +233,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         }
 
     }
-
+    
 }
 

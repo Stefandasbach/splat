@@ -9,10 +9,10 @@
 import Foundation
 import UIKit
 import Parse
-import MapKit
 import FBSDKShareKit
+import TwitterKit
 
-class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKSharingDelegate {
+class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKSharingDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, CaretSelectorDelegate, UIActionSheetDelegate, UIAlertViewDelegate {
     
     var statusBarStyle = UIStatusBarStyle.LightContent
     
@@ -42,17 +42,181 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     var ratedPosts:NSMutableArray!
     var ratedReplies:NSMutableArray!
     
-    var numberPostsButton:UIButton!
-    var numberRepliesButton: UIButton!
-    var ratedPostsButton:UIButton!
-    var ratedRepliesButton:UIButton!
+    var myButton: StatsButton!
+    var ratedButton: StatsButton!
     
-    var map: MKMapView!
+    var collectionView:UICollectionView!
+    var currentData = NSMutableArray()
+    var currentSelection = ProfileSelection.MyPosts
     
-    var screen = "Score"
+    var screen = CurrentScreen.Score
+    
+    var shareActionSheet: UIActionSheet!
+    
+    enum ProfileSelection {
+        case MyPosts
+        case MyReplies
+        case RatedPosts
+        case RatedReplies
+    }
+    
+    enum CurrentScreen {
+        case Score
+        case Profile
+    }
+    
+    class StatsButton: UIButton {
         
-    override init() {
-        super.init()
+        var labelName = ""
+        private(set) var isFocused = false
+        
+        private var myNumPostsLabel: UILabel!
+        private var myNumRepliesLabel: UILabel!
+        private var myLabel: UILabel!
+        
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+        }
+        
+        required init(coder aDecoder: NSCoder) {
+            super.init(coder: aDecoder)
+        }
+        
+        override func didMoveToSuperview() {
+            self.backgroundColor = UIColor.clearColor()
+            self.layer.cornerRadius = 5
+            var screenWidth:CGFloat = 320
+            var subviewWidth: CGFloat = self.frame.width/3
+            if let sView = self.superview {
+                screenWidth = sView.frame.width
+            }
+            
+            if screenWidth == 320 {
+                myLabel = UILabel(frame: CGRect(x: 0, y: 0, width: subviewWidth, height: self.frame.height))
+                myLabel.font = UIFont(name: "Pacifico", size: 14.0)
+            } else {
+                myLabel = UILabel(frame: CGRect(x: 0, y: 0, width: subviewWidth, height: self.frame.height))
+                myLabel.font = UIFont(name: "Pacifico", size: 16.0)
+            }
+            
+            myLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+            myLabel.textAlignment = NSTextAlignment.Center
+            myLabel.text = labelName
+            
+            var myPostsLabel:UILabel!
+            
+            if screenWidth == 320 {
+                myPostsLabel = UILabel(frame: CGRect(x: myLabel.frame.maxX, y: myLabel.center.y, width: subviewWidth, height: self.frame.height/2))
+                myPostsLabel.font = UIFont.systemFontOfSize(12)
+            } else {
+                myPostsLabel = UILabel(frame: CGRect(x: myLabel.frame.maxX, y: myLabel.center.y, width: subviewWidth, height: self.frame.height/2))
+                myPostsLabel.font = UIFont.systemFontOfSize(14)
+            }
+            
+            myPostsLabel.text = "Posts"
+            myPostsLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+            myPostsLabel.textAlignment = NSTextAlignment.Center
+            
+            if screenWidth == 320 {
+                myNumPostsLabel = UILabel(frame: CGRect(x: myLabel.frame.maxX, y: myLabel.frame.origin.y, width: subviewWidth, height: self.frame.height/2))
+                myNumPostsLabel.font = UIFont.boldSystemFontOfSize(14)
+            } else {
+                myNumPostsLabel = UILabel(frame: CGRect(x: myLabel.frame.maxX, y: myLabel.frame.origin.y, width: subviewWidth, height: self.frame.height/2))
+                myNumPostsLabel.font = UIFont.boldSystemFontOfSize(16)
+            }
+            myNumPostsLabel.text = "\(5)"
+            myNumPostsLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+            
+            myNumPostsLabel.textAlignment = NSTextAlignment.Center
+            
+            //Add line to break
+            var path = UIBezierPath()
+            path.moveToPoint(CGPointMake(myNumPostsLabel.frame.minX + 5, myNumPostsLabel.frame.maxY))
+            path.addLineToPoint(CGPointMake(myNumPostsLabel.frame.maxX - 5, myNumPostsLabel.frame.maxY))
+            
+            //create shape from path
+            var shapeLayer = CAShapeLayer()
+            shapeLayer.path = path.CGPath
+            shapeLayer.strokeColor = UIColor.whiteColor().colorWithAlphaComponent(0.5).CGColor
+            shapeLayer.lineWidth = 0.5
+            shapeLayer.fillColor = UIColor.clearColor().CGColor
+            
+            var myRepliesLabel: UILabel!
+            
+            if screenWidth == 320 {
+                myRepliesLabel = UILabel(frame: CGRect(x: myPostsLabel.frame.maxX, y: myLabel.center.y, width: subviewWidth, height: self.frame.height/2))
+                myRepliesLabel.font = UIFont.systemFontOfSize(12)
+            } else {
+                myRepliesLabel = UILabel(frame: CGRect(x: myPostsLabel.frame.maxX, y: myLabel.center.y, width: subviewWidth, height: self.frame.height/2))
+                myRepliesLabel.font = UIFont.systemFontOfSize(14)
+            }
+            
+            myRepliesLabel.text = "Replies"
+            myRepliesLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+            myRepliesLabel.textAlignment = NSTextAlignment.Center
+            
+            
+            if screenWidth == 320 {
+                myNumRepliesLabel = UILabel(frame: CGRect(x: myPostsLabel.frame.maxX, y: myLabel.frame.origin.y, width: subviewWidth, height: self.frame.height/2))
+                myNumRepliesLabel.font = UIFont.boldSystemFontOfSize(14)
+            } else {
+                myNumRepliesLabel = UILabel(frame: CGRect(x: myPostsLabel.frame.maxX, y: myLabel.frame.origin.y, width: subviewWidth, height: self.frame.height/2))
+                myNumRepliesLabel.font = UIFont.boldSystemFontOfSize(16)
+            }
+            
+            myNumRepliesLabel.text = "\(10)"
+            myNumRepliesLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+            myNumRepliesLabel.textAlignment = NSTextAlignment.Center
+            
+            //Add line to break
+            var path2 = UIBezierPath()
+            path2.moveToPoint(CGPointMake(myNumRepliesLabel.frame.minX + 5, myNumRepliesLabel.frame.maxY))
+            path2.addLineToPoint(CGPointMake(myNumRepliesLabel.frame.maxX - 5, myNumRepliesLabel.frame.maxY))
+            
+            //create shape from path
+            var shapeLayer2 = CAShapeLayer()
+            shapeLayer2.path = path2.CGPath
+            shapeLayer2.strokeColor = UIColor.whiteColor().colorWithAlphaComponent(0.5).CGColor
+            shapeLayer2.lineWidth = 0.5
+            shapeLayer2.fillColor = UIColor.clearColor().CGColor
+            
+            self.addSubview(myLabel)
+            self.addSubview(myPostsLabel)
+            self.layer.addSublayer(shapeLayer)
+            self.addSubview(myNumPostsLabel)
+            self.addSubview(myRepliesLabel)
+            self.layer.addSublayer(shapeLayer2)
+            self.addSubview(myNumRepliesLabel)
+        }
+        
+        func focus() {
+            isFocused = true
+            self.backgroundColor = UIColorFromRGB(DARK_PURPLE)
+            myLabel.textColor = UIColor.whiteColor()
+            myNumPostsLabel.textColor = UIColor.whiteColor()
+            myNumRepliesLabel.textColor = UIColor.whiteColor()
+        }
+        
+        func removeFocus() {
+            isFocused = false
+            self.backgroundColor = UIColor.clearColor()
+            myLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+            myNumPostsLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+            myNumRepliesLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+        }
+        
+        func setPosts(num: Int) {
+            myNumPostsLabel.text = "\(num)"
+        }
+        
+        func setReplies(num: Int) {
+            myNumRepliesLabel.text = "\(num)"
+        }
+        
+    }
+        
+    init() {
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -88,6 +252,10 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
+        if (shareActionSheet != nil) {
+            shareActionSheet.dismissWithClickedButtonIndex(shareActionSheet.cancelButtonIndex, animated: false)
+        }
+        
         self.notificationsBadge.removeFromSuperview()
         self.notificationsBadge = nil
     }
@@ -96,23 +264,6 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         super.viewDidAppear(animated)
         
         
-        PFGeoPoint.geoPointForCurrentLocationInBackground { (geopoint, error) -> Void in
-            if (error == nil){
-                let location = CLLocationCoordinate2D(
-                    latitude: geopoint.latitude,
-                    longitude: geopoint.longitude
-                )
-                
-                let span = MKCoordinateSpanMake(0.05, 0.05)
-                let region = MKCoordinateRegion(center: location, span: span)
-                self.map.setRegion(region, animated: true)
-                
-               
-                let annotation = MKPointAnnotation()
-                annotation.setCoordinate(location)
-                self.map.addAnnotation(annotation)
-            }
-        }
     }
     
     ///Adds the programmatic elements to the screen
@@ -134,14 +285,14 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         gradient.anchorPoint = CGPointZero;
         
         //SHARE BUTTON
-        shareButton = UIButton(frame: CGRectMake(10, self.view.frame.height - 50 - UIApplication.sharedApplication().statusBarFrame.height, 40, 40))
+        shareButton = UIButton(frame: CGRectMake(20, 10, 40, 40))
         shareButton.setImage(UIImage(named: "shareIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         shareButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
         shareButton.tintColor = UIColor.whiteColor()
         shareButton.addTarget(self, action: "shareButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         
         //NOTIFICATIONS BUTTON
-        notificationsButton = UIButton(frame: CGRectMake(self.view.frame.width-50, 10, 40, 40))
+        notificationsButton = UIButton(frame: CGRectMake(self.view.frame.width-60, 10, 40, 40))
         notificationsButton.setImage(UIImage(named: "notificationsIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         notificationsButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
         notificationsButton.tintColor = UIColor.whiteColor()
@@ -177,11 +328,9 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             self.scoreLabel.center = CGPoint(x: self.circleView.frame.width/2, y: 2*self.circleView.frame.height/3 - 20)
         
         self.circleView.addSubview(self.scoreLabel)
-        
-        
-        //get the score and add it
-        self.getUserScore()
 
+        //get the score and add it
+        getUserScore()
         
         //Scrolls to the profile area
         caretButton = UIButton(frame: CGRectMake(7*self.mainScrollView.frame.width/16, self.view.frame.height-self.mainScrollView.frame.width/8-50, self.mainScrollView.frame.width/8, self.mainScrollView.frame.width/8))
@@ -206,10 +355,10 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         mainScrollView.addSubview(shareButton)
         mainScrollView.addSubview(circleView)
         mainScrollView.addSubview(caretButton)
-        mainScrollView.addSubview(caretButtonUp)
+        //mainScrollView.addSubview(caretButtonUp)
         
         //set gradients for background
-        mainScrollView.layer.insertSublayer(gradient, atIndex: 0)
+       // mainScrollView.layer.insertSublayer(gradient, atIndex: 0)
         
         //add the main views
         self.view.addSubview(mainScrollView)
@@ -229,28 +378,39 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             }
             
             for var i = 0; i < posts.count; i++ {
-                posts[i] = posts[i].objectId
+                if let post = posts[i] as? PFObject {
+                    if let oid = post.objectId {
+                        posts[i] = oid
+                    }
+                }
+                
             }
             
             var query = PFQuery(className: "Post")
-            query.whereKey("objectId", containedIn: posts)
+            query.whereKey("objectId", containedIn: posts as [AnyObject])
             query.orderByDescending("createdAt")
             //Get objects for the pointer data
-            query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in                if (error != nil) {
+            query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
+            if (error != nil) {
                 println(error)
             } else {
                 if (objects == nil) {
                     println("No posts")
                 } else {
-                    for obj in objects {
-                        if let pfobj = obj as? PFObject {
-                            var post = Post(pfObject: pfobj)
-                            self.userPosts.addObject(post)
-                            if post.getScore() != nil {
-                                score = self.postScoreWeighting*post.getScore() + score
+                    if let objs = objects {
+                        for obj in objs {
+                            if let pfobj = obj as? PFObject {
+                                var post = Post(pfObject: pfobj)
+                                self.userPosts.addObject(post)
+                                if post.getScore() != nil {
+                                    score = self.postScoreWeighting*post.getScore() + score
+                                }
+                                
                             }
-                            
                         }
+                        
+                        self.currentData = self.userPosts
+                        self.collectionView.reloadData()
                     }
                     
                 }
@@ -265,11 +425,16 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                     }
                     
                     for var i = 0; i < replyOIDs.count; i++ {
-                        replyOIDs[i] = replyOIDs[i].objectId
+                        if let reply = replyOIDs[i] as? PFObject {
+                            if let oid = reply.objectId {
+                                replyOIDs[i] = oid
+                            }
+                        }
+                        
                     }
                     
                     var query = PFQuery(className: "Reply")
-                    query.whereKey("objectId", containedIn: replyOIDs)
+                    query.whereKey("objectId", containedIn: replyOIDs as [AnyObject])
                     //Get objects for the pointer data
                     query.findObjectsInBackgroundWithBlock({ (replies, error2) -> Void in
                         if (error2 != nil) {
@@ -279,14 +444,16 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                                 println("No replies")
                             } else {
                                 
-                                for obj in replies {
-                                    if let pfobj = obj as? PFObject {
-                                        var reply = Reply(pfObject: pfobj)
-                                        //self.userReplies.addObject(reply)
-                                        if reply.getScore() != nil {
-                                            score = self.replyScoreWeighting*reply.getScore() + score
+                                if let objs = replies {
+                                    for obj in objs {
+                                        if let pfobj = obj as? PFObject {
+                                            var reply = Reply(pfObject: pfobj)
+                                            //self.userReplies.addObject(reply)
+                                            if reply.getScore() != nil {
+                                                score = self.replyScoreWeighting*reply.getScore() + score
+                                            }
+                                            
                                         }
-                                        
                                     }
                                 }
                                 
@@ -327,12 +494,38 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     ///Adds the profile elements
     func renderProfile() {
         
-        //PROFILE SECTION LABEL
-        var myProfileLabel = UILabel(frame: CGRectMake(10, 0.6 * mainScrollView.contentSize.height + 80, 100, 100))
-        myProfileLabel.text = "My Profile"
-        myProfileLabel.textColor = UIColorFromRGB(PURPLE_SELECTED)
-        myProfileLabel.font = UIFont.systemFontOfSize(18)
-        myProfileLabel.sizeToFit()
+        initGestureRecognizers()
+        
+        /** NEW PROFILE **/
+        var statsCircle: UIView!
+        if self.view.frame.width == 320 {
+            statsCircle = UIView(frame: CGRect(x: 20, y: 0.6 * mainScrollView.contentSize.height + 20 + UIApplication.sharedApplication().statusBarFrame.height, width: 100, height: 100))
+        } else {
+            statsCircle = UIView(frame: CGRect(x: 20, y: 0.6 * mainScrollView.contentSize.height + 20 + UIApplication.sharedApplication().statusBarFrame.height, width: 120, height: 120))
+        }
+        statsCircle.backgroundColor = UIColorFromRGB(BACKGROUND_GREY)
+        statsCircle.layer.cornerRadius = statsCircle.frame.width/2
+        
+        var statsLabel = UILabel(frame: statsCircle.frame)
+        statsLabel.textColor = UIColorFromRGB(PURPLE_SELECTED)
+        statsLabel.numberOfLines = 2
+        if self.view.frame.width == 320 {
+            statsLabel.font = UIFont(name: "Pacifico", size: 26.0)
+        } else {
+            statsLabel.font = UIFont(name: "Pacifico", size: 30.0)
+        }
+        statsLabel.text = "Stats"
+        statsLabel.textAlignment = NSTextAlignment.Center
+        statsLabel.frame.origin.x = -2
+        statsLabel.frame.origin.y = 0
+        
+        statsCircle.addSubview(statsLabel)
+        
+        /** Begin My Button **/
+        myButton = StatsButton(frame: CGRect(x: statsCircle.frame.maxX + 10, y: 0, width: self.view.frame.width - 20 - (statsCircle.frame.maxX + 10), height: 50))
+        myButton.labelName = "My"
+        myButton.center.y = statsCircle.frame.origin.y + statsCircle.frame.height/4
+        mainScrollView.addSubview(myButton)
         
         //NUMBER POSTS BUTTON
         var totalPosts = 0
@@ -340,18 +533,25 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             totalPosts = countPosts
         }
         
-        numberPostsButton = ProfileButton(y: myProfileLabel.frame.maxY + 10, text: "Past posts", value: totalPosts)
-        numberPostsButton.addTarget(self, action: "postsButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
-        
         //NUMBER REPLIES BUTTON
         var totalReplies = 0
         if let countReplies = currentUser.getReplies()?.count {
             totalReplies = countReplies
         }
-        
-        numberRepliesButton = ProfileButton(y: numberPostsButton.frame.maxY - 1, text: "Past replies", value: totalReplies)
-        numberRepliesButton.addTarget(self, action: "repliesButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
 
+        myButton.setPosts(totalPosts)
+        myButton.setReplies(totalReplies)
+        
+        myButton.addTarget(self, action: "myButtonSelected:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        myButton.focus()
+        /** End My Button **/
+        
+        /** Begin Rated Button **/
+        ratedButton = StatsButton(frame: CGRect(x: statsCircle.frame.maxX + 10, y: 0, width: self.view.frame.width - 20 - (statsCircle.frame.maxX + 10), height: 50))
+        ratedButton.labelName = "Rated"
+        ratedButton.center.y = statsCircle.frame.origin.y + 3*statsCircle.frame.height/4
+        mainScrollView.addSubview(ratedButton)
         
         //Get the total number of upvotes and downvotes
         var numUpvotes = 0
@@ -364,9 +564,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             numDownvotes = downvotes.count
         }
 
-        //RATED POSTS BUTTON
-        ratedPostsButton = ProfileButton(y: numberRepliesButton.frame.maxY - 1, text: "Upvoted posts", value: (numUpvotes))
-        ratedPostsButton.addTarget(self, action: "ratedButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+        ratedButton.setPosts(numUpvotes)
         
         //Get the total number of upvotes and downvotes
         numUpvotes = 0
@@ -378,34 +576,40 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         if let downvotes = NSUserDefaults.standardUserDefaults().objectForKey("SplatReplyDownvotes") as? NSArray {
             numDownvotes = downvotes.count
         }
+
+        ratedButton.setReplies(numUpvotes)
+        ratedButton.addTarget(self, action: "ratedButtonSelected:", forControlEvents: UIControlEvents.TouchUpInside)
+        /** End Rated Button **/
         
-        //RATED REPLIES BUTTON
-        ratedRepliesButton = ProfileButton(y: ratedPostsButton.frame.maxY - 1, text: "Upvoted replies", value: (numUpvotes))
-        ratedRepliesButton.addTarget(self, action: "ratedRepliesButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+        var caretSelector:CaretSelectorBar!
+        if self.view.frame.width == 320 {
+            caretSelector = CaretSelectorBar(frame: CGRect(x: 0, y: statsCircle.frame.maxY + 10, width: mainScrollView.frame.width, height: 50), items: ["Posts", "Replies"])
+             caretSelector.font = UIFont(name: "Pacifico", size: 16.0)
+        } else {
+            caretSelector = CaretSelectorBar(frame: CGRect(x: 0, y: statsCircle.frame.maxY + 10, width: mainScrollView.frame.width, height: 60), items: ["Posts", "Replies"])
+            caretSelector.font = UIFont(name: "Pacifico", size: 18.0)
+        }
+        
+        caretSelector.textPadding = 20
+        caretSelector.caretSize = 10
+        caretSelector.delegate = self
 
         
-        //PROFILE SECTION LABEL
-        var myLocationLabel = UILabel(frame: CGRectMake(10, ratedRepliesButton.frame.maxY + 20, 100, 100))
-        myLocationLabel.text = "My Location"
-        myLocationLabel.textColor = UIColorFromRGB(PURPLE_SELECTED)
-        myLocationLabel.font = UIFont.systemFontOfSize(16)
-        myLocationLabel.sizeToFit()
+        var background = UIView(frame: CGRect(x: 0, y: caretSelector.frame.maxY - 10, width: self.view.frame.width, height: mainScrollView.contentSize.height-(caretSelector.frame.maxY - 10)))
+        background.backgroundColor = UIColor.whiteColor()
         
-        //ADD MAP
-        map = MKMapView(frame: CGRect(x: 0, y: myLocationLabel.frame.maxY + 10, width: self.view.frame.width, height: mainScrollView.contentSize.height-(myLocationLabel.frame.maxY + 25)))
-        map.scrollEnabled = false
-        map.zoomEnabled = false
+        var flowLayout:UICollectionViewFlowLayout = UICollectionViewFlowLayout();
         
-        initGestureRecognizers()
+        collectionView = UICollectionView(frame: background.frame, collectionViewLayout: flowLayout)
+        collectionView.registerClass(PostCollectionCell.self, forCellWithReuseIdentifier: "collectionCell")
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.backgroundColor = UIColor.whiteColor()
         
-        //Add the elements
-        mainScrollView.addSubview(myProfileLabel)
-        mainScrollView.addSubview(numberPostsButton)
-        mainScrollView.addSubview(numberRepliesButton)
-        mainScrollView.addSubview(ratedPostsButton)
-        mainScrollView.addSubview(ratedRepliesButton)
-        mainScrollView.addSubview(myLocationLabel)
-        mainScrollView.addSubview(map)
+        mainScrollView.addSubview(background)
+        mainScrollView.addSubview(collectionView)
+        mainScrollView.addSubview(caretSelector)
+        mainScrollView.addSubview(statsCircle)
     }
     
     func initGestureRecognizers() {
@@ -422,17 +626,16 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     
     //Gesture Recognizers
     func handleSwipeUpFrom(recognizer: UIGestureRecognizer) {
-        if (screen == "Score") {
+        if (screen == CurrentScreen.Score) {
             caretButtonListener(caretButton)
         }
     }
     
     func handleSwipeDownFrom(recognizer: UIGestureRecognizer) {
-        if (screen == "Profile") {
+        if (screen == CurrentScreen.Profile) {
             caretUpButtonListener(caretButtonUp)
         }
     }
-
     
     func initParticles() {
         //Create our particle image from a cg context
@@ -479,16 +682,78 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     }
     
     //** BUTTON LISTENERS **//
+    func myButtonSelected(sender: UIButton) {
+        myButton.focus()
+        ratedButton.removeFocus()
+        
+        if (currentSelection == ProfileSelection.RatedPosts) {
+            currentSelection = ProfileSelection.MyPosts
+            updateCollection()
+        } else if (currentSelection == ProfileSelection.RatedReplies) {
+            currentSelection = ProfileSelection.MyReplies
+            updateCollection()
+        }
+    }
+    
+    func ratedButtonSelected(sender: UIButton) {
+        ratedButton.focus()
+        myButton.removeFocus()
+        
+        if (currentSelection == ProfileSelection.MyPosts) {
+            currentSelection = ProfileSelection.RatedPosts
+            updateCollection()
+        } else if (currentSelection == ProfileSelection.MyReplies) {
+            currentSelection = ProfileSelection.RatedReplies
+            updateCollection()
+        }
+    }
     
     //TODO:
     ///Shares on facebook
     func shareButtonListener(sender: UIButton) {
         println("Share SplatIt score here")
-        var scoreImage = getScreenshot(self)
-        println(scoreImage.size)
-        println(circleView.frame)
-        println(self.view.frame.size)
-        scoreImage = cropImage(scoreImage, CGRectMake(0, self.circleView.center.y + UIApplication.sharedApplication().statusBarFrame.height - self.view.frame.width/2, self.view.frame.width, self.view.frame.width))
+        shareActionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil)
+        shareActionSheet.addButtonWithTitle("Share on Facebook")
+        shareActionSheet.addButtonWithTitle("Share on Twitter")
+        
+        shareActionSheet.actionSheetStyle = .Default
+        shareActionSheet.showInView(self.view)
+    }
+    
+    func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
+        
+            switch buttonIndex {
+            case 0: //cancel
+                break;
+            case 1: //facebook
+                shareOnFacebook()
+                break;
+            case 2: //twitter
+                shareOnTwitter()
+                break;
+            default:
+                break
+            }
+    }
+
+    func shareOnTwitter() {
+        let composer = TWTRComposer()
+        
+        composer.setText("Try to beat my score #SplatIt")
+        composer.setImage(getScoreImage())
+        
+        composer.showWithCompletion { (result) -> Void in
+            if (result == TWTRComposerResult.Cancelled) {
+                println("Tweet composition cancelled")
+            }
+            else {
+                println("Sending tweet!")
+            }
+        }
+    }
+    
+    func shareOnFacebook() {
+        var scoreImage = getScoreImage()
         
         var fbimage = FBSDKSharePhoto()
         fbimage.image = scoreImage
@@ -498,6 +763,15 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         content.photos = [fbimage]
         
         var shareDialog = FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+
+    }
+    
+    private func getScoreImage() -> UIImage {
+        var scoreImage = getScreenshot(self)
+        
+        scoreImage = cropImage(scoreImage, CGRectMake(0, self.circleView.center.y + UIApplication.sharedApplication().statusBarFrame.height - self.view.frame.width/2, self.view.frame.width, self.view.frame.width))
+        
+        return scoreImage
     }
     
     //MARK: FBSharing
@@ -510,31 +784,31 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     }
     
     func sharer(sharer: FBSDKSharing!, didFailWithError error: NSError!) {
-        //do something
+        let alert = UIAlertView(title: "Share on facebook?", message: "Make sure that SplatIt can access the Facebook app to spread the word!", delegate: self, cancelButtonTitle: "Got it.")
+        alert.show()
     }
     
     func notificationsButtonListener(sender: UIButton) {
-        (self.navigationController? as RootNavViewController).popVC(.Left)
+        (self.navigationController as! RootNavViewController).popVC(.Left)
     }
     
     func caretButtonListener(sender: UIButton) {
-        screen = "Profile"
+        screen = CurrentScreen.Profile
         var bottomOffset = CGPointMake(0, self.mainScrollView.contentSize.height - self.mainScrollView.bounds.size.height);
         self.mainScrollView.setContentOffset(bottomOffset, animated: true)
-        statusBarStyle = UIStatusBarStyle.Default
+        statusBarStyle = UIStatusBarStyle.LightContent
         self.setNeedsStatusBarAppearanceUpdate()
     }
     
     func caretUpButtonListener(sender: UIButton) {
-        screen = "Score"
+        screen = CurrentScreen.Score
         var bottomOffset = CGPointMake(0, -UIApplication.sharedApplication().statusBarFrame.height);
         self.mainScrollView.setContentOffset(bottomOffset, animated: true)
         statusBarStyle = UIStatusBarStyle.LightContent
         self.setNeedsStatusBarAppearanceUpdate()
     }
     
-    func ratedButtonListener(sender: UIButton) {
-        sender.backgroundColor = UIColor.whiteColor()
+    func ratedButtonListener() {
         
         //if there is not data, get it
         if (ratedPosts == nil) {
@@ -544,7 +818,8 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             
             if (posts != nil) {
                 var query = PFQuery(className: "Post")
-                query.whereKey("objectId", containedIn: posts)
+                query.whereKey("objectId", containedIn: posts as! [AnyObject])
+                query.orderByDescending("createdAt")
                 //Get objects for the pointer data
                 query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
                 if (error != nil) {
@@ -553,17 +828,18 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                         if (objects == nil) {
                             println("Can't find rated")
                         } else {
-                            for obj in objects {
-                                if let pfobj = obj as? PFObject {
-                                    var post = Post(pfObject: pfobj)
-                                    self.ratedPosts.addObject(post)
-                                    
+                            if let objs = objects {
+                                for obj in objs {
+                                    if let pfobj = obj as? PFObject {
+                                        var post = Post(pfObject: pfobj)
+                                        self.ratedPosts.addObject(post)
+                                        
+                                    }
                                 }
                             }
                         }
                     
                        // self.ratedPosts = NSMutableArray(array: self.ratedPosts.reverseObjectEnumerator().allObjects)
-                    
                         self.pushToRated()
                     }
                     
@@ -579,12 +855,13 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     }
     
     private func pushToRated() {
-        var ratedPostsVC = GenericPostsTableViewController(posts: ratedPosts, title: "Upvoted")
-        self.navigationController?.pushViewController(ratedPostsVC, animated: true)
+        currentData = self.ratedPosts
+        self.collectionView.reloadData()
+        /*var ratedPostsVC = GenericPostsTableViewController(posts: ratedPosts, title: "Upvoted")
+        self.navigationController?.pushViewController(ratedPostsVC, animated: true)*/
     }
     
-    func postsButtonListener(sender: UIButton) {
-        sender.backgroundColor = UIColor.whiteColor()
+    func postsButtonListener() {
         
         //if there is not data, get it
         if (userPosts == nil) {
@@ -595,12 +872,17 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             }
             
             for var i = 0; i < posts.count; i++ {
-                posts[i] = posts[i].objectId
+                if let post = posts[i] as? PFObject {
+                    if let oid = post.objectId {
+                        posts[i] = oid
+                    }
+                }
+                
             }
             
             userPosts = NSMutableArray()
             var query = PFQuery(className: "Post")
-            query.whereKey("objectId", containedIn: posts)
+            query.whereKey("objectId", containedIn: posts as [AnyObject])
             query.orderByDescending("createdAt")
             //Get objects for the pointer data
             query.findObjectsInBackgroundWithBlock({ (objects, error) -> Void in
@@ -611,11 +893,13 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                         println("No posts")
                     } else {
                     
-                        for obj in objects {
-                            if let pfobj = obj as? PFObject {
-                                var post = Post(pfObject: pfobj)
-                                self.userPosts.addObject(post)
-                                
+                        if let objs = objects {
+                            for obj in objs {
+                                if let pfobj = obj as? PFObject {
+                                    var post = Post(pfObject: pfobj)
+                                    self.userPosts.addObject(post)
+                                    
+                                }
                             }
                         }
                     }
@@ -633,12 +917,13 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     }
     
     private func pushToPast() {
-        var pastPostsVC = GenericPostsTableViewController(posts: userPosts, title: "Past")
-        self.navigationController?.pushViewController(pastPostsVC, animated: true)
+        currentData = self.userPosts
+        self.collectionView.reloadData()
+       /* var pastPostsVC = GenericPostsTableViewController(posts: userPosts, title: "Past")
+        self.navigationController?.pushViewController(pastPostsVC, animated: true) */
     }
     
-    func ratedRepliesButtonListener(sender: UIButton) {
-        sender.backgroundColor = UIColor.whiteColor()
+    func ratedRepliesButtonListener() {
         
         //if there is not data, get it
         if (ratedReplies == nil) {
@@ -648,8 +933,9 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             
             if (posts != nil) {
                 var query = PFQuery(className: "Reply")
-                query.whereKey("objectId", containedIn: posts)
+                query.whereKey("objectId", containedIn: posts as! [AnyObject])
                 query.includeKey("parent")
+                query.orderByDescending("createdAt")
                 //Get objects for the pointer data
                 query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
                     if (error != nil) {
@@ -658,13 +944,15 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                         if (objects == nil) {
                             println("Can't find rated")
                         } else {
-                            for obj in objects {
-                                if let pfobj = obj as? PFObject {
-                                    var reply = Reply(pfObject: pfobj)
-                                    if (reply.getParentPost() != nil) {
-                                        self.ratedReplies.addObject(Post(pfObject: reply.getParentPost()))
+                            if let objs = objects {
+                                for obj in objs {
+                                    if let pfobj = obj as? PFObject {
+                                        var reply = Reply(pfObject: pfobj)
+                                        if (reply.getParentPost() != nil) {
+                                            self.ratedReplies.addObject(Post(pfObject: reply.getParentPost()))
+                                        }
+                                        
                                     }
-                                    
                                 }
                             }
                         }
@@ -687,12 +975,13 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     }
     
     func pushToRatedReplies() {
-        var ratedRepliesVC = GenericPostsTableViewController(posts: ratedReplies, title: "Upvoted")
-        self.navigationController?.pushViewController(ratedRepliesVC, animated: true)
+        currentData = self.ratedReplies
+        self.collectionView.reloadData()
+        /*var ratedRepliesVC = GenericPostsTableViewController(posts: ratedReplies, title: "Upvoted")
+        self.navigationController?.pushViewController(ratedRepliesVC, animated: true) */
     }
     
-    func repliesButtonListener(sender: UIButton) {
-        sender.backgroundColor = UIColor.whiteColor()
+    func repliesButtonListener() {
         
         //if there is not data, get it
         if (userReplies == nil) {
@@ -702,12 +991,17 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             }
             
             for var i = 0; i < replies.count; i++ {
-                replies[i] = replies[i].objectId
+                if let reply = replies[i] as? PFObject {
+                    if let oid = reply.objectId {
+                        replies[i] = oid
+                    }
+                }
+
             }
             
             userReplies = NSMutableArray()
             var query = PFQuery(className: "Reply")
-            query.whereKey("objectId", containedIn: replies)
+            query.whereKey("objectId", containedIn: replies as [AnyObject])
             query.orderByDescending("createdAt")
             query.includeKey("parent")
             //Get objects for the pointer data
@@ -718,13 +1012,15 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
                     if (objects == nil) {
                         println("Can't find replies")
                     } else {
-                        for obj in objects {
-                            if let pfobj = obj as? PFObject {
-                                var reply = Reply(pfObject: pfobj)
-                                if (reply.getParentPost() != nil) {
-                                    self.userReplies.addObject(Post(pfObject: reply.getParentPost()))
+                        if let objs = objects {
+                            for obj in objs {
+                                if let pfobj = obj as? PFObject {
+                                    var reply = Reply(pfObject: pfobj)
+                                    if (reply.getParentPost() != nil) {
+                                        self.userReplies.addObject(Post(pfObject: reply.getParentPost()))
+                                    }
+                                    
                                 }
-                                
                             }
                         }
                     }
@@ -743,8 +1039,11 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     }
     
     func pushToUserReplies() {
+        currentData = self.userReplies
+        self.collectionView.reloadData()
+        /*
         var userRepliesVC = GenericPostsTableViewController(posts: userReplies, title: "Replies")
-        self.navigationController?.pushViewController(userRepliesVC, animated: true)
+        self.navigationController?.pushViewController(userRepliesVC, animated: true) */
     }
 
     func highlightButton(sender: UIButton) {
@@ -757,14 +1056,107 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         
         for obj in arr {
             if let post = obj as? Post {
-                if (!addedObjects.containsObject(post.object.objectId)) {
+                if (!addedObjects.containsObject(post.object.objectId!)) {
                     result.addObject(post)
-                    addedObjects.addObject(post.object.objectId)
+                    addedObjects.addObject(post.object.objectId!)
                 }
             }
         }
         
         return result;
     }
+    
+    //MARK: Collection View
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+    {
+        return currentData.count;
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
+    {
+        var cell:PostCollectionCell = collectionView.dequeueReusableCellWithReuseIdentifier("collectionCell", forIndexPath: indexPath) as! PostCollectionCell
+        
+        let post = currentData.objectAtIndex(indexPath.row) as! Post
+        
+        cell.initialize(post)
+        
+        return cell;
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize
+    {
+        return CGSize(width: collectionView.frame.width/3-1, height: collectionView.frame.width/3-1)
+    }
 
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
+        return 1
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
+        return 1.0
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: self.view.frame.width, height: 15)
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        if let datasetCell = collectionView.cellForItemAtIndexPath(indexPath) as? PostCollectionCell {
+            let postPreview = PostPreviewViewController(post: datasetCell.currentPost)
+            self.navigationController?.pushViewController(postPreview, animated: true)
+        }
+    }
+    
+    func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+        if let postCell = cell as? PostCollectionCell {
+            postCell.cancelLoad()
+            postCell.imageView.image = nil
+        }
+    }
+
+    //MARK: caret selector
+    func caretSelectorBar(didSelectItem item: String?) {
+        if let nonNilItem = item {
+
+            if (nonNilItem == "Posts") {
+                if (currentSelection == ProfileSelection.MyReplies) {
+                    currentSelection = ProfileSelection.MyPosts
+                    updateCollection()
+                } else if (currentSelection == ProfileSelection.RatedReplies){
+                    currentSelection = ProfileSelection.RatedPosts
+                    updateCollection()
+                }
+            }
+            else if (nonNilItem == "Replies") {
+                if (currentSelection == ProfileSelection.MyPosts) {
+                    currentSelection = ProfileSelection.MyReplies
+                    updateCollection()
+                } else if ((currentSelection == ProfileSelection.RatedPosts)){
+                    currentSelection = ProfileSelection.RatedReplies
+                    updateCollection()
+                }
+            } else {
+                //do nothing
+            }
+        }
+    }
+    
+    func updateCollection() {
+        switch(currentSelection) {
+            case .MyPosts:
+                postsButtonListener()
+                break
+            case .MyReplies:
+                repliesButtonListener()
+                break
+            case .RatedPosts:
+                ratedButtonListener()
+                break
+            case .RatedReplies:
+                ratedRepliesButtonListener()
+                break
+            default:
+                break
+        }
+    }
 }
