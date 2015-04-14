@@ -31,8 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
         /* View controllers rendered from this function call- see function saveUserLocation */
         getUserLocation()
-        println(self.window?.opaque)
-        self.window?.opaque = false
         self.window?.backgroundColor = UIColor.whiteColor()
         //reset the selected location
         let userDefaults = NSUserDefaults.standardUserDefaults()
