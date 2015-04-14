@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 import Parse
-import MapKit
 import FBSDKShareKit
+import TwitterKit
 
 class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKSharingDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, CaretSelectorDelegate, UIActionSheetDelegate, UIAlertViewDelegate {
     
@@ -714,6 +714,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         println("Share SplatIt score here")
         shareActionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil)
         shareActionSheet.addButtonWithTitle("Share on Facebook")
+        shareActionSheet.addButtonWithTitle("Share on Twitter")
         
         shareActionSheet.actionSheetStyle = .Default
         shareActionSheet.showInView(self.view)
@@ -727,16 +728,32 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             case 1: //facebook
                 shareOnFacebook()
                 break;
+            case 2: //twitter
+                shareOnTwitter()
+                break;
             default:
                 break
             }
     }
 
+    func shareOnTwitter() {
+        let composer = TWTRComposer()
+        
+        composer.setText("Try to beat my score #SplatIt")
+        composer.setImage(getScoreImage())
+        
+        composer.showWithCompletion { (result) -> Void in
+            if (result == TWTRComposerResult.Cancelled) {
+                println("Tweet composition cancelled")
+            }
+            else {
+                println("Sending tweet!")
+            }
+        }
+    }
     
     func shareOnFacebook() {
-        var scoreImage = getScreenshot(self)
-        
-        scoreImage = cropImage(scoreImage, CGRectMake(0, self.circleView.center.y + UIApplication.sharedApplication().statusBarFrame.height - self.view.frame.width/2, self.view.frame.width, self.view.frame.width))
+        var scoreImage = getScoreImage()
         
         var fbimage = FBSDKSharePhoto()
         fbimage.image = scoreImage
@@ -747,6 +764,14 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         
         var shareDialog = FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
 
+    }
+    
+    private func getScoreImage() -> UIImage {
+        var scoreImage = getScreenshot(self)
+        
+        scoreImage = cropImage(scoreImage, CGRectMake(0, self.circleView.center.y + UIApplication.sharedApplication().statusBarFrame.height - self.view.frame.width/2, self.view.frame.width, self.view.frame.width))
+        
+        return scoreImage
     }
     
     //MARK: FBSharing
