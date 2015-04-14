@@ -632,7 +632,10 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                             removeArchivedDownvote(oID, downvotes)
                             existingScore = existingScore + 1
                             
-                            self.sortRowsUp(cellIndexPathExists.row)
+                            //if not the new selection
+                            if selected != "New" {
+                                self.sortRowsUp(cellIndexPathExists.row)
+                            }
                     
                             //if Upvote already selected
                         } else if (upvotes != nil && upvotes!.containsObject(oID)) {
@@ -645,7 +648,10 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                             archiveDownvote(oID, downvotes)
                             existingScore = existingScore - 1
                             
-                            self.sortRowsDown(cellIndexPathExists.row)
+                            //if not the new selection
+                            if selected != "New" {
+                                self.sortRowsDown(cellIndexPathExists.row)
+                            }
                             
                             //nothing selected
                         } else {
@@ -653,7 +659,10 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                             archiveDownvote(oID, downvotes)
                             existingScore = existingScore - 1
                             
-                            self.sortRowsDown(cellIndexPathExists.row)
+                            //if not the new selection
+                            if selected != "New" {
+                                self.sortRowsDown(cellIndexPathExists.row)
+                            }
                         }
                         
                         cell.voteSelector.Score.text = "\(existingScore)"
@@ -687,7 +696,10 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                             removeArchivedUpvote(oID, upvotes)
                             existingScore = existingScore - 1
                             
-                            self.sortRowsDown(cellIndexPathExists.row)
+                            //if not the new selection
+                            if selected != "New" {
+                                self.sortRowsDown(cellIndexPathExists.row)
+                            }
                         
                             //if downvote already selected
                         } else if (downvotes != nil && downvotes!.containsObject(oID)) {
@@ -700,7 +712,10 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                             archiveUpvote(oID, upvotes)
                             existingScore = existingScore + 1
                             
-                            self.sortRowsUp(cellIndexPathExists.row)
+                            //if not the new selection
+                            if selected != "New" {
+                                self.sortRowsUp(cellIndexPathExists.row)
+                            }
                             
                             //nothing selected
                         } else {
@@ -708,7 +723,10 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                             archiveUpvote(oID, upvotes)
                             existingScore = existingScore + 1
                             
-                            self.sortRowsUp(cellIndexPathExists.row)
+                            //if not the new selection
+                            if selected != "New" {
+                                self.sortRowsUp(cellIndexPathExists.row)
+                            }
                         }
                         
                         cell.voteSelector.Score.text = "\(existingScore)"

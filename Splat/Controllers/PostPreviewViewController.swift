@@ -241,7 +241,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         loadReplyData(0, limit: 100)
         mainScrollView.addSubview(replyTable)
 
-        mainScrollView.contentSize = CGSize(width: mainScrollView.frame.size.width, height: ylocCursor+padding + 100)
+        mainScrollView.contentSize = CGSize(width: mainScrollView.frame.size.width, height: ylocCursor+padding + 20)
         
         self.view.addSubview(mainScrollView)
         
@@ -328,6 +328,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     func editPost() {
         commentText.editable = true
         commentText.becomeFirstResponder()
+        mainScrollView.contentSize.height += 200
         
     }
     
@@ -442,6 +443,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         if (textView == commentText) {
             super.textViewDidEndEditing(textView)
             commentText.editable = false
+            mainScrollView.contentSize.height -= 200
             
             //TODO: test
             currentPost.editComment(commentText.text, completion: { () -> Void in
@@ -839,7 +841,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
             
             self.replyTable.reloadData()
             self.replyTable.frame.size.height = CGFloat(self.replyData.count)*100
-            self.mainScrollView.contentSize.height = self.replyTable.frame.maxY + 200
+            self.mainScrollView.contentSize.height = self.replyTable.frame.maxY + 20
             
         })
         
