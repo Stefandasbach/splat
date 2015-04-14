@@ -51,6 +51,8 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     
     var screen = CurrentScreen.Score
     
+    var shareActionSheet: UIActionSheet!
+    
     enum ProfileSelection {
         case MyPosts
         case MyReplies
@@ -249,6 +251,10 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
+        
+        if (shareActionSheet != nil) {
+            shareActionSheet.dismissWithClickedButtonIndex(shareActionSheet.cancelButtonIndex, animated: false)
+        }
         
         self.notificationsBadge.removeFromSuperview()
         self.notificationsBadge = nil
@@ -706,11 +712,11 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     ///Shares on facebook
     func shareButtonListener(sender: UIButton) {
         println("Share SplatIt score here")
-        let actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil)
-        actionSheet.addButtonWithTitle("Share on Facebook")
+        shareActionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil)
+        shareActionSheet.addButtonWithTitle("Share on Facebook")
         
-        actionSheet.actionSheetStyle = .Default
-        actionSheet.showInView(self.view)
+        shareActionSheet.actionSheetStyle = .Default
+        shareActionSheet.showInView(self.view)
     }
     
     func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {

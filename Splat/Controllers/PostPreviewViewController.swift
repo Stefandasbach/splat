@@ -56,6 +56,15 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        settingsActionSheet.dismissWithClickedButtonIndex(settingsActionSheet.cancelButtonIndex, animated: false)
+        
+        flagsActionSheet.dismissWithClickedButtonIndex(flagsActionSheet.cancelButtonIndex, animated: false)
+
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.setNavigationBarHidden(false, animated: true)

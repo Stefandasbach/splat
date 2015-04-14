@@ -62,6 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     func applicationWillEnterForeground(application: UIApplication) {
        /* NSNotificationCenter.defaultCenter().postNotificationName("ReloadFeed", object: nil) */
+
         getUserLocation()
         login()
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
@@ -234,6 +235,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         }
 
     }
-
+    
 }
 
