@@ -46,6 +46,10 @@ class User: NSObject {
         return object["Replies"] as? [AnyObject]
     }
 
+    func getReports() -> [AnyObject]! {
+        return object["Reports"] as? [AnyObject]
+    }
+
 }
 
 //functions used for saving things in the user defaults

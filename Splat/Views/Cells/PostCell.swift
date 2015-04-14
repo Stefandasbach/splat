@@ -68,7 +68,7 @@ class PostCell: UITableViewCell {
         flagButton = FlagButton(frame: CGRectMake(myImage.frame.maxX + 10, cellHeight-flagSize, flagSize, flagSize))
         //MARK: removed flagButton
         if cellWidth > 320 {
-            self.addSubview(flagButton)
+           // self.addSubview(flagButton)
         }
         
         //Comment
@@ -98,13 +98,14 @@ class PostCell: UITableViewCell {
         self.addSubview(timeCreatedLabel)
         
         //if iphone4s
-        if cellWidth > 320 {
-            numberOfRepliesLabel = UILabel(frame: CGRect(x: flagButton.frame.maxX, y: flagButton.frame.minY, width: timeCreatedLabel.frame.minX - flagButton.frame.maxX - 10, height: 40))
+     //   if cellWidth > 320 {
+/*            numberOfRepliesLabel = UILabel(frame: CGRect(x: flagButton.frame.maxX, y: flagButton.frame.minY, width: timeCreatedLabel.frame.minX - flagButton.frame.maxX - 10, height: 40))
             numberOfRepliesLabel.textAlignment = NSTextAlignment.Center
-        } else {
+        //uncomment to add flag button back to cell
+       } else { */
             numberOfRepliesLabel = UILabel(frame: CGRect(x: myImage.frame.maxX + 10, y: flagButton.frame.minY, width: 100, height: 40))
             numberOfRepliesLabel.textAlignment = NSTextAlignment.Left
-        }
+      //  }
         numberOfRepliesLabel.font = UIFont.systemFontOfSize(14.0)
         numberOfRepliesLabel.textColor = UIColorFromRGB(PURPLE_UNSELECTED)
         self.addSubview(numberOfRepliesLabel)

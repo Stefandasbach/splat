@@ -78,6 +78,7 @@
 		02DDA26C1ADC496F00474828 /* PostCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DDA26B1ADC496F00474828 /* PostCollectionCell.swift */; };
 		02DDA26E1ADC744E00474828 /* feedIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 02DDA26D1ADC744E00474828 /* feedIcon.png */; };
 		02DDA2701ADC747600474828 /* FeedNavItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DDA26F1ADC747600474828 /* FeedNavItem.swift */; };
+		02DDA2721ADD494E00474828 /* Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DDA2711ADD494E00474828 /* Report.swift */; };
 		02F2C69C1AB4840F0041A09F /* imageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C69B1AB4840F0041A09F /* imageUtils.swift */; };
 		02F2C69F1AB4850F0041A09F /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C69E1AB4850F0041A09F /* CameraViewController.swift */; };
 		02F2C6A41AB487F70041A09F /* createPostIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 02F2C6A31AB487F70041A09F /* createPostIcon.png */; };
@@ -171,6 +172,7 @@
 		02DDA26B1ADC496F00474828 /* PostCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCollectionCell.swift; sourceTree = "<group>"; };
 		02DDA26D1ADC744E00474828 /* feedIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = feedIcon.png; sourceTree = "<group>"; };
 		02DDA26F1ADC747600474828 /* FeedNavItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedNavItem.swift; sourceTree = "<group>"; };
+		02DDA2711ADD494E00474828 /* Report.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Report.swift; sourceTree = "<group>"; };
 		02F2C69B1AB4840F0041A09F /* imageUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = imageUtils.swift; sourceTree = "<group>"; };
 		02F2C69E1AB4850F0041A09F /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		02F2C6A31AB487F70041A09F /* createPostIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = createPostIcon.png; sourceTree = "<group>"; };
@@ -432,6 +434,7 @@
 				0271124B1AC070C800F6D25E /* Reply.swift */,
 				0200A2041AC36B1C0075DA4C /* Location.swift */,
 				0295EF731AD45457009DA6DC /* Notification.swift */,
+				02DDA2711ADD494E00474828 /* Report.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -589,6 +592,7 @@
 				0284C73B1ABD907F00E55B58 /* GenericPostsTableViewController.swift in Sources */,
 				02DDA26C1ADC496F00474828 /* PostCollectionCell.swift in Sources */,
 				02F2C6B91AB60A250041A09F /* animationUtils.swift in Sources */,
+				02DDA2721ADD494E00474828 /* Report.swift in Sources */,
 				02DDA2701ADC747600474828 /* FeedNavItem.swift in Sources */,
 				02B22EFF1AD03F8600A6F2E4 /* ReplyImageView.swift in Sources */,
 				02F2C6BB1AB60A680041A09F /* RootNavViewController.swift in Sources */,

@@ -40,6 +40,9 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     let maxCharactersReply = 100
     var numberCharactersLeftReply: Int!
     
+    var settingsActionSheet: UIActionSheet = UIActionSheet()
+    var flagsActionSheet: UIActionSheet = UIActionSheet()
+    
     init(post: Post) {
         super.init()
         currentPost = post
@@ -182,7 +185,11 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         let flagSize = 40 as CGFloat
         flagButton = FlagButton(frame: CGRectMake(padding, ylocCursor + padding, flagSize, flagSize))
         updateFlagButton()
-        mainScrollView.addSubview(flagButton)
+        
+        //if the user is not the creator, add a flag button
+        if (currentPost.getCreator().objectId != User().object.objectId) {
+            mainScrollView.addSubview(flagButton)
+        }
         
         ylocCursor = flagButton.frame.maxY
         
@@ -254,12 +261,12 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     }
     
     func settingsButtonListener(sender: UIButton) {
-        let actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil)
-        actionSheet.addButtonWithTitle("Delete Post")
-        actionSheet.addButtonWithTitle("Edit Post")
+        settingsActionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil)
+        settingsActionSheet.addButtonWithTitle("Delete Post")
+        settingsActionSheet.addButtonWithTitle("Edit Post")
         
-        actionSheet.actionSheetStyle = .Default
-        actionSheet.showInView(self.view)
+        settingsActionSheet.actionSheetStyle = .Default
+        settingsActionSheet.showInView(self.view)
     }
     
     func cancelReplyListener() {
@@ -270,25 +277,50 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     
     func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
         
-        switch buttonIndex {
+        if actionSheet == settingsActionSheet {
+            switch buttonIndex {
+                case 0: //cancel
+                    break;
+                case 1: //delete
+                    deletePost()
+                    break;
+                case 2: //delete
+                    editPost()
+                    break;
+                default:
+                    break
+            }
+        } else if (actionSheet == flagsActionSheet){
+            switch buttonIndex {
             case 0: //cancel
                 break;
-            case 1: //delete
-                deletePost()
+            case 1: //Inappropriate
+                Report.sendReport(currentPost, type: .Inappropriate, completion: { (success) -> Void in
+                    NSNotificationCenter.defaultCenter().postNotificationName("ReloadFeed", object: nil)
+                    self.navigationController?.popViewControllerAnimated(true)
+                })
                 break;
-            case 2: //delete
-                editPost()
+            case 2: //Without Consent
+                Report.sendReport(currentPost, type: .WithoutConsent, completion: { (success) -> Void in
+                    NSNotificationCenter.defaultCenter().postNotificationName("ReloadFeed", object: nil)
+                    self.navigationController?.popViewControllerAnimated(true)
+                })
                 break;
             default:
                 break
+            }
+            
+            
+            
         }
     }
     
     func deletePost() {
         currentPost.deleteObjectInBackground { (success) -> Void in
             if success {
-                self.navigationController?.popViewControllerAnimated(true)
                 NSNotificationCenter.defaultCenter().postNotificationName("RemovedPost", object: self.currentPost)
+                self.navigationController?.popViewControllerAnimated(true)
+                
             }
         }
     }
@@ -506,7 +538,8 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
     }
     
     func flag(sender: UIButton) {
-        var post = currentPost
+        //uncomment for ability to flag
+       /* var post = currentPost
         var flags = NSUserDefaults.standardUserDefaults().objectForKey("SplatFlags") as? NSArray
         if let oID = post?.object.objectId {
             
@@ -526,11 +559,14 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
             
             NSNotificationCenter.defaultCenter().postNotificationName("RefreshFeed", object: nil)
             
-        }
+        } */
+        
+        showReportDialog()
 
     }
     
     private func updateFlagButton() {
+        /* uncomment for ability to flag
         var flags = NSUserDefaults.standardUserDefaults().objectForKey("SplatFlags") as? NSArray
         if let oID = currentPost.object.objectId {
             
@@ -539,7 +575,16 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
             } else {
                 flagButton.tintColor = UIColorFromRGB(PURPLE_UNSELECTED)
             }
-        }
+        } */
+    }
+    
+    func showReportDialog() {
+        flagsActionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil)
+        flagsActionSheet.addButtonWithTitle("Inappropriate content")
+        flagsActionSheet.addButtonWithTitle("Posted without my consent")
+        
+        flagsActionSheet.actionSheetStyle = .Default
+        flagsActionSheet.showInView(self.view)
     }
     
     func upvoteReply(sender: UIButton) {

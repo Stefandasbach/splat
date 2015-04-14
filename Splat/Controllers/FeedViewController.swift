@@ -308,6 +308,11 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                     query.whereKey("state", equalTo: self.selectedLocation)
                 }
 
+                //for reports
+                if let objs = User().getReports() {
+                    query.whereKey("objectId", notContainedIn: objs)
+                }
+
                 query.orderByDescending("createdAt")
                 query.findObjectsInBackgroundWithBlock({
                     (objects, error)->Void in
@@ -360,6 +365,11 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                 var query: PFQuery = PFQuery(className: "Post")
                 query.limit = limit
                 query.skip = skip
+                
+                //for reports
+                if let objs = User().getReports() {
+                        query.whereKey("objectId", notContainedIn: objs)
+                }
                 
                 if (self.selectedLocation == "My Location") {
                     if let geo = geopoint {
@@ -421,6 +431,11 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                 query.limit = limit
                 query.skip = skip
                 
+                //for reports
+                if let objs = User().getReports() {
+                    query.whereKey("objectId", notContainedIn: objs)
+                }
+
                 if (self.selectedLocation == "My Location") {
                     if let geo = geopoint {
                         query.whereKey("geopoint", nearGeoPoint: geo, withinMiles: self.dataDistance)
