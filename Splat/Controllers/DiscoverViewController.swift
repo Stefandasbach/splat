@@ -83,22 +83,48 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         override func didMoveToSuperview() {
             self.backgroundColor = UIColor.clearColor()
             self.layer.cornerRadius = 5
+            var screenWidth:CGFloat = 320
+            var subviewWidth: CGFloat = self.frame.width/3
+            if let sView = self.superview {
+                screenWidth = sView.frame.width
+            }
             
-            myLabel = UILabel(frame: CGRect(x: 10, y: 0, width: 50, height: self.frame.height))
+            if screenWidth == 320 {
+                myLabel = UILabel(frame: CGRect(x: 0, y: 0, width: subviewWidth, height: self.frame.height))
+                myLabel.font = UIFont(name: "Pacifico", size: 14.0)
+            } else {
+                myLabel = UILabel(frame: CGRect(x: 0, y: 0, width: subviewWidth, height: self.frame.height))
+                myLabel.font = UIFont(name: "Pacifico", size: 16.0)
+            }
+            
             myLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
-            myLabel.font = UIFont(name: "Pacifico", size: 16.0)
+            myLabel.textAlignment = NSTextAlignment.Center
             myLabel.text = labelName
             
-            var myPostsLabel = UILabel(frame: CGRect(x: myLabel.frame.maxX, y: myLabel.center.y, width: 70, height: self.frame.height/2))
+            var myPostsLabel:UILabel!
+            
+            if screenWidth == 320 {
+                myPostsLabel = UILabel(frame: CGRect(x: myLabel.frame.maxX, y: myLabel.center.y, width: subviewWidth, height: self.frame.height/2))
+                myPostsLabel.font = UIFont.systemFontOfSize(12)
+            } else {
+                myPostsLabel = UILabel(frame: CGRect(x: myLabel.frame.maxX, y: myLabel.center.y, width: subviewWidth, height: self.frame.height/2))
+                myPostsLabel.font = UIFont.systemFontOfSize(14)
+            }
+            
             myPostsLabel.text = "Posts"
             myPostsLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
-            myPostsLabel.font = UIFont.systemFontOfSize(14)
             myPostsLabel.textAlignment = NSTextAlignment.Center
             
-            myNumPostsLabel = UILabel(frame: CGRect(x: myLabel.frame.maxX, y: myLabel.frame.origin.y, width: 70, height: self.frame.height/2))
+            if screenWidth == 320 {
+                myNumPostsLabel = UILabel(frame: CGRect(x: myLabel.frame.maxX, y: myLabel.frame.origin.y, width: subviewWidth, height: self.frame.height/2))
+                myNumPostsLabel.font = UIFont.boldSystemFontOfSize(14)
+            } else {
+                myNumPostsLabel = UILabel(frame: CGRect(x: myLabel.frame.maxX, y: myLabel.frame.origin.y, width: subviewWidth, height: self.frame.height/2))
+                myNumPostsLabel.font = UIFont.boldSystemFontOfSize(16)
+            }
             myNumPostsLabel.text = "\(5)"
             myNumPostsLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
-            myNumPostsLabel.font = UIFont.boldSystemFontOfSize(16)
+            
             myNumPostsLabel.textAlignment = NSTextAlignment.Center
             
             //Add line to break
@@ -113,16 +139,31 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
             shapeLayer.lineWidth = 0.5
             shapeLayer.fillColor = UIColor.clearColor().CGColor
             
-            var myRepliesLabel = UILabel(frame: CGRect(x: myPostsLabel.frame.maxX, y: myLabel.center.y, width: 70, height: self.frame.height/2))
+            var myRepliesLabel: UILabel!
+            
+            if screenWidth == 320 {
+                myRepliesLabel = UILabel(frame: CGRect(x: myPostsLabel.frame.maxX, y: myLabel.center.y, width: subviewWidth, height: self.frame.height/2))
+                myRepliesLabel.font = UIFont.systemFontOfSize(12)
+            } else {
+                myRepliesLabel = UILabel(frame: CGRect(x: myPostsLabel.frame.maxX, y: myLabel.center.y, width: subviewWidth, height: self.frame.height/2))
+                myRepliesLabel.font = UIFont.systemFontOfSize(14)
+            }
+            
             myRepliesLabel.text = "Replies"
             myRepliesLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
-            myRepliesLabel.font = UIFont.systemFontOfSize(14)
             myRepliesLabel.textAlignment = NSTextAlignment.Center
             
-            myNumRepliesLabel = UILabel(frame: CGRect(x: myPostsLabel.frame.maxX, y: myLabel.frame.origin.y, width: 70, height: self.frame.height/2))
+            
+            if screenWidth == 320 {
+                myNumRepliesLabel = UILabel(frame: CGRect(x: myPostsLabel.frame.maxX, y: myLabel.frame.origin.y, width: subviewWidth, height: self.frame.height/2))
+                myNumRepliesLabel.font = UIFont.boldSystemFontOfSize(14)
+            } else {
+                myNumRepliesLabel = UILabel(frame: CGRect(x: myPostsLabel.frame.maxX, y: myLabel.frame.origin.y, width: subviewWidth, height: self.frame.height/2))
+                myNumRepliesLabel.font = UIFont.boldSystemFontOfSize(16)
+            }
+            
             myNumRepliesLabel.text = "\(10)"
             myNumRepliesLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
-            myNumRepliesLabel.font = UIFont.boldSystemFontOfSize(16)
             myNumRepliesLabel.textAlignment = NSTextAlignment.Center
             
             //Add line to break
@@ -450,23 +491,32 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         initGestureRecognizers()
         
         /** NEW PROFILE **/
-        var statsCircle = UIView(frame: CGRect(x: 20, y: 0.6 * mainScrollView.contentSize.height + 20 + UIApplication.sharedApplication().statusBarFrame.height, width: 120, height: 120))
+        var statsCircle: UIView!
+        if self.view.frame.width == 320 {
+            statsCircle = UIView(frame: CGRect(x: 20, y: 0.6 * mainScrollView.contentSize.height + 20 + UIApplication.sharedApplication().statusBarFrame.height, width: 100, height: 100))
+        } else {
+            statsCircle = UIView(frame: CGRect(x: 20, y: 0.6 * mainScrollView.contentSize.height + 20 + UIApplication.sharedApplication().statusBarFrame.height, width: 120, height: 120))
+        }
         statsCircle.backgroundColor = UIColorFromRGB(BACKGROUND_GREY)
         statsCircle.layer.cornerRadius = statsCircle.frame.width/2
         
         var statsLabel = UILabel(frame: statsCircle.frame)
         statsLabel.textColor = UIColorFromRGB(PURPLE_SELECTED)
         statsLabel.numberOfLines = 2
-        statsLabel.font = UIFont(name: "Pacifico", size: 30.0)
+        if self.view.frame.width == 320 {
+            statsLabel.font = UIFont(name: "Pacifico", size: 26.0)
+        } else {
+            statsLabel.font = UIFont(name: "Pacifico", size: 30.0)
+        }
         statsLabel.text = "Stats"
         statsLabel.textAlignment = NSTextAlignment.Center
-        statsLabel.frame.origin.x = 0
+        statsLabel.frame.origin.x = -2
         statsLabel.frame.origin.y = 0
         
         statsCircle.addSubview(statsLabel)
         
-        /** Begin My Button **/ 
-        myButton = StatsButton(frame: CGRect(x: statsCircle.frame.maxX + 10, y: 0, width: 200, height: 50))
+        /** Begin My Button **/
+        myButton = StatsButton(frame: CGRect(x: statsCircle.frame.maxX + 10, y: 0, width: self.view.frame.width - 20 - (statsCircle.frame.maxX + 10), height: 50))
         myButton.labelName = "My"
         myButton.center.y = statsCircle.frame.origin.y + statsCircle.frame.height/4
         mainScrollView.addSubview(myButton)
@@ -492,7 +542,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         /** End My Button **/
         
         /** Begin Rated Button **/
-        ratedButton = StatsButton(frame: CGRect(x: statsCircle.frame.maxX + 10, y: 0, width: 200, height: 50))
+        ratedButton = StatsButton(frame: CGRect(x: statsCircle.frame.maxX + 10, y: 0, width: self.view.frame.width - 20 - (statsCircle.frame.maxX + 10), height: 50))
         ratedButton.labelName = "Rated"
         ratedButton.center.y = statsCircle.frame.origin.y + 3*statsCircle.frame.height/4
         mainScrollView.addSubview(ratedButton)
@@ -525,11 +575,19 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         ratedButton.addTarget(self, action: "ratedButtonSelected:", forControlEvents: UIControlEvents.TouchUpInside)
         /** End Rated Button **/
         
-        var caretSelector = CaretSelectorBar(frame: CGRect(x: 0, y: statsCircle.frame.maxY + 10, width: mainScrollView.frame.width, height: 60), items: ["Posts", "Replies"])
+        var caretSelector:CaretSelectorBar!
+        if self.view.frame.width == 320 {
+            caretSelector = CaretSelectorBar(frame: CGRect(x: 0, y: statsCircle.frame.maxY + 10, width: mainScrollView.frame.width, height: 50), items: ["Posts", "Replies"])
+             caretSelector.font = UIFont(name: "Pacifico", size: 16.0)
+        } else {
+            caretSelector = CaretSelectorBar(frame: CGRect(x: 0, y: statsCircle.frame.maxY + 10, width: mainScrollView.frame.width, height: 60), items: ["Posts", "Replies"])
+            caretSelector.font = UIFont(name: "Pacifico", size: 18.0)
+        }
+        
         caretSelector.textPadding = 20
         caretSelector.caretSize = 10
         caretSelector.delegate = self
-        caretSelector.font = UIFont(name: "Pacifico", size: 18.0)
+
         
         var background = UIView(frame: CGRect(x: 0, y: caretSelector.frame.maxY - 10, width: self.view.frame.width, height: mainScrollView.contentSize.height-(caretSelector.frame.maxY - 10)))
         background.backgroundColor = UIColor.whiteColor()
@@ -974,13 +1032,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize
     {
-        if (self.view.frame.width == 320) {
-            return CGSizeMake(104.6, 104.6)
-        } else if (self.view.frame.width == 375) {
-            return CGSizeMake(124,124)
-        } else {
-            return CGSizeMake(100, 100)
-        }
+        return CGSize(width: collectionView.frame.width/3-1, height: collectionView.frame.width/3-1)
     }
 
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
