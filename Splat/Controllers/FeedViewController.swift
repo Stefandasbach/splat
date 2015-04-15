@@ -87,6 +87,18 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        if (NSUserDefaults.standardUserDefaults().boolForKey("HasLaunchedOnce")) {
+            // app already launched
+        } else
+        {
+            self.presentViewController(TutorialViewController(), animated: true, completion: nil)
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasLaunchedOnce")
+            NSUserDefaults.standardUserDefaults().synchronize()
+            // This is the first launch ever
+        }
+        
         if let loc = NSUserDefaults.standardUserDefaults().objectForKey("SelectedLocation") as? String {
             selectedLocation = loc
         } else {
