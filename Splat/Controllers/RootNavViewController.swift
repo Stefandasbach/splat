@@ -42,6 +42,20 @@ class RootNavViewController: UINavigationController, CLLocationManagerDelegate {
         renderElements()
     }
     
+    override func viewDidAppear(animated: Bool) {
+        
+        if (NSUserDefaults.standardUserDefaults().boolForKey("HasLaunchedOnce")) {
+            // app already launched
+        } else
+        {
+            self.presentViewController(TutorialViewController(), animated: true, completion: nil)
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasLaunchedOnce")
+            NSUserDefaults.standardUserDefaults().synchronize()
+            // This is the first launch ever
+        }
+
+    }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

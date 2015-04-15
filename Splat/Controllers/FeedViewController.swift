@@ -87,6 +87,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         if let loc = NSUserDefaults.standardUserDefaults().objectForKey("SelectedLocation") as? String {
             selectedLocation = loc
         } else {

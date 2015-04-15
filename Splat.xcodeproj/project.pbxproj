@@ -57,6 +57,12 @@
 		0295EF781AD484C4009DA6DC /* notificationsIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0295EF771AD484C4009DA6DC /* notificationsIcon.png */; };
 		0295EF7A1AD48704009DA6DC /* NotificationBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295EF791AD48704009DA6DC /* NotificationBadge.swift */; };
 		0295EF7E1AD4D865009DA6DC /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295EF7D1AD4D865009DA6DC /* NotificationsViewController.swift */; };
+		029FC5991ADDF770000B6DEE /* tutorialScreenPage1.png in Resources */ = {isa = PBXBuildFile; fileRef = 029FC5951ADDF770000B6DEE /* tutorialScreenPage1.png */; };
+		029FC59A1ADDF770000B6DEE /* tutorialScreenPage2.png in Resources */ = {isa = PBXBuildFile; fileRef = 029FC5961ADDF770000B6DEE /* tutorialScreenPage2.png */; };
+		029FC59B1ADDF770000B6DEE /* tutorialScreenPage3.png in Resources */ = {isa = PBXBuildFile; fileRef = 029FC5971ADDF770000B6DEE /* tutorialScreenPage3.png */; };
+		029FC59C1ADDF770000B6DEE /* tutorialScreenPage4.png in Resources */ = {isa = PBXBuildFile; fileRef = 029FC5981ADDF770000B6DEE /* tutorialScreenPage4.png */; };
+		029FC59E1ADDF7B1000B6DEE /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029FC59D1ADDF7B1000B6DEE /* TutorialViewController.swift */; };
+		029FC5A01ADDFEE3000B6DEE /* TutorialPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029FC59F1ADDFEE3000B6DEE /* TutorialPageViewController.swift */; };
 		02B22EFF1AD03F8600A6F2E4 /* ReplyImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B22EFE1AD03F8600A6F2E4 /* ReplyImageView.swift */; };
 		02B2CA6E1AA6383300BB05B9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B2CA6D1AA6383300BB05B9 /* AppDelegate.swift */; };
 		02B2CA731AA6383300BB05B9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02B2CA711AA6383300BB05B9 /* Main.storyboard */; };
@@ -149,8 +155,14 @@
 		0295EF771AD484C4009DA6DC /* notificationsIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notificationsIcon.png; sourceTree = "<group>"; };
 		0295EF791AD48704009DA6DC /* NotificationBadge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationBadge.swift; sourceTree = "<group>"; };
 		0295EF7D1AD4D865009DA6DC /* NotificationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
+		029FC5951ADDF770000B6DEE /* tutorialScreenPage1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorialScreenPage1.png; sourceTree = "<group>"; };
+		029FC5961ADDF770000B6DEE /* tutorialScreenPage2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorialScreenPage2.png; sourceTree = "<group>"; };
+		029FC5971ADDF770000B6DEE /* tutorialScreenPage3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorialScreenPage3.png; sourceTree = "<group>"; };
+		029FC5981ADDF770000B6DEE /* tutorialScreenPage4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorialScreenPage4.png; sourceTree = "<group>"; };
+		029FC59D1ADDF7B1000B6DEE /* TutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
+		029FC59F1ADDFEE3000B6DEE /* TutorialPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialPageViewController.swift; sourceTree = "<group>"; };
 		02B22EFE1AD03F8600A6F2E4 /* ReplyImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyImageView.swift; sourceTree = "<group>"; };
-		02B2CA681AA6383300BB05B9 /* SplatIt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplatIt.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		02B2CA681AA6383300BB05B9 /* Splat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Splat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		02B2CA6C1AA6383300BB05B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		02B2CA6D1AA6383300BB05B9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		02B2CA721AA6383300BB05B9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -282,6 +294,17 @@
 			path = Buttons;
 			sourceTree = "<group>";
 		};
+		029FC5941ADDF770000B6DEE /* Tutorial */ = {
+			isa = PBXGroup;
+			children = (
+				029FC5951ADDF770000B6DEE /* tutorialScreenPage1.png */,
+				029FC5961ADDF770000B6DEE /* tutorialScreenPage2.png */,
+				029FC5971ADDF770000B6DEE /* tutorialScreenPage3.png */,
+				029FC5981ADDF770000B6DEE /* tutorialScreenPage4.png */,
+			);
+			path = Tutorial;
+			sourceTree = "<group>";
+		};
 		02B2CA5F1AA6383300BB05B9 = {
 			isa = PBXGroup;
 			children = (
@@ -295,7 +318,7 @@
 		02B2CA691AA6383300BB05B9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				02B2CA681AA6383300BB05B9 /* SplatIt.app */,
+				02B2CA681AA6383300BB05B9 /* Splat.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -391,6 +414,8 @@
 				0284C73A1ABD907F00E55B58 /* GenericPostsTableViewController.swift */,
 				0284C7431ABDF3A000E55B58 /* PostPreviewViewController.swift */,
 				0295EF7D1AD4D865009DA6DC /* NotificationsViewController.swift */,
+				029FC59D1ADDF7B1000B6DEE /* TutorialViewController.swift */,
+				029FC59F1ADDFEE3000B6DEE /* TutorialPageViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -412,6 +437,7 @@
 				021B75B81AB76EF3007D5CA4 /* Misc */,
 				02F2C6A21AB4879A0041A09F /* Icons */,
 				02F515711AC9D4E20047D566 /* Placeholders */,
+				029FC5941ADDF770000B6DEE /* Tutorial */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -502,7 +528,7 @@
 			);
 			name = Splat;
 			productName = Splat;
-			productReference = 02B2CA681AA6383300BB05B9 /* SplatIt.app */;
+			productReference = 02B2CA681AA6383300BB05B9 /* Splat.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -548,6 +574,7 @@
 				0200A2011AC207EB0075DA4C /* splashScreen1136.png in Resources */,
 				02B2CA731AA6383300BB05B9 /* Main.storyboard in Resources */,
 				0284C7481ABE3FFE00E55B58 /* flipCameraIcon.png in Resources */,
+				029FC59B1ADDF770000B6DEE /* tutorialScreenPage3.png in Resources */,
 				0200A1F91AC203B80075DA4C /* SplatThumbnail87.png in Resources */,
 				0200A1FF1AC207660075DA4C /* splashScreen750.png in Resources */,
 				0284C7471ABE3FFE00E55B58 /* flashIcon.png in Resources */,
@@ -557,9 +584,11 @@
 				0284C7391ABCA8B100E55B58 /* Pacifico.ttf in Resources */,
 				0200A1FA1AC203B80075DA4C /* SplatThumbnail120.png in Resources */,
 				0284C7401ABDE0FA00E55B58 /* captureButtonInner.png in Resources */,
+				029FC59C1ADDF770000B6DEE /* tutorialScreenPage4.png in Resources */,
 				0284C73F1ABDE0FA00E55B58 /* captureButtonEdge.png in Resources */,
 				026C86241AB9976A00BE67D5 /* flagIcon.png in Resources */,
 				02DDA2781ADD8A0A00474828 /* TwitterKitResources.bundle in Resources */,
+				029FC59A1ADDF770000B6DEE /* tutorialScreenPage2.png in Resources */,
 				0200A2031AC2083D0075DA4C /* splashScreen960.png in Resources */,
 				0200A1FB1AC203B80075DA4C /* SplatThumbnail180.png in Resources */,
 				0284C7361ABC8F7100E55B58 /* backIconFlipped.png in Resources */,
@@ -567,6 +596,7 @@
 				02B2CA781AA6383300BB05B9 /* LaunchScreen.xib in Resources */,
 				02F515731AC9D4E20047D566 /* feedPlaceholder.png in Resources */,
 				026C86201AB9182F00BE67D5 /* caretImage.png in Resources */,
+				029FC5991ADDF770000B6DEE /* tutorialScreenPage1.png in Resources */,
 				021B75BA1AB76EF3007D5CA4 /* CommentBoxPlaceholder.png in Resources */,
 				02F2C6B31AB5F5DC0041A09F /* backIcon.png in Resources */,
 				0295EF781AD484C4009DA6DC /* notificationsIcon.png in Resources */,
@@ -605,6 +635,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				029FC5A01ADDFEE3000B6DEE /* TutorialPageViewController.swift in Sources */,
 				0295EF7A1AD48704009DA6DC /* NotificationBadge.swift in Sources */,
 				02F2C6B11AB5DB210041A09F /* CustomViews.swift in Sources */,
 				0271124E1AC0A27F00F6D25E /* FlagButton.swift in Sources */,
@@ -615,6 +646,7 @@
 				02F2C6A61AB489620041A09F /* FeedViewController.swift in Sources */,
 				027112421ABFD46800F6D25E /* BackNavItem.swift in Sources */,
 				0284C74D1ABF2AD100E55B58 /* VoteSelector.swift in Sources */,
+				029FC59E1ADDF7B1000B6DEE /* TutorialViewController.swift in Sources */,
 				0284C7441ABDF3A000E55B58 /* PostPreviewViewController.swift in Sources */,
 				026C86261AB99F6D00BE67D5 /* timeUtils.swift in Sources */,
 				02F2C6BD1AB701AF0041A09F /* CommentBox.swift in Sources */,
@@ -761,7 +793,7 @@
 				);
 				INFOPLIST_FILE = Splat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = SplatIt;
+				PRODUCT_NAME = Splat;
 				PROVISIONING_PROFILE = "73fcc1ea-4552-4294-9d07-0578876f6ead";
 				SWIFT_OBJC_BRIDGING_HEADER = "Splat/Splat-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -783,7 +815,7 @@
 				);
 				INFOPLIST_FILE = Splat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = SplatIt;
+				PRODUCT_NAME = Splat;
 				PROVISIONING_PROFILE = "73fcc1ea-4552-4294-9d07-0578876f6ead";
 				SWIFT_OBJC_BRIDGING_HEADER = "Splat/Splat-Bridging-Header.h";
 			};
