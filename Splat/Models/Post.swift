@@ -122,6 +122,9 @@ class Post : NSObject {
         })
     }
 
+    func cancelSave() {
+    }
+    
     func saveObjectInBackgroundForCurrentUser(completion: (success: Bool) -> Void) {
         object.saveInBackgroundWithBlock({
             (succeeded, error) -> Void in
@@ -129,6 +132,7 @@ class Post : NSObject {
                 if (succeeded == true) {
                     dispatch_async(dispatch_get_main_queue(), {
                         println("Added post")
+                        println(self.object)
                         self.addInverseRelationshipToCurrentUser(self.object)
                         completion(success: true)
                     })

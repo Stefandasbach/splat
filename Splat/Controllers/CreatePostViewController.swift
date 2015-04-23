@@ -10,6 +10,9 @@ import Foundation
 import Photos
 import Parse
 
+//this is Gloabal to prevent gc problems on upload
+var savingPost:Post!
+
 class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDelegate, UITextFieldDelegate, UIAlertViewDelegate, cameraViewDelegate {
     //constants
     let headerSize:CGFloat = 50
@@ -26,6 +29,7 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
     var numberCharactersLeft: Int!
     
     var cameraVC: CameraViewController!
+    
     
     override init() {
         super.init()
@@ -242,14 +246,14 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
     func doneButtonListener(sender: UIButton) {
         //create post
         if (validatePost()) {
-            var post = Post()
+            savingPost = Post()
             var resizedImage = scaleImage(imageView.image, CGSize(width: 256, height: 256))
             let pngImage = UIImagePNGRepresentation(resizedImage)
             
-            post.setPicture(pngImage)
-            post.setScore(0)
-            post.setFlags(0)
-            post.setComment(commentBox.getComment())
+            savingPost.setPicture(pngImage)
+            savingPost.setScore(0)
+            savingPost.setFlags(0)
+            savingPost.setComment(commentBox.getComment())
             
             PFGeoPoint.geoPointForCurrentLocationInBackground({ (geopoint, error) -> Void in
                 if (error != nil) {
@@ -260,10 +264,10 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
                     return
                 }
                 if let geo = geopoint {
-                    post.setGeopoint(geo)
+                    savingPost.setGeopoint(geo)
                 }
-                post.setState((NSUserDefaults.standardUserDefaults().objectForKey("state") as? String))
-                post.saveObjectInBackgroundForCurrentUser { (success) -> Void in
+                savingPost.setState((NSUserDefaults.standardUserDefaults().objectForKey("state") as? String))
+                savingPost.saveObjectInBackgroundForCurrentUser { (success) -> Void in
                     if success {
                         
                         println("Success creating post!")
@@ -277,8 +281,8 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
                 }
             })
             
-            
             self.sendToPreviousController()
+            
         }
        
     }

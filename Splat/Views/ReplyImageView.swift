@@ -39,7 +39,7 @@ class ReplyImageView: UIView {
         
         self.container = ContainerView(frame: CGRect(x: 20, y: 40, width: self.frame.width-40, height: self.frame.width-40 + 40))
         self.container.center = self.center
-        self.container.center.y -= 40
+        self.container.center.y -= 20
         
         self.container.backgroundColor = UIColorFromRGB(PURPLE_SELECTED).colorWithAlphaComponent(0.8)
         
