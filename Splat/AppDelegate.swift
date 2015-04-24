@@ -8,6 +8,8 @@
 
 import UIKit
 import Parse
+import AVFoundation
+import Photos
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
@@ -32,6 +34,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
         /* View controllers rendered from this function call- see function saveUserLocation */
         getUserLocation()
+        /* Ensure photo and camera access propogates to settings */
+        var isFirstTimeAskingForCamera = NSUserDefaults.standardUserDefaults().boolForKey("firstTimeAskingForCamera")
+        if(!isFirstTimeAskingForCamera){
+            println("Value: \(isFirstTimeAskingForCamera)"
+            )
+            self.requestCameraAccess()
+            self.requestPhotosAccess()
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "isFirstTimeAskingForCamera")
+        }
         self.window?.backgroundColor = UIColor.whiteColor()
         //reset the selected location
         let userDefaults = NSUserDefaults.standardUserDefaults()
@@ -176,6 +187,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 else {
                     defaults.setObject(state, forKey: "foreign")
                 }
+                
                 self.window?.rootViewController?.presentedViewController?.dismissViewControllerAnimated(true, completion: nil)
                 var feedView = FeedViewController(style: UITableViewStyle.Plain)
                 var navView = RootNavViewController(rootViewController: feedView)
@@ -204,6 +216,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             alertController.addAction(openAction)
             
             self.window?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    func requestCameraAccess() {
+        let status = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        if status != AVAuthorizationStatus.Authorized {
+            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted) -> Void in
+            })
+        }
+    }
+    
+    func requestPhotosAccess() {
+        /* Ask for access to photos */
+        var photosEnabled = PHPhotoLibrary.authorizationStatus()
+        if (photosEnabled != PHAuthorizationStatus.Authorized) {
+            PHPhotoLibrary.requestAuthorization({ (status) -> Void in
+            })
         }
     }
     
