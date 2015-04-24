@@ -100,14 +100,14 @@ class CameraViewController: UIImagePickerController, UIImagePickerControllerDele
         cameraToolbar = UIToolbar(frame: CGRectMake(0, 0, self.view.frame.width, 60))
         cameraToolbar.barStyle = UIBarStyle.BlackTranslucent
         cameraToolbar.translucent = true
-        let exitButton = UIButton(frame: CGRectMake(0, 10, 40, 40))
+        let exitButton = UIButton(frame: CGRectMake(20, 10, 40, 40))
         exitButton.setImage(UIImage(named: "exitIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         exitButton.tintColor = UIColor.whiteColor()
         exitButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         exitButton.addTarget(self, action: Selector("exitButtonPressed"), forControlEvents: UIControlEvents.TouchUpInside)
         cameraToolbar.addSubview(exitButton)
         
-        flashButton = UIButton(frame: CGRectMake(self.view.frame.width - 40, 10, 40, 40))
+        flashButton = UIButton(frame: CGRectMake(self.view.frame.width - 60, 10, 40, 40))
         flashButton.setImage(UIImage(named: "flashIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
         flashButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         flashButton.tintColor = UIColor.whiteColor()

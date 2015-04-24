@@ -120,7 +120,6 @@ class Notification: NSObject {
         } else {
             return nil
         }
-        
     }
     
     func setReceiver(oID: String) {
