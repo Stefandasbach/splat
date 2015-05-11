@@ -38,7 +38,6 @@ class NotificationCell: UITableViewCell {
         postPicture.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.5)
         
         notificationText = UILabel(frame: CGRectMake(UIPadding, 0, 200, 50))
-        notificationText.text = "Someone replied to your post."
         notificationText.font = UIFont.systemFontOfSize(12)
         
         notificationTime = UILabel(frame:  CGRectMake(notificationText.frame.maxX, 0, 50, 50))
@@ -58,8 +57,10 @@ class NotificationCell: UITableViewCell {
         var eventCreatedDate = notification.object.createdAt
         var today = NSDate()
         
-        let timeSincePost = getStringTimeDiff(eventCreatedDate!, today)
-        notificationTime.text = "\(timeSincePost.number)\(timeSincePost.unit)"
+        /*** Uncomment for non-testing ***/
+//        let timeSincePost = getStringTimeDiff(eventCreatedDate!, today)
+//        notificationTime.text = "\(timeSincePost.number)\(timeSincePost.unit)"
+        /*** End uncomment ***/
         
         postPicture.image = nil
         if let post = notification.getPost() {
@@ -67,7 +68,12 @@ class NotificationCell: UITableViewCell {
                 self.postPicture.image = UIImage(data: imageData)
             }
         }
-
+        if notification.getType() == "reply" {
+            // Reply styling
+        } else if notification.getType() == "warning" {
+            self.backgroundColor = UIColor.redColor()
+        }
+        notificationText.text = notification.getType()
         
     }
     

@@ -11,11 +11,19 @@ import Parse
 
 class NotificationsViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var tableData = NSMutableArray()
+    var tableData : NSMutableArray = NSMutableArray()
     var navTitle = "Notifications"
     
     init() {
         super.init(style: .Plain)
+        /*** Delete for non-testing ***/
+        let reply = Notification()
+        reply.setType("reply")
+        let warning = Notification()
+        warning.setType("warning")
+        
+        tableData = [reply, warning]
+        /*** End Delete ***/
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         
     }
@@ -119,7 +127,7 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
             var previewController = PostPreviewViewController(post: post)
             self.navigationController?.pushViewController(previewController, animated: true)
         }
-        tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -135,7 +143,6 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
         //we get an error without this for some reason...
         if (tableData.count == 0) {
             return UITableViewCell();
