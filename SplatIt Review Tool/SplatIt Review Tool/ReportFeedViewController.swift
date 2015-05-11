@@ -82,6 +82,7 @@ class ReportFeedViewController: UITableViewController, UITableViewDataSource, UI
                 println("error")
             } else if let objects = reports {
                 var posts = [AnyObject]()
+                self.numberOfReportsDict = Dictionary<String, Int>()
                 
                 for obj in objects {
                     if let pfobj = obj as? PFObject {
