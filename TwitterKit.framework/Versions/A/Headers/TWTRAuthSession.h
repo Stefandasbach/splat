@@ -13,5 +13,6 @@
 
 @property (nonatomic, readonly, copy) NSString *authToken;
 @property (nonatomic, readonly, copy) NSString *authTokenSecret;
+@property (nonatomic, readonly, copy) NSString *userID;
 
 @end

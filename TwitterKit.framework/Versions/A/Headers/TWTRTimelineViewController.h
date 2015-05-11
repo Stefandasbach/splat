@@ -50,4 +50,8 @@
 
 - (instancetype)initWithStyle:(UITableViewStyle)style __attribute__((unavailable("Use -initWithDataSource: instead")));
 
+- (id)initWithCoder:(NSCoder *)aDecoder __attribute__((unavailable("Use -initWithDataSource: instead")));
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil __attribute__((unavailable("Use -initWithDataSource: instead")));
+
 @end

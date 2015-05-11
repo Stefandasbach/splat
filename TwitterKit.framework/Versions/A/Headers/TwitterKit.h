@@ -33,6 +33,7 @@
 #import "TWTRLogInButton.h"
 #import "TWTROAuthSigning.h"
 #import "TWTRSession.h"
+#import "TWTRGuestSession.h"
 #import "TWTRShareEmailViewController.h"
 #import "TWTRTimelineDataSource.h"
 #import "TWTRTimelineViewController.h"
