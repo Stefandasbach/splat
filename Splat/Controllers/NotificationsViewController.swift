@@ -151,21 +151,28 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
         var cell: NotificationCell!
         
         let notification = tableData.objectAtIndex(indexPath.row) as! Notification
+        let notificationType = notification.getType()
         
-        cell = tableView.dequeueReusableCellWithIdentifier("NotificationCell") as? NotificationCell
-        
-        
-        if (cell == nil) {
-            cell = NotificationCell(style: UITableViewCellStyle.Default, reuseIdentifier: "NotificationCell")
+        if notificationType == "reply" {
+            cell = tableView.dequeueReusableCellWithIdentifier("ReplyNotificationCell") as? ReplyNotificationCell
+        } else if notificationType == "warning" {
+            cell = tableView.dequeueReusableCellWithIdentifier("WarningNotificationCell") as? WarningNotificationCell
         }
         
+        if (cell == nil) {
+            if notificationType == "reply" {
+                cell = ReplyNotificationCell(style: UITableViewCellStyle.Default, reuseIdentifier: "ReplyNotificationCell")
+            } else if notificationType == "warning" {
+                cell = WarningNotificationCell(style: UITableViewCellStyle.Default, reuseIdentifier: "WarningNotificationCell")
+            }
+        }
         cell.initialize(notification)
         
         return cell
     }
     
     override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        if let notificationCell = cell as? NotificationCell {
+        if let notificationCell = cell as? ReplyNotificationCell {
             notificationCell.cancelLoad()
             notificationCell.postPicture.image = nil
         }

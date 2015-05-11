@@ -2,24 +2,24 @@
 //  NotificationCell.swift
 //  Splat
 //
-//  Created by Aaron Tainter on 4/7/15.
+//  Created by Stefan Dasbach on 5/11/15.
 //  Copyright (c) 2015 Team Splat. All rights reserved.
 //
 
 import Foundation
 
 class NotificationCell: UITableViewCell {
-    let UIPadding: CGFloat = 10
-    let imageSize: CGFloat = 30
-    
-    var postPicture: UIImageView!
-    private var notificationTime: UILabel!
-    private var notificationText: UILabel!
-    
-    private var currentNotification: Notification!
-    
     //this is an error workaround...
     let cellWidth = UIScreen.mainScreen().applicationFrame.width
+    
+    let UIPadding: CGFloat = 10
+    let imageSize: CGFloat = 30
+    let timeLabelWidth: CGFloat = 35
+    
+    var postPicture: UIImageView!
+    var notificationText: UILabel!
+    private var notificationTime: UILabel!
+    private var currentNotification: Notification!
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -37,14 +37,15 @@ class NotificationCell: UITableViewCell {
         postPicture.clipsToBounds = true
         postPicture.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.5)
         
-        notificationText = UILabel(frame: CGRectMake(UIPadding, 0, 200, 50))
+        let notificationTextWidth: CGFloat = self.cellWidth - (UIPadding + timeLabelWidth + UIPadding + imageSize + UIPadding)
+        notificationText = UILabel(frame: CGRectMake(UIPadding, 0, notificationTextWidth, 50))
         notificationText.font = UIFont.systemFontOfSize(12)
         
-        notificationTime = UILabel(frame:  CGRectMake(notificationText.frame.maxX, 0, 50, 50))
+        notificationTime = UILabel(frame:  CGRectMake(postPicture.frame.minX - (timeLabelWidth + UIPadding), 0, timeLabelWidth, 50))
         notificationTime.center.y = notificationText.center.y
-        notificationTime.font = UIFont.systemFontOfSize(12)
+        notificationTime.font = UIFont.systemFontOfSize(10)
         notificationTime.textColor = UIColor.grayColor()
-        
+        notificationTime.textAlignment = .Right
         
         self.addSubview(postPicture)
         self.addSubview(notificationText)
@@ -58,8 +59,8 @@ class NotificationCell: UITableViewCell {
         var today = NSDate()
         
         /*** Uncomment for non-testing ***/
-//        let timeSincePost = getStringTimeDiff(eventCreatedDate!, today)
-//        notificationTime.text = "\(timeSincePost.number)\(timeSincePost.unit)"
+        //        let timeSincePost = getStringTimeDiff(eventCreatedDate!, today)
+        //        notificationTime.text = "\(timeSincePost.number)\(timeSincePost.unit)"
         /*** End uncomment ***/
         
         postPicture.image = nil
@@ -68,13 +69,8 @@ class NotificationCell: UITableViewCell {
                 self.postPicture.image = UIImage(data: imageData)
             }
         }
-        if notification.getType() == "reply" {
-            // Reply styling
-        } else if notification.getType() == "warning" {
-            self.backgroundColor = UIColor.redColor()
-        }
-        notificationText.text = notification.getType()
         
+        notificationText.text = notification.getType()
     }
     
     func cancelLoad() {
