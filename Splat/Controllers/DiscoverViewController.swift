@@ -26,6 +26,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     
     //Navigation
     var shareButton: UIButton!
+    var policyButton: UIButton!
     var notificationsButton: UIButton!
     var notificationsBadge: NotificationBadge!
     var caretButton:UIButton!
@@ -291,6 +292,13 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         shareButton.tintColor = UIColor.whiteColor()
         shareButton.addTarget(self, action: "shareButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
         
+        //Policy Button
+        let pbWidth = 80.0 as CGFloat
+        policyButton = UIButton(frame: CGRectMake((self.view.frame.width/2)-(pbWidth/2), 10, pbWidth, 40))
+        policyButton.setTitle("Policy", forState: .Normal)
+        policyButton.titleLabel?.font = UIFont(name: "Pacifico", size: 12.0)
+        policyButton.addTarget(self, action: "policyButtonListener:", forControlEvents: UIControlEvents.TouchUpInside)
+        
         //NOTIFICATIONS BUTTON
         notificationsButton = UIButton(frame: CGRectMake(self.view.frame.width-60, 10, 40, 40))
         notificationsButton.setImage(UIImage(named: "notificationsIcon.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate), forState: UIControlState.Normal)
@@ -352,6 +360,7 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
         
         //Add Subviews
         mainScrollView.addSubview(notificationsButton)
+        mainScrollView.addSubview(policyButton)
         mainScrollView.addSubview(shareButton)
         mainScrollView.addSubview(circleView)
         mainScrollView.addSubview(caretButton)
@@ -785,6 +794,12 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     
     func sharer(sharer: FBSDKSharing!, didFailWithError error: NSError!) {
         let alert = UIAlertView(title: "Share on facebook?", message: "Make sure that SplatIt can access the Facebook app to spread the word!", delegate: self, cancelButtonTitle: "Got it.")
+        alert.show()
+    }
+    
+    func policyButtonListener(sender: UIButton) {
+        println("policyButtonListern")
+        let alert = UIAlertView(title: "SplatIt Policy", message: "While SplatIt is for mature audiences, posting content that contains excessively objectionable or crude content is prohibited. Content that is defamatory, offensive, or intended to bully individuals or parties will be removed and the user that posted said content will be suspended. Users that post frequently pornographic material will be suspended. Users can flag objectionable content to remove it and prevent a user from further posting objectionable content. Create the SplatIt community you want to see by upvoting & downvoting content and flagging inappropriate content.", delegate: self, cancelButtonTitle: "Got it")
         alert.show()
     }
     
