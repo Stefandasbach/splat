@@ -798,7 +798,6 @@ class DiscoverViewController: UIViewController, UIScrollViewDelegate, FBSDKShari
     }
     
     func policyButtonListener(sender: UIButton) {
-        println("policyButtonListern")
         let alert = UIAlertView(title: "SplatIt Policy", message: "While SplatIt is for mature audiences, posting content that contains excessively objectionable or crude content is prohibited. Content that is defamatory, offensive, or intended to bully individuals or parties will be removed and the user that posted said content will be suspended. Users that post frequently pornographic material will be suspended. Users can flag objectionable content to remove it and prevent a user from further posting objectionable content. Create the SplatIt community you want to see by upvoting & downvoting content and flagging inappropriate content.", delegate: self, cancelButtonTitle: "Got it")
         alert.show()
     }
