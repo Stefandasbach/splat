@@ -22,7 +22,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // Override point for customization after application launch.
         Parse.enableLocalDatastore()
         
-        Parse.setApplicationId("bPx47th2SCzPkhTnnbWuoYQ3X2oeB6nq5aK007T8", clientKey: "bBMvgqmIMqsAHESMqZfk2GdRfv4WTsYZcBB7YUXj")
+        //MARK:
+        //main database - uncomment for submission
+        //Parse.setApplicationId("bPx47th2SCzPkhTnnbWuoYQ3X2oeB6nq5aK007T8", clientKey: "bBMvgqmIMqsAHESMqZfk2GdRfv4WTsYZcBB7YUXj")
+        
+        //MARK: 
+        //Testing database
+        Parse.setApplicationId("x2lRRmyq5w4Q3pGYq0HvI7SQxYN3hhl5GrnH5ZK2", clientKey: "MtkbO27QqwKJOUxL5AIQOquoZj69WZlRUsoBzqiI")
         
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         
@@ -49,10 +55,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         userDefaults.setValue("", forKey: "SelectedLocation")
         
         /* === Uncomment for simulator testing === */
-//        self.window?.rootViewController?.presentedViewController?.dismissViewControllerAnimated(true, completion: nil)
-//        var feedView = FeedViewController(style: UITableViewStyle.Plain)
-//        var navView = RootNavViewController(rootViewController: feedView)
-//        self.window?.rootViewController = navView
+        //self.window?.rootViewController?.presentedViewController?.dismissViewControllerAnimated(true, completion: nil)
+        //var feedView = FeedViewController(style: UITableViewStyle.Plain)
+        //var navView = RootNavViewController(rootViewController: feedView)
+        //self.window?.rootViewController = navView
         /* === Uncomment for simulator testing === */
         return true
     }
