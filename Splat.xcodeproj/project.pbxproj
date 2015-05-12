@@ -104,6 +104,7 @@
 		02F2C6BB1AB60A680041A09F /* RootNavViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C6BA1AB60A680041A09F /* RootNavViewController.swift */; };
 		02F2C6BD1AB701AF0041A09F /* CommentBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C6BC1AB701AF0041A09F /* CommentBox.swift */; };
 		02F515731AC9D4E20047D566 /* feedPlaceholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 02F515721AC9D4E20047D566 /* feedPlaceholder.png */; };
+		02FFCD4C1B026B90002BF559 /* BannedUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FFCD4B1B026B90002BF559 /* BannedUserViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -209,6 +210,7 @@
 		02F2C6BA1AB60A680041A09F /* RootNavViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNavViewController.swift; sourceTree = "<group>"; };
 		02F2C6BC1AB701AF0041A09F /* CommentBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentBox.swift; sourceTree = "<group>"; };
 		02F515721AC9D4E20047D566 /* feedPlaceholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = feedPlaceholder.png; sourceTree = "<group>"; };
+		02FFCD4B1B026B90002BF559 /* BannedUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BannedUserViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -420,6 +422,7 @@
 				0295EF7D1AD4D865009DA6DC /* NotificationsViewController.swift */,
 				029FC59D1ADDF7B1000B6DEE /* TutorialViewController.swift */,
 				029FC59F1ADDFEE3000B6DEE /* TutorialPageViewController.swift */,
+				02FFCD4B1B026B90002BF559 /* BannedUserViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -656,6 +659,7 @@
 				029FC59E1ADDF7B1000B6DEE /* TutorialViewController.swift in Sources */,
 				0284C7441ABDF3A000E55B58 /* PostPreviewViewController.swift in Sources */,
 				026C86261AB99F6D00BE67D5 /* timeUtils.swift in Sources */,
+				02FFCD4C1B026B90002BF559 /* BannedUserViewController.swift in Sources */,
 				02F2C6BD1AB701AF0041A09F /* CommentBox.swift in Sources */,
 				0284C73B1ABD907F00E55B58 /* GenericPostsTableViewController.swift in Sources */,
 				02DDA26C1ADC496F00474828 /* PostCollectionCell.swift in Sources */,

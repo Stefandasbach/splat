@@ -128,14 +128,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     //MARK: login functions
     func login() {
         
-        //PFUser.enableAutomaticUser()
+        
         /* Login */
         if (PFAnonymousUtils.isLinkedWithUser(PFUser.currentUser())) {
             Notification.enableNotificationsForUser(User(pfObject: PFUser.currentUser()!))
+            println("logged in")
             
-            //comment after testing
+            
             if let user = PFUser.currentUser() {
-                    user.fetch()
+                
+                //comment after testing
+                user.fetch()
             }
         }
         else {
@@ -203,6 +206,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 var feedView = FeedViewController(style: UITableViewStyle.Plain)
                 var navView = RootNavViewController(rootViewController: feedView)
                 self.window?.rootViewController = navView
+                
+                //block user if banned
+                self.checkForUserBan()
+
             }
         })
     }
@@ -273,6 +280,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             application.registerForRemoteNotificationTypes(types)
         }
 
+    }
+    
+    func checkForUserBan() {
+        if let user = PFUser.currentUser() {
+            
+            var query = PFQuery(className: "BannedUsers")
+            query.whereKey("userId", equalTo: user.objectId!)
+            query.getFirstObjectInBackgroundWithBlock({ (obj, err) -> Void in
+                if let bannedUser = obj {
+                    if let number = bannedUser["warnings"] as? Int {
+                        if number >= 3 {
+                            NSUserDefaults.standardUserDefaults().setObject("banned", forKey: "UserBanned")
+                        } else {
+                            NSUserDefaults.standardUserDefaults().setObject("not_banned", forKey: "UserBanned")
+                        }
+                    }
+                }
+                
+                //still bans if connection offline
+                if let banned = NSUserDefaults.standardUserDefaults().objectForKey("UserBanned") as? String {
+                    if banned == "banned" {
+                        var vc = BannedUserViewController()
+                        UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(vc, animated: true, completion: nil)
+                    }
+                }
+            })
+        }
     }
     
 }
