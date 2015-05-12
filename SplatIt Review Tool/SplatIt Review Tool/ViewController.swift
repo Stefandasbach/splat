@@ -20,7 +20,7 @@ class ViewController: UIViewController {
         super.viewDidAppear(animated)
         
         
-        var vc = ReportFeedViewController()
+        var vc = ReportFeedViewController(style: .Plain)
         self.presentViewController(vc, animated: true, completion: nil)
     }
 

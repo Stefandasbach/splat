@@ -14,6 +14,33 @@ class ReportFeedViewController: UITableViewController, UITableViewDataSource, UI
     var reportData: NSMutableArray = NSMutableArray()
     var numberOfReportsDict: Dictionary<String, Int> = Dictionary<String, Int>()
     
+    init() {
+        super.init(style: .Plain)
+    }
+    
+    override init(nibName nibNameOrNil: String!, bundle nibBundleOrNil: NSBundle!) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    override init(style: UITableViewStyle) {
+        super.init(style: style)
+        initNotifications()
+    }
+    
+    func initNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedNotification:", name: "refreshFeed", object: nil)
+    }
+    
+    
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -55,7 +82,10 @@ class ReportFeedViewController: UITableViewController, UITableViewDataSource, UI
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        var currentPost = reportData.objectAtIndex(indexPath.row) as! PFObject
+        var previewController = ReportViewController(obj: currentPost)
+        self.presentViewController(previewController, animated: true, completion: nil)
+        tableView.deselectRowAtIndexPath(indexPath, animated: true);
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -134,5 +164,17 @@ class ReportFeedViewController: UITableViewController, UITableViewDataSource, UI
             }
         }
     }
+    
+    
+    ///handles notifications from other controllers
+    func receivedNotification(notification: NSNotification) {
+        dispatch_async(dispatch_get_main_queue(), {
+            if (notification.name == "refreshFeed") {
+                self.getData()
+            }
+        //call back to main queue to update user interface
+        });
+    }
+
     
 }

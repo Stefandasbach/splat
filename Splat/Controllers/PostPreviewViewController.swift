@@ -315,6 +315,12 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                     self.navigationController?.popViewControllerAnimated(true)
                 })
                 break;
+            case 3: //Spam
+                Report.sendReport(currentPost, type: .Spam, completion: { (success) -> Void in
+                    NSNotificationCenter.defaultCenter().postNotificationName("ReloadFeed", object: nil)
+                    self.navigationController?.popViewControllerAnimated(true)
+                })
+                break;
             default:
                 break
             }
@@ -593,6 +599,7 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
         flagsActionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil)
         flagsActionSheet.addButtonWithTitle("Inappropriate content")
         flagsActionSheet.addButtonWithTitle("Posted without my consent")
+        flagsActionSheet.addButtonWithTitle("This post is spam")
         
         flagsActionSheet.actionSheetStyle = .Default
         flagsActionSheet.showInView(self.view)

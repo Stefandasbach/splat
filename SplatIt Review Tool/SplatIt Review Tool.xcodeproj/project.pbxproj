@@ -28,6 +28,7 @@
 		02700BEA1B014104000754E7 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BE91B014104000754E7 /* libsqlite3.dylib */; };
 		02700BEC1B014958000754E7 /* ReportFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02700BEB1B014958000754E7 /* ReportFeedViewController.swift */; };
 		02700BEE1B014F17000754E7 /* ReportCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02700BED1B014F17000754E7 /* ReportCell.swift */; };
+		02700BF01B016B99000754E7 /* ReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02700BEF1B016B99000754E7 /* ReportViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,7 @@
 		02700BE91B014104000754E7 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		02700BEB1B014958000754E7 /* ReportFeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportFeedViewController.swift; sourceTree = "<group>"; };
 		02700BED1B014F17000754E7 /* ReportCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportCell.swift; sourceTree = "<group>"; };
+		02700BEF1B016B99000754E7 /* ReportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +131,7 @@
 				02700BAE1B013D73000754E7 /* Supporting Files */,
 				02700BEB1B014958000754E7 /* ReportFeedViewController.swift */,
 				02700BED1B014F17000754E7 /* ReportCell.swift */,
+				02700BEF1B016B99000754E7 /* ReportViewController.swift */,
 			);
 			path = "SplatIt Review Tool";
 			sourceTree = "<group>";
@@ -282,6 +285,7 @@
 				02700BB31B013D74000754E7 /* ViewController.swift in Sources */,
 				02700BEC1B014958000754E7 /* ReportFeedViewController.swift in Sources */,
 				02700BB11B013D73000754E7 /* AppDelegate.swift in Sources */,
+				02700BF01B016B99000754E7 /* ReportViewController.swift in Sources */,
 				02700BEE1B014F17000754E7 /* ReportCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

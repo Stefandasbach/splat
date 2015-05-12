@@ -132,6 +132,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         /* Login */
         if (PFAnonymousUtils.isLinkedWithUser(PFUser.currentUser())) {
             Notification.enableNotificationsForUser(User(pfObject: PFUser.currentUser()!))
+            
+            //comment after testing
+            if let user = PFUser.currentUser() {
+                    user.fetch()
+            }
         }
         else {
             PFAnonymousUtils.logInWithBlock { (user, error) -> Void in

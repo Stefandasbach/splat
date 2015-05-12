@@ -34,6 +34,8 @@ class ReportCell: UITableViewCell {
     func renderCell() {
         postImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         postImageView.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.5)
+        postImageView.contentMode = UIViewContentMode.ScaleAspectFill
+        postImageView.clipsToBounds = true
         self.addSubview(postImageView)
         
         reportCount = UILabel(frame: CGRect(x: cellWidth - 100, y: 0, width: 100, height: 100))
