@@ -9,10 +9,12 @@
 import Foundation
 
 class ReplyNotificationCell: NotificationCell {
+    
     override func initialize(notification: Notification) {
         super.initialize(notification)
+        self.misconductTextView.hidden = true
         
         super.notificationText.text = "Someone replied to your post"
-        self.backgroundColor = UIColor.blueColor()
+        self.backgroundColor = UIColor.whiteColor()
     }
 }

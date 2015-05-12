@@ -130,6 +130,12 @@ class ReportViewController: UIViewController {
             notification.save()
             
             //post push notification
+            var push = PFPush()
+            push.setChannel("profile\(creator.objectId!)")
+            push.setData(["alert":"You received a warning for misconduct.", "badge":"Increment"])
+            push.sendPushInBackgroundWithBlock({ (success, error) -> Void in
+                println("Sent push")
+            })
         }
     }
     

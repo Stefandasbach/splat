@@ -18,7 +18,8 @@ class NotificationCell: UITableViewCell {
     
     var postPicture: UIImageView!
     var notificationText: UILabel!
-    private var notificationTime: UILabel!
+    var misconductTextView: UITextView!
+    var notificationTime: UILabel!
     private var currentNotification: Notification!
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -41,12 +42,19 @@ class NotificationCell: UITableViewCell {
         notificationText = UILabel(frame: CGRectMake(UIPadding, 0, notificationTextWidth, 50))
         notificationText.font = UIFont.systemFontOfSize(12)
         
-        notificationTime = UILabel(frame:  CGRectMake(postPicture.frame.minX - (timeLabelWidth + UIPadding), 0, timeLabelWidth, 50))
+        notificationTime = UILabel(frame:  CGRectMake(postPicture.frame.minX - (timeLabelWidth + UIPadding), 0, timeLabelWidth, 20))
         notificationTime.center.y = notificationText.center.y
         notificationTime.font = UIFont.systemFontOfSize(10)
         notificationTime.textColor = UIColor.grayColor()
         notificationTime.textAlignment = .Right
         
+        misconductTextView = UITextView(frame: CGRect(x: 10, y: 10, width: cellWidth-20, height: 100 - notificationTime.frame.maxY))
+        misconductTextView.textAlignment = NSTextAlignment.Center
+        misconductTextView.font = UIFont.systemFontOfSize(12.0)
+        misconductTextView.editable = false
+        misconductTextView.backgroundColor = UIColor.clearColor()
+            
+        self.addSubview(misconductTextView)
         self.addSubview(postPicture)
         self.addSubview(notificationText)
         self.addSubview(notificationTime)
@@ -59,8 +67,8 @@ class NotificationCell: UITableViewCell {
         var today = NSDate()
         
         /*** Uncomment for non-testing ***/
-        //        let timeSincePost = getStringTimeDiff(eventCreatedDate!, today)
-        //        notificationTime.text = "\(timeSincePost.number)\(timeSincePost.unit)"
+                let timeSincePost = getStringTimeDiff(eventCreatedDate!, today)
+                notificationTime.text = "\(timeSincePost.number)\(timeSincePost.unit)"
         /*** End uncomment ***/
         
         postPicture.image = nil
