@@ -897,6 +897,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     
     //refreshes the feed with an initial 20 posts
     func refreshFeed() {
+        
         switch(selected) {
             case "New":
                 loadNewData(0, limit: dataLimit)

@@ -1,0 +1,505 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		02700BB11B013D73000754E7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02700BB01B013D73000754E7 /* AppDelegate.swift */; };
+		02700BB31B013D74000754E7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02700BB21B013D74000754E7 /* ViewController.swift */; };
+		02700BB61B013D74000754E7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02700BB41B013D74000754E7 /* Main.storyboard */; };
+		02700BB81B013D74000754E7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02700BB71B013D74000754E7 /* Images.xcassets */; };
+		02700BBB1B013D74000754E7 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02700BB91B013D74000754E7 /* LaunchScreen.xib */; };
+		02700BC71B013D74000754E7 /* SplatIt_Review_ToolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02700BC61B013D74000754E7 /* SplatIt_Review_ToolTests.swift */; };
+		02700BD31B014003000754E7 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BD11B014003000754E7 /* Bolts.framework */; };
+		02700BD41B014003000754E7 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BD21B014003000754E7 /* Parse.framework */; };
+		02700BD61B014088000754E7 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BD51B014088000754E7 /* AudioToolbox.framework */; };
+		02700BD81B014095000754E7 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BD71B014095000754E7 /* CFNetwork.framework */; };
+		02700BDA1B01409F000754E7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BD91B01409F000754E7 /* CoreGraphics.framework */; };
+		02700BDC1B0140AC000754E7 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BDB1B0140AC000754E7 /* CoreLocation.framework */; };
+		02700BDE1B0140BE000754E7 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BDD1B0140BE000754E7 /* MobileCoreServices.framework */; };
+		02700BE01B0140C9000754E7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BDF1B0140C9000754E7 /* QuartzCore.framework */; };
+		02700BE21B0140D2000754E7 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BE11B0140D2000754E7 /* Security.framework */; };
+		02700BE41B0140DB000754E7 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BE31B0140DB000754E7 /* StoreKit.framework */; };
+		02700BE61B0140E6000754E7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BE51B0140E6000754E7 /* SystemConfiguration.framework */; };
+		02700BE81B0140F4000754E7 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BE71B0140F4000754E7 /* libz.dylib */; };
+		02700BEA1B014104000754E7 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 02700BE91B014104000754E7 /* libsqlite3.dylib */; };
+		02700BEC1B014958000754E7 /* ReportFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02700BEB1B014958000754E7 /* ReportFeedViewController.swift */; };
+		02700BEE1B014F17000754E7 /* ReportCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02700BED1B014F17000754E7 /* ReportCell.swift */; };
+		02700BF01B016B99000754E7 /* ReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02700BEF1B016B99000754E7 /* ReportViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		02700BC11B013D74000754E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 02700BA31B013D73000754E7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 02700BAA1B013D73000754E7;
+			remoteInfo = "SplatIt Review Tool";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		02700BAB1B013D73000754E7 /* SplatIt Review Tool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SplatIt Review Tool.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		02700BAF1B013D73000754E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		02700BB01B013D73000754E7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		02700BB21B013D74000754E7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		02700BB51B013D74000754E7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		02700BB71B013D74000754E7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		02700BBA1B013D74000754E7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		02700BC01B013D74000754E7 /* SplatIt Review ToolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SplatIt Review ToolTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		02700BC51B013D74000754E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		02700BC61B013D74000754E7 /* SplatIt_Review_ToolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplatIt_Review_ToolTests.swift; sourceTree = "<group>"; };
+		02700BD11B014003000754E7 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = ../../Bolts.framework; sourceTree = "<group>"; };
+		02700BD21B014003000754E7 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = ../../Parse.framework; sourceTree = "<group>"; };
+		02700BD51B014088000754E7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		02700BD71B014095000754E7 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		02700BD91B01409F000754E7 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		02700BDB1B0140AC000754E7 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		02700BDD1B0140BE000754E7 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		02700BDF1B0140C9000754E7 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		02700BE11B0140D2000754E7 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		02700BE31B0140DB000754E7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		02700BE51B0140E6000754E7 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		02700BE71B0140F4000754E7 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		02700BE91B014104000754E7 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		02700BEB1B014958000754E7 /* ReportFeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportFeedViewController.swift; sourceTree = "<group>"; };
+		02700BED1B014F17000754E7 /* ReportCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportCell.swift; sourceTree = "<group>"; };
+		02700BEF1B016B99000754E7 /* ReportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		02700BA81B013D73000754E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				02700BEA1B014104000754E7 /* libsqlite3.dylib in Frameworks */,
+				02700BE81B0140F4000754E7 /* libz.dylib in Frameworks */,
+				02700BE61B0140E6000754E7 /* SystemConfiguration.framework in Frameworks */,
+				02700BE41B0140DB000754E7 /* StoreKit.framework in Frameworks */,
+				02700BE21B0140D2000754E7 /* Security.framework in Frameworks */,
+				02700BE01B0140C9000754E7 /* QuartzCore.framework in Frameworks */,
+				02700BDE1B0140BE000754E7 /* MobileCoreServices.framework in Frameworks */,
+				02700BDC1B0140AC000754E7 /* CoreLocation.framework in Frameworks */,
+				02700BDA1B01409F000754E7 /* CoreGraphics.framework in Frameworks */,
+				02700BD81B014095000754E7 /* CFNetwork.framework in Frameworks */,
+				02700BD61B014088000754E7 /* AudioToolbox.framework in Frameworks */,
+				02700BD41B014003000754E7 /* Parse.framework in Frameworks */,
+				02700BD31B014003000754E7 /* Bolts.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		02700BBD1B013D74000754E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		02700BA21B013D73000754E7 = {
+			isa = PBXGroup;
+			children = (
+				02700BAD1B013D73000754E7 /* SplatIt Review Tool */,
+				02700BC31B013D74000754E7 /* SplatIt Review ToolTests */,
+				02700BAC1B013D73000754E7 /* Products */,
+				02700BD01B013FD8000754E7 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		02700BAC1B013D73000754E7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				02700BAB1B013D73000754E7 /* SplatIt Review Tool.app */,
+				02700BC01B013D74000754E7 /* SplatIt Review ToolTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		02700BAD1B013D73000754E7 /* SplatIt Review Tool */ = {
+			isa = PBXGroup;
+			children = (
+				02700BB01B013D73000754E7 /* AppDelegate.swift */,
+				02700BB21B013D74000754E7 /* ViewController.swift */,
+				02700BB41B013D74000754E7 /* Main.storyboard */,
+				02700BB71B013D74000754E7 /* Images.xcassets */,
+				02700BB91B013D74000754E7 /* LaunchScreen.xib */,
+				02700BAE1B013D73000754E7 /* Supporting Files */,
+				02700BEB1B014958000754E7 /* ReportFeedViewController.swift */,
+				02700BED1B014F17000754E7 /* ReportCell.swift */,
+				02700BEF1B016B99000754E7 /* ReportViewController.swift */,
+			);
+			path = "SplatIt Review Tool";
+			sourceTree = "<group>";
+		};
+		02700BAE1B013D73000754E7 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				02700BAF1B013D73000754E7 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		02700BC31B013D74000754E7 /* SplatIt Review ToolTests */ = {
+			isa = PBXGroup;
+			children = (
+				02700BC61B013D74000754E7 /* SplatIt_Review_ToolTests.swift */,
+				02700BC41B013D74000754E7 /* Supporting Files */,
+			);
+			path = "SplatIt Review ToolTests";
+			sourceTree = "<group>";
+		};
+		02700BC41B013D74000754E7 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				02700BC51B013D74000754E7 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		02700BD01B013FD8000754E7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				02700BE91B014104000754E7 /* libsqlite3.dylib */,
+				02700BE71B0140F4000754E7 /* libz.dylib */,
+				02700BE51B0140E6000754E7 /* SystemConfiguration.framework */,
+				02700BE31B0140DB000754E7 /* StoreKit.framework */,
+				02700BE11B0140D2000754E7 /* Security.framework */,
+				02700BDF1B0140C9000754E7 /* QuartzCore.framework */,
+				02700BDD1B0140BE000754E7 /* MobileCoreServices.framework */,
+				02700BDB1B0140AC000754E7 /* CoreLocation.framework */,
+				02700BD91B01409F000754E7 /* CoreGraphics.framework */,
+				02700BD71B014095000754E7 /* CFNetwork.framework */,
+				02700BD51B014088000754E7 /* AudioToolbox.framework */,
+				02700BD11B014003000754E7 /* Bolts.framework */,
+				02700BD21B014003000754E7 /* Parse.framework */,
+			);
+			name = Frameworks;
+			path = "SplatIt Review Tool.xcodeproj";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		02700BAA1B013D73000754E7 /* SplatIt Review Tool */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 02700BCA1B013D74000754E7 /* Build configuration list for PBXNativeTarget "SplatIt Review Tool" */;
+			buildPhases = (
+				02700BA71B013D73000754E7 /* Sources */,
+				02700BA81B013D73000754E7 /* Frameworks */,
+				02700BA91B013D73000754E7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SplatIt Review Tool";
+			productName = "SplatIt Review Tool";
+			productReference = 02700BAB1B013D73000754E7 /* SplatIt Review Tool.app */;
+			productType = "com.apple.product-type.application";
+		};
+		02700BBF1B013D74000754E7 /* SplatIt Review ToolTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 02700BCD1B013D74000754E7 /* Build configuration list for PBXNativeTarget "SplatIt Review ToolTests" */;
+			buildPhases = (
+				02700BBC1B013D74000754E7 /* Sources */,
+				02700BBD1B013D74000754E7 /* Frameworks */,
+				02700BBE1B013D74000754E7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				02700BC21B013D74000754E7 /* PBXTargetDependency */,
+			);
+			name = "SplatIt Review ToolTests";
+			productName = "SplatIt Review ToolTests";
+			productReference = 02700BC01B013D74000754E7 /* SplatIt Review ToolTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		02700BA31B013D73000754E7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = "Team Splat";
+				TargetAttributes = {
+					02700BAA1B013D73000754E7 = {
+						CreatedOnToolsVersion = 6.3.1;
+					};
+					02700BBF1B013D74000754E7 = {
+						CreatedOnToolsVersion = 6.3.1;
+						TestTargetID = 02700BAA1B013D73000754E7;
+					};
+				};
+			};
+			buildConfigurationList = 02700BA61B013D73000754E7 /* Build configuration list for PBXProject "SplatIt Review Tool" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 02700BA21B013D73000754E7;
+			productRefGroup = 02700BAC1B013D73000754E7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				02700BAA1B013D73000754E7 /* SplatIt Review Tool */,
+				02700BBF1B013D74000754E7 /* SplatIt Review ToolTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		02700BA91B013D73000754E7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				02700BB61B013D74000754E7 /* Main.storyboard in Resources */,
+				02700BBB1B013D74000754E7 /* LaunchScreen.xib in Resources */,
+				02700BB81B013D74000754E7 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		02700BBE1B013D74000754E7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		02700BA71B013D73000754E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				02700BB31B013D74000754E7 /* ViewController.swift in Sources */,
+				02700BEC1B014958000754E7 /* ReportFeedViewController.swift in Sources */,
+				02700BB11B013D73000754E7 /* AppDelegate.swift in Sources */,
+				02700BF01B016B99000754E7 /* ReportViewController.swift in Sources */,
+				02700BEE1B014F17000754E7 /* ReportCell.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		02700BBC1B013D74000754E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				02700BC71B013D74000754E7 /* SplatIt_Review_ToolTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		02700BC21B013D74000754E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 02700BAA1B013D73000754E7 /* SplatIt Review Tool */;
+			targetProxy = 02700BC11B013D74000754E7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		02700BB41B013D74000754E7 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				02700BB51B013D74000754E7 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		02700BB91B013D74000754E7 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				02700BBA1B013D74000754E7 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		02700BC81B013D74000754E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		02700BC91B013D74000754E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		02700BCB1B013D74000754E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/aarontainter/Documents/Splat/splat,
+				);
+				INFOPLIST_FILE = "SplatIt Review Tool/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		02700BCC1B013D74000754E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/aarontainter/Documents/Splat/splat,
+				);
+				INFOPLIST_FILE = "SplatIt Review Tool/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		02700BCE1B013D74000754E7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "SplatIt Review ToolTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SplatIt Review Tool.app/SplatIt Review Tool";
+			};
+			name = Debug;
+		};
+		02700BCF1B013D74000754E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "SplatIt Review ToolTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SplatIt Review Tool.app/SplatIt Review Tool";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		02700BA61B013D73000754E7 /* Build configuration list for PBXProject "SplatIt Review Tool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				02700BC81B013D74000754E7 /* Debug */,
+				02700BC91B013D74000754E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		02700BCA1B013D74000754E7 /* Build configuration list for PBXNativeTarget "SplatIt Review Tool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				02700BCB1B013D74000754E7 /* Debug */,
+				02700BCC1B013D74000754E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		02700BCD1B013D74000754E7 /* Build configuration list for PBXNativeTarget "SplatIt Review ToolTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				02700BCE1B013D74000754E7 /* Debug */,
+				02700BCF1B013D74000754E7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 02700BA31B013D73000754E7 /* Project object */;
+}

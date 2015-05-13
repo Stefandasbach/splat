@@ -27,6 +27,8 @@
 		026C86241AB9976A00BE67D5 /* flagIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 026C86231AB9976A00BE67D5 /* flagIcon.png */; };
 		026C86261AB99F6D00BE67D5 /* timeUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026C86251AB99F6D00BE67D5 /* timeUtils.swift */; };
 		026C86281AB9A0EF00BE67D5 /* clockIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 026C86271AB9A0EF00BE67D5 /* clockIcon.png */; };
+		02700BF31B019EAC000754E7 /* ReplyNotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02700BF11B019EAC000754E7 /* ReplyNotificationCell.swift */; };
+		02700BF41B019EAC000754E7 /* WarningNotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02700BF21B019EAC000754E7 /* WarningNotificationCell.swift */; };
 		027112421ABFD46800F6D25E /* BackNavItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027112411ABFD46800F6D25E /* BackNavItem.swift */; };
 		027112441AC06BA300F6D25E /* SettingsNavItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027112431AC06BA300F6D25E /* SettingsNavItem.swift */; };
 		027112461AC06CE400F6D25E /* gearIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 027112451AC06CE400F6D25E /* gearIcon.png */; };
@@ -104,6 +106,7 @@
 		02F515731AC9D4E20047D566 /* feedPlaceholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 02F515721AC9D4E20047D566 /* feedPlaceholder.png */; };
 		7B4773131B012BC000932362 /* WarningNotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4773121B012BC000932362 /* WarningNotificationCell.swift */; };
 		7B4773161B01302200932362 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4773151B01302200932362 /* NotificationCell.swift */; };
+		02FFCD4C1B026B90002BF559 /* BannedUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FFCD4B1B026B90002BF559 /* BannedUserViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -127,6 +130,8 @@
 		026C86231AB9976A00BE67D5 /* flagIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flagIcon.png; sourceTree = "<group>"; };
 		026C86251AB99F6D00BE67D5 /* timeUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = timeUtils.swift; sourceTree = "<group>"; };
 		026C86271AB9A0EF00BE67D5 /* clockIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clockIcon.png; sourceTree = "<group>"; };
+		02700BF11B019EAC000754E7 /* ReplyNotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyNotificationCell.swift; sourceTree = "<group>"; };
+		02700BF21B019EAC000754E7 /* WarningNotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarningNotificationCell.swift; sourceTree = "<group>"; };
 		027112411ABFD46800F6D25E /* BackNavItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackNavItem.swift; sourceTree = "<group>"; };
 		027112431AC06BA300F6D25E /* SettingsNavItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsNavItem.swift; sourceTree = "<group>"; };
 		027112451AC06CE400F6D25E /* gearIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gearIcon.png; sourceTree = "<group>"; };
@@ -209,6 +214,7 @@
 		02F515721AC9D4E20047D566 /* feedPlaceholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = feedPlaceholder.png; sourceTree = "<group>"; };
 		7B4773121B012BC000932362 /* WarningNotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarningNotificationCell.swift; sourceTree = "<group>"; };
 		7B4773151B01302200932362 /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
+		02FFCD4B1B026B90002BF559 /* BannedUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BannedUserViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -420,6 +426,7 @@
 				0295EF7D1AD4D865009DA6DC /* NotificationsViewController.swift */,
 				029FC59D1ADDF7B1000B6DEE /* TutorialViewController.swift */,
 				029FC59F1ADDFEE3000B6DEE /* TutorialPageViewController.swift */,
+				02FFCD4B1B026B90002BF559 /* BannedUserViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -498,7 +505,8 @@
 		02F2C6AD1AB51A1F0041A09F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				7B4773141B01300500932362 /* Notifications */,
+				02700BF11B019EAC000754E7 /* ReplyNotificationCell.swift */,
+				02700BF21B019EAC000754E7 /* WarningNotificationCell.swift */,
 				021B75BB1AB8CA5A007D5CA4 /* PostCell.swift */,
 				027112471AC06F3600F6D25E /* ReplyCell.swift */,
 				02DDA26B1ADC496F00474828 /* PostCollectionCell.swift */,
@@ -660,10 +668,12 @@
 				021B75BC1AB8CA5A007D5CA4 /* PostCell.swift in Sources */,
 				02F2C6A61AB489620041A09F /* FeedViewController.swift in Sources */,
 				027112421ABFD46800F6D25E /* BackNavItem.swift in Sources */,
+				02700BF41B019EAC000754E7 /* WarningNotificationCell.swift in Sources */,
 				0284C74D1ABF2AD100E55B58 /* VoteSelector.swift in Sources */,
 				029FC59E1ADDF7B1000B6DEE /* TutorialViewController.swift in Sources */,
 				0284C7441ABDF3A000E55B58 /* PostPreviewViewController.swift in Sources */,
 				026C86261AB99F6D00BE67D5 /* timeUtils.swift in Sources */,
+				02FFCD4C1B026B90002BF559 /* BannedUserViewController.swift in Sources */,
 				02F2C6BD1AB701AF0041A09F /* CommentBox.swift in Sources */,
 				0284C73B1ABD907F00E55B58 /* GenericPostsTableViewController.swift in Sources */,
 				02DDA26C1ADC496F00474828 /* PostCollectionCell.swift in Sources */,
@@ -680,7 +690,8 @@
 				02F2C69C1AB4840F0041A09F /* imageUtils.swift in Sources */,
 				02DDA26A1ADC2B7300474828 /* CaretSelectorBar.swift in Sources */,
 				0284C7321ABC858600E55B58 /* DiscoverViewController.swift in Sources */,
-				0295EF761AD47AFF009DA6DC /* ReplyNotificationCell.swift in Sources */,
+				02700BF31B019EAC000754E7 /* ReplyNotificationCell.swift in Sources */,
+				0295EF761AD47AFF009DA6DC /* NotificationCell.swift in Sources */,
 				02F2C69F1AB4850F0041A09F /* CameraViewController.swift in Sources */,
 				02F2C6B71AB608FD0041A09F /* ResponsiveTextFieldViewController.swift in Sources */,
 				02F2C6AB1AB4F5210041A09F /* Post.swift in Sources */,

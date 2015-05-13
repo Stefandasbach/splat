@@ -12,6 +12,7 @@ import Parse
 enum SplatReportType {
     case Inappropriate
     case WithoutConsent
+    case Spam
 }
 
 class Report: NSObject {
@@ -25,6 +26,8 @@ class Report: NSObject {
             report.setType("Inappropriate")
         } else if type == .WithoutConsent {
             report.setType("Without Consent")
+        } else if type == .Spam {
+            report.setType("Spam")
         }
         
         report.getObject().saveInBackgroundWithBlock { (success, error) -> Void in

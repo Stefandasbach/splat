@@ -14,7 +14,7 @@
 "BUTTON_SENT_CONF_CODE" = "Sent confirmation code";
 
 /* Footnote disclaimer for send confirmation code screen */
-"FOOTNOTE_SEND_CONF_CODE" = "By tapping \"Send confirmation code\" above, <u>Digits by Twitter</u>, will send you a SMS message to confirm your phone number.";
+"FOOTNOTE_SEND_CONF_CODE" = "By tapping \"Send confirmation code\", <u>Digits by Twitter</u> will send an SMS message to confirm your phone number. Message & data rates may apply.";
 
 /* Label before confirmation code input field */
 "LABEL_ENTER_CONF_CODE" = "Enter confirmation code";

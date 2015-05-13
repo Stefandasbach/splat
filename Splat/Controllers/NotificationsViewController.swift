@@ -17,12 +17,12 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
     init() {
         super.init(style: .Plain)
         /*** Delete for non-testing ***/
-        let reply = Notification()
+      /*  let reply = Notification()
         reply.setType("reply")
         let warning = Notification()
         warning.setType("warning")
         
-        tableData = [reply, warning]
+        tableData = [reply, warning] */
         /*** End Delete ***/
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         
@@ -65,7 +65,7 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
         Notification.resetIconBadgeNumber(UIApplication.sharedApplication())
         
         var query = PFQuery(className: "Notification")
-        query.limit = 20
+        query.limit = 35
         query.orderByDescending("createdAt")
         query.whereKey("receiver", equalTo: User().getObject().objectId!)
         query.includeKey("post")
@@ -77,9 +77,9 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
                         for obj in objs {
                             if let pfobj = obj as? PFObject {
                                 var post = Notification(pfObject: pfobj)
-                                if (post.getPost() != nil) {
+                                //if (post.getPost() != nil) {
                                     self.tableData.addObject(post)
-                                }
+                                //}
                             }
                         }
                     }
@@ -135,6 +135,13 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if let notification = tableData.objectAtIndex(indexPath.row) as? Notification {
+            if notification.getType() == "Warning" {
+                return 100
+            } else if notification.getType() == "Reply" {
+                return 50
+            }
+        }
         return 50
     }
     
@@ -153,16 +160,16 @@ class NotificationsViewController: UITableViewController, UITableViewDelegate, U
         let notification = tableData.objectAtIndex(indexPath.row) as! Notification
         let notificationType = notification.getType()
         
-        if notificationType == "reply" {
+        if notificationType == "Reply" {
             cell = tableView.dequeueReusableCellWithIdentifier("ReplyNotificationCell") as? ReplyNotificationCell
-        } else if notificationType == "warning" {
+        } else if notificationType == "Warning" {
             cell = tableView.dequeueReusableCellWithIdentifier("WarningNotificationCell") as? WarningNotificationCell
         }
         
         if (cell == nil) {
-            if notificationType == "reply" {
+            if notificationType == "Reply" {
                 cell = ReplyNotificationCell(style: UITableViewCellStyle.Default, reuseIdentifier: "ReplyNotificationCell")
-            } else if notificationType == "warning" {
+            } else if notificationType == "Warning" {
                 cell = WarningNotificationCell(style: UITableViewCellStyle.Default, reuseIdentifier: "WarningNotificationCell")
             }
         }
