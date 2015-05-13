@@ -24,11 +24,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
         //MARK:
         //main database - uncomment for submission
-        //Parse.setApplicationId("bPx47th2SCzPkhTnnbWuoYQ3X2oeB6nq5aK007T8", clientKey: "bBMvgqmIMqsAHESMqZfk2GdRfv4WTsYZcBB7YUXj")
+        Parse.setApplicationId("bPx47th2SCzPkhTnnbWuoYQ3X2oeB6nq5aK007T8", clientKey: "bBMvgqmIMqsAHESMqZfk2GdRfv4WTsYZcBB7YUXj")
         
         //MARK: 
         //Testing database
-        Parse.setApplicationId("x2lRRmyq5w4Q3pGYq0HvI7SQxYN3hhl5GrnH5ZK2", clientKey: "MtkbO27QqwKJOUxL5AIQOquoZj69WZlRUsoBzqiI")
+        //Parse.setApplicationId("x2lRRmyq5w4Q3pGYq0HvI7SQxYN3hhl5GrnH5ZK2", clientKey: "MtkbO27QqwKJOUxL5AIQOquoZj69WZlRUsoBzqiI")
         
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         
@@ -299,7 +299,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                         }
                     }
                 }
-                
                 //still bans if connection offline
                 if let banned = NSUserDefaults.standardUserDefaults().objectForKey("UserBanned") as? String {
                     if banned == "banned" {
@@ -307,7 +306,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                     } else {
                         callback(false)
                     }
+                } else {
+                  callback(false)
                 }
+                
             })
         } else {
             callback(false)

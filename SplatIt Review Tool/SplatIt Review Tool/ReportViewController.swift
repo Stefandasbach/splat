@@ -19,6 +19,7 @@ class ReportViewController: UIViewController {
     var numberWithoutConsent: UILabel!
     
     var currentPost: PFObject!
+    var numberOfNotifications = 0
     
     //sends a notification to the user and removes all the reports/post
     var removePostButton: UIButton!
@@ -26,10 +27,11 @@ class ReportViewController: UIViewController {
     //ignores the reports by removing them and sending no notification to the post creator
     var ignoreReports: UIButton!
     
-    init(obj: PFObject) {
+    init(obj: PFObject, number: Int) {
         super.init(nibName: nil, bundle: nil)
         
         currentPost = obj
+        numberOfNotifications = number
     }
    
     internal required init(coder aDecoder: NSCoder) {
@@ -153,6 +155,7 @@ class ReportViewController: UIViewController {
     func ignoreButtonListener() {
         deleteAllReports()
         NSNotificationCenter.defaultCenter().postNotificationName("refreshFeed", object: nil)
+        removeNotificationsNumber()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -164,6 +167,14 @@ class ReportViewController: UIViewController {
         deletePost()
         deleteAllReports()
         NSNotificationCenter.defaultCenter().postNotificationName("refreshFeed", object: nil)
+        removeNotificationsNumber()
         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func removeNotificationsNumber() {
+        if (PFInstallation.currentInstallation().badge > 0 && (PFInstallation.currentInstallation().badge - numberOfNotifications) >= 0) {
+            PFInstallation.currentInstallation().badge -= numberOfNotifications
+            PFInstallation.currentInstallation().saveEventually(nil)
+        }
     }
 }

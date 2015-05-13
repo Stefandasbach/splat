@@ -38,15 +38,15 @@ class User: NSObject {
         return object
     }
     
-    func getPosts() -> [AnyObject]! {
+    func getPosts() -> [AnyObject]? {
         return object["Posts"] as? [AnyObject]
     }
     
-    func getReplies() -> [AnyObject]! {
+    func getReplies() -> [AnyObject]? {
         return object["Replies"] as? [AnyObject]
     }
 
-    func getReports() -> [AnyObject]! {
+    func getReports() -> [AnyObject]? {
         return object["Reports"] as? [AnyObject]
     }
 

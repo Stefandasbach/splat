@@ -231,6 +231,7 @@
 				TargetAttributes = {
 					02700BAA1B013D73000754E7 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = V8V9KT2MFC;
 					};
 					02700BBF1B013D74000754E7 = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -413,6 +414,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/aarontainter/Documents/Splat/splat,
@@ -427,6 +429,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/aarontainter/Documents/Splat/splat,
@@ -490,6 +493,7 @@
 				02700BCC1B013D74000754E7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		02700BCD1B013D74000754E7 /* Build configuration list for PBXNativeTarget "SplatIt Review ToolTests" */ = {
 			isa = XCConfigurationList;
@@ -498,6 +502,7 @@
 				02700BCF1B013D74000754E7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -43,7 +43,7 @@ class Report: NSObject {
                             dispatch_async(dispatch_get_main_queue(), {
                                 var push = PFPush()
                                 push.setChannel("Reports")
-                                push.setData(["alert":"Report for \(report.getType())", "badge":"Increment"])
+                                push.setData(["alert":"Report for \(report.getType()!)", "badge":"Increment"])
                                 push.sendPushInBackground()
                                 
                                 completion(success: true)

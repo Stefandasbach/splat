@@ -20,12 +20,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //MARK:
         //main database - uncomment for submission
-        //Parse.setApplicationId("bPx47th2SCzPkhTnnbWuoYQ3X2oeB6nq5aK007T8", clientKey: "bBMvgqmIMqsAHESMqZfk2GdRfv4WTsYZcBB7YUXj")
+        Parse.setApplicationId("bPx47th2SCzPkhTnnbWuoYQ3X2oeB6nq5aK007T8", clientKey: "bBMvgqmIMqsAHESMqZfk2GdRfv4WTsYZcBB7YUXj")
         
         //MARK:
         //Testing database
-        Parse.setApplicationId("x2lRRmyq5w4Q3pGYq0HvI7SQxYN3hhl5GrnH5ZK2", clientKey: "MtkbO27QqwKJOUxL5AIQOquoZj69WZlRUsoBzqiI")
+        /*Parse.setApplicationId("x2lRRmyq5w4Q3pGYq0HvI7SQxYN3hhl5GrnH5ZK2", clientKey: "MtkbO27QqwKJOUxL5AIQOquoZj69WZlRUsoBzqiI")*/
         
+        //push
+        self.initPushNotifications(application, launchOptions: launchOptions)
         
         var user = PFUser.logInWithUsername("admin", password: "password")
         
@@ -63,6 +65,75 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    //--------------------------------------
+    // MARK: Push Notifications
+    //--------------------------------------
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        let installation = PFInstallation.currentInstallation()
+        installation.setDeviceTokenFromData(deviceToken)
+        installation.saveInBackgroundWithBlock(nil)
+        /*
+        PFPush.subscribeToChannelInBackground("", block: { (succeeded, error) -> Void in
+            if succeeded {
+                println("SplatIt Review Tool successfully subscribed to push notifications on the broadcast channel.");
+            } else {
+                println("SplatIt  Review Tool failed to subscribe to push notifications on the broadcast channel with error = %@.", error)
+            }
+        })
+        */
+        PFPush.subscribeToChannelInBackground("Reports", block: { (success, error) -> Void in
+            if success {
+                println("Success subscribing to Reports channel")
+            } else {
+                println(error)
+            }
+        })
+    }
+    
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        if error.code == 3010 {
+            println("Push notifications are not supported in the iOS Simulator.")
+        } else {
+            println("application:didFailToRegisterForRemoteNotificationsWithError: %@", error)
+        }
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        PFPush.handlePush(userInfo)
+        if application.applicationState == UIApplicationState.Inactive {
+            PFAnalytics.trackAppOpenedWithRemoteNotificationPayloadInBackground(userInfo, block: nil)
+        }
+    }
+    
+    
+    func initPushNotifications(application: UIApplication, launchOptions: [NSObject: AnyObject]?) {
+        if application.applicationState != UIApplicationState.Background {
+            // Track an app open here if we launch with a push, unless
+            // "content_available" was used to trigger a background push (introduced in iOS 7).
+            // In that case, we skip tracking here to avoid double counting the app-open.
+            
+            let preBackgroundPush = !application.respondsToSelector("backgroundRefreshStatus")
+            let oldPushHandlerOnly = !self.respondsToSelector("application:didReceiveRemoteNotification:fetchCompletionHandler:")
+            var noPushPayload = false;
+            if let options = launchOptions {
+                noPushPayload = options[UIApplicationLaunchOptionsRemoteNotificationKey] != nil;
+            }
+            if (preBackgroundPush || oldPushHandlerOnly || noPushPayload) {
+                PFAnalytics.trackAppOpenedWithLaunchOptionsInBackground(launchOptions, block: nil)
+            }
+        }
+        if application.respondsToSelector("registerUserNotificationSettings:") {
+            let userNotificationTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
+            let settings = UIUserNotificationSettings(forTypes: userNotificationTypes, categories: nil)
+            application.registerUserNotificationSettings(settings)
+            application.registerForRemoteNotifications()
+        } else {
+            let types = UIRemoteNotificationType.Badge | UIRemoteNotificationType.Alert | UIRemoteNotificationType.Sound
+            application.registerForRemoteNotificationTypes(types)
+        }
+        
+    }
 
 }
 

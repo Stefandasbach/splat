@@ -83,7 +83,16 @@ class ReportFeedViewController: UITableViewController, UITableViewDataSource, UI
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         var currentPost = reportData.objectAtIndex(indexPath.row) as! PFObject
-        var previewController = ReportViewController(obj: currentPost)
+        
+        var numberOfReports = 1
+        
+        if let oID = currentPost.objectId {
+            if let value = numberOfReportsDict[oID] {
+                numberOfReports = value
+            }
+        }
+        
+        var previewController = ReportViewController(obj: currentPost, number: numberOfReports)
         self.presentViewController(previewController, animated: true, completion: nil)
         tableView.deselectRowAtIndexPath(indexPath, animated: true);
     }
