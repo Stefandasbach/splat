@@ -34,17 +34,36 @@ class WarningNotificationCell: NotificationCell, UIAlertViewDelegate {
         self.postPicture.hidden = true
         
         if let number = notification.getObject()["warningNumber"] as? Int {
-            var textString = "You received a warning for misconduct. If you get \(3-number) more warnings, you will be suspended from our service."
-            var attrText = NSMutableAttributedString(string: textString)
-            var range = (textString as NSString).rangeOfString("\(3-number) more warnings")
-            attrText.addAttribute(NSForegroundColorAttributeName, value: UIColorFromRGB(PURPLE_SELECTED), range: range)
+            if (3-number) == 1 {
+                
+                var textString = "You received a warning for misconduct. If you get \(3-number) more warning, you will be suspended from our service."
+                var attrText = NSMutableAttributedString(string: textString)
+                var range = (textString as NSString).rangeOfString("\(3-number) more warning")
+                attrText.addAttribute(NSForegroundColorAttributeName, value: UIColorFromRGB(PURPLE_SELECTED), range: range)
+                
+                
+                //add alignment
+                var paragraphStyle = NSMutableParagraphStyle()
+                paragraphStyle.alignment = NSTextAlignment.Center
+                attrText.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSMakeRange(0, attrText.length))
+                
+                super.misconductTextView.attributedText = attrText
+                
+            } else {
             
-            //add alignment
-            var paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.alignment = NSTextAlignment.Center
-            attrText.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSMakeRange(0, attrText.length))
-            
-            super.misconductTextView.attributedText = attrText
+                var textString = "You received a warning for misconduct. If you get \(3-number) more warnings, you will be suspended from our service."
+                var attrText = NSMutableAttributedString(string: textString)
+                var range = (textString as NSString).rangeOfString("\(3-number) more warnings")
+                attrText.addAttribute(NSForegroundColorAttributeName, value: UIColorFromRGB(PURPLE_SELECTED), range: range)
+                
+                
+                //add alignment
+                var paragraphStyle = NSMutableParagraphStyle()
+                paragraphStyle.alignment = NSTextAlignment.Center
+                attrText.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSMakeRange(0, attrText.length))
+                
+                super.misconductTextView.attributedText = attrText
+            }
         } else {
             super.misconductTextView.text = "You received a warning for misconduct."
         }

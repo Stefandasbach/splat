@@ -130,11 +130,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             println("logged in")
             
             
-            if let user = PFUser.currentUser() {
+            /*if let user = PFUser.currentUser() {
                 
                 //comment after testing
                 user.fetch()
-            }
+            } */
         }
         else {
             PFAnonymousUtils.logInWithBlock { (user, error) -> Void in
@@ -197,13 +197,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                     defaults.setObject(state, forKey: "foreign")
                 }
                 
-                self.window?.rootViewController?.presentedViewController?.dismissViewControllerAnimated(true, completion: nil)
-                var feedView = FeedViewController(style: UITableViewStyle.Plain)
-                var navView = RootNavViewController(rootViewController: feedView)
-                self.window?.rootViewController = navView
-                
                 //block user if banned
-                self.checkForUserBan()
+                self.checkForUserBan({ (success) -> Void in
+                    if success {
+                        self.window?.rootViewController?.presentedViewController?.dismissViewControllerAnimated(true, completion: nil)
+                        var bannedView = BannedUserViewController()
+                        var navView = RootNavViewController(rootViewController: bannedView)
+                        self.window?.rootViewController = navView
+                    } else {
+                        self.window?.rootViewController?.presentedViewController?.dismissViewControllerAnimated(true, completion: nil)
+                        var feedView = FeedViewController(style: UITableViewStyle.Plain)
+                        var navView = RootNavViewController(rootViewController: feedView)
+                        self.window?.rootViewController = navView
+                    }
+                })
 
             }
         })
@@ -277,7 +284,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     }
     
-    func checkForUserBan() {
+    func checkForUserBan(callback: (Bool)->Void) {
         if let user = PFUser.currentUser() {
             
             var query = PFQuery(className: "BannedUsers")
@@ -296,11 +303,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 //still bans if connection offline
                 if let banned = NSUserDefaults.standardUserDefaults().objectForKey("UserBanned") as? String {
                     if banned == "banned" {
-                        var vc = BannedUserViewController()
-                        UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(vc, animated: true, completion: nil)
+                        callback(true)
+                    } else {
+                        callback(false)
                     }
                 }
             })
+        } else {
+            callback(false)
         }
     }
     

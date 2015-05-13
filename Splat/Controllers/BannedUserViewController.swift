@@ -20,6 +20,11 @@ class BannedUserViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let navbar = self.navigationController?.navigationBar {
+            navbar.translucent = false
+        }
+        self.navigationItem.hidesBackButton = true
+        
         addToolbarTitle("SplatIt")
         addBannedLabel("You have been banned for violating the SplatIt Policy. To appeal your ban please send an email to support@SplatIt.ninja")
         addPolicyButton("Policy")
@@ -42,14 +47,15 @@ class BannedUserViewController: UIViewController {
     
     func addBannedLabel(text: String) {
         let SBHeight:   CGFloat = UIApplication.sharedApplication().statusBarFrame.size.height as CGFloat!
-        let TBHeight:   CGFloat = self.navigationController?.toolbar.frame.height as CGFloat!
+        
+        
         let labelWidth: CGFloat = screenWidth - (2 * padding)
         let labelHeight:CGFloat = 150
         
         BannedLabel = UILabel()
         BannedLabel.textAlignment = .Left
         /* Don't add in SBHeight to push text up towards top */
-        BannedLabel.frame = CGRectMake(padding, TBHeight, labelWidth, labelHeight)
+        BannedLabel.frame = CGRectMake(padding, 0, labelWidth, labelHeight)
         BannedLabel.text = text
         /* Align towards top */
         BannedLabel.numberOfLines = 0
@@ -61,8 +67,15 @@ class BannedUserViewController: UIViewController {
         let buttonWidth: CGFloat = screenWidth - (2 * padding)
         let buttonHeight:CGFloat = 50
         
+        var TBHeight: CGFloat
+        if let navbar = self.navigationController?.toolbar {
+            TBHeight = navbar.frame.height as CGFloat!
+        } else {
+            TBHeight = 0
+        }
+        
         PolicyButton = UIButton()
-        PolicyButton.frame = CGRectMake(padding, screenHeight - (buttonHeight + padding), buttonWidth, buttonHeight)
+        PolicyButton.frame = CGRectMake(padding, screenHeight - (buttonHeight + padding + TBHeight), buttonWidth, buttonHeight)
         PolicyButton.layer.masksToBounds = true
         PolicyButton.layer.cornerRadius = 10.0
         PolicyButton.backgroundColor = UIColorFromRGB(PURPLE_SELECTED)
