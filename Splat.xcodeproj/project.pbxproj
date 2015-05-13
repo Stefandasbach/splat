@@ -53,7 +53,7 @@
 		0289AA4E1AD5F26300E8604C /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0289AA4B1AD5F26300E8604C /* FBSDKLoginKit.framework */; };
 		0289AA4F1AD5F26300E8604C /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0289AA4C1AD5F26300E8604C /* FBSDKShareKit.framework */; };
 		0295EF741AD45457009DA6DC /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295EF731AD45457009DA6DC /* Notification.swift */; };
-		0295EF761AD47AFF009DA6DC /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295EF751AD47AFF009DA6DC /* NotificationCell.swift */; };
+		0295EF761AD47AFF009DA6DC /* ReplyNotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295EF751AD47AFF009DA6DC /* ReplyNotificationCell.swift */; };
 		0295EF781AD484C4009DA6DC /* notificationsIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0295EF771AD484C4009DA6DC /* notificationsIcon.png */; };
 		0295EF7A1AD48704009DA6DC /* NotificationBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295EF791AD48704009DA6DC /* NotificationBadge.swift */; };
 		0295EF7E1AD4D865009DA6DC /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295EF7D1AD4D865009DA6DC /* NotificationsViewController.swift */; };
@@ -102,6 +102,8 @@
 		02F2C6BB1AB60A680041A09F /* RootNavViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C6BA1AB60A680041A09F /* RootNavViewController.swift */; };
 		02F2C6BD1AB701AF0041A09F /* CommentBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C6BC1AB701AF0041A09F /* CommentBox.swift */; };
 		02F515731AC9D4E20047D566 /* feedPlaceholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 02F515721AC9D4E20047D566 /* feedPlaceholder.png */; };
+		7B4773131B012BC000932362 /* WarningNotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4773121B012BC000932362 /* WarningNotificationCell.swift */; };
+		7B4773161B01302200932362 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4773151B01302200932362 /* NotificationCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -151,7 +153,7 @@
 		0289AA4B1AD5F26300E8604C /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		0289AA4C1AD5F26300E8604C /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
 		0295EF731AD45457009DA6DC /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
-		0295EF751AD47AFF009DA6DC /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
+		0295EF751AD47AFF009DA6DC /* ReplyNotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyNotificationCell.swift; sourceTree = "<group>"; };
 		0295EF771AD484C4009DA6DC /* notificationsIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notificationsIcon.png; sourceTree = "<group>"; };
 		0295EF791AD48704009DA6DC /* NotificationBadge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationBadge.swift; sourceTree = "<group>"; };
 		0295EF7D1AD4D865009DA6DC /* NotificationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
@@ -205,6 +207,8 @@
 		02F2C6BA1AB60A680041A09F /* RootNavViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNavViewController.swift; sourceTree = "<group>"; };
 		02F2C6BC1AB701AF0041A09F /* CommentBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentBox.swift; sourceTree = "<group>"; };
 		02F515721AC9D4E20047D566 /* feedPlaceholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = feedPlaceholder.png; sourceTree = "<group>"; };
+		7B4773121B012BC000932362 /* WarningNotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarningNotificationCell.swift; sourceTree = "<group>"; };
+		7B4773151B01302200932362 /* NotificationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -494,9 +498,9 @@
 		02F2C6AD1AB51A1F0041A09F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				7B4773141B01300500932362 /* Notifications */,
 				021B75BB1AB8CA5A007D5CA4 /* PostCell.swift */,
 				027112471AC06F3600F6D25E /* ReplyCell.swift */,
-				0295EF751AD47AFF009DA6DC /* NotificationCell.swift */,
 				02DDA26B1ADC496F00474828 /* PostCollectionCell.swift */,
 			);
 			path = Cells;
@@ -508,6 +512,16 @@
 				02F515721AC9D4E20047D566 /* feedPlaceholder.png */,
 			);
 			path = Placeholders;
+			sourceTree = "<group>";
+		};
+		7B4773141B01300500932362 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				0295EF751AD47AFF009DA6DC /* ReplyNotificationCell.swift */,
+				7B4773121B012BC000932362 /* WarningNotificationCell.swift */,
+				7B4773151B01302200932362 /* NotificationCell.swift */,
+			);
+			name = Notifications;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -542,7 +556,7 @@
 				TargetAttributes = {
 					02B2CA671AA6383300BB05B9 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = V8V9KT2MFC;
+						DevelopmentTeam = 75XP583E93;
 					};
 				};
 			};
@@ -639,6 +653,7 @@
 				0295EF7A1AD48704009DA6DC /* NotificationBadge.swift in Sources */,
 				02F2C6B11AB5DB210041A09F /* CustomViews.swift in Sources */,
 				0271124E1AC0A27F00F6D25E /* FlagButton.swift in Sources */,
+				7B4773161B01302200932362 /* NotificationCell.swift in Sources */,
 				0295EF7E1AD4D865009DA6DC /* NotificationsViewController.swift in Sources */,
 				0271124C1AC070C800F6D25E /* Reply.swift in Sources */,
 				02F2C6A81AB48ED40041A09F /* CreatePostViewController.swift in Sources */,
@@ -658,13 +673,14 @@
 				02B22EFF1AD03F8600A6F2E4 /* ReplyImageView.swift in Sources */,
 				02F2C6BB1AB60A680041A09F /* RootNavViewController.swift in Sources */,
 				0271124A1AC0700100F6D25E /* DoneNavItem.swift in Sources */,
+				7B4773131B012BC000932362 /* WarningNotificationCell.swift in Sources */,
 				0200A2051AC36B1C0075DA4C /* Location.swift in Sources */,
 				0284C7341ABC88AE00E55B58 /* User.swift in Sources */,
 				027112441AC06BA300F6D25E /* SettingsNavItem.swift in Sources */,
 				02F2C69C1AB4840F0041A09F /* imageUtils.swift in Sources */,
 				02DDA26A1ADC2B7300474828 /* CaretSelectorBar.swift in Sources */,
 				0284C7321ABC858600E55B58 /* DiscoverViewController.swift in Sources */,
-				0295EF761AD47AFF009DA6DC /* NotificationCell.swift in Sources */,
+				0295EF761AD47AFF009DA6DC /* ReplyNotificationCell.swift in Sources */,
 				02F2C69F1AB4850F0041A09F /* CameraViewController.swift in Sources */,
 				02F2C6B71AB608FD0041A09F /* ResponsiveTextFieldViewController.swift in Sources */,
 				02F2C6AB1AB4F5210041A09F /* Post.swift in Sources */,
@@ -784,8 +800,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-2";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Aaron Tainter (V8V9KT2MFC)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Aaron Tainter (V8V9KT2MFC)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -794,7 +810,7 @@
 				INFOPLIST_FILE = Splat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = Splat;
-				PROVISIONING_PROFILE = "73fcc1ea-4552-4294-9d07-0578876f6ead";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Splat/Splat-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -806,8 +822,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-2";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Aaron Tainter (V8V9KT2MFC)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Aaron Tainter (V8V9KT2MFC)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -816,7 +832,7 @@
 				INFOPLIST_FILE = Splat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = Splat;
-				PROVISIONING_PROFILE = "73fcc1ea-4552-4294-9d07-0578876f6ead";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Splat/Splat-Bridging-Header.h";
 			};
 			name = Release;
