@@ -504,6 +504,9 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                     
                     voteSelector.Score.text = "\(existingScore)"
                     voteSelector.updateHighlighted()
+                    
+                    //animate button
+                    animateVoteButton(sender)
                     NSNotificationCenter.defaultCenter().postNotificationName("RefreshFeed", object: nil)
                 }
             }
@@ -548,6 +551,9 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                     
                     voteSelector.Score.text = "\(existingScore)"
                     voteSelector.updateHighlighted()
+                    
+                    //animate button
+                    animateVoteButton(sender)
                     NSNotificationCenter.defaultCenter().postNotificationName("RefreshFeed", object: nil)
                 }
             }
@@ -649,6 +655,9 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                         cell.voteSelector.Score.text = "\(existingScore)"
                         cell.voteSelector.updateHighlighted()
                         
+                        //animate button
+                        animateVoteButton(sender)
+                        
                     }
                 }
             }
@@ -701,6 +710,8 @@ class PostPreviewViewController: ResponsiveTextFieldViewController, UITextViewDe
                         cell.voteSelector.Score.text = "\(existingScore)"
                         cell.voteSelector.updateHighlighted()
                         
+                        //animate button
+                        animateVoteButton(sender)
                     }
                 }
             }

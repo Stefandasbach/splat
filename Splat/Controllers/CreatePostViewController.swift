@@ -266,7 +266,18 @@ class CreatePostViewController: ResponsiveTextFieldViewController, UITextViewDel
                 if let geo = geopoint {
                     savingPost.setGeopoint(geo)
                 }
-                savingPost.setState((NSUserDefaults.standardUserDefaults().objectForKey("state") as? String))
+                
+                if let state = NSUserDefaults.standardUserDefaults().objectForKey("state") as? String {
+                    if state == "foreign" {
+                        if let country = NSUserDefaults.standardUserDefaults().objectForKey("country") as? String {
+                            savingPost.setState(country)
+                        }
+                    } else {
+                        savingPost.setState(state)
+
+                    }
+                }
+                
                 savingPost.saveObjectInBackgroundForCurrentUser { (success) -> Void in
                     if success {
                         

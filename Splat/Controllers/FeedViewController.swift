@@ -97,11 +97,18 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         /* Get user's location */
         let defaults = NSUserDefaults.standardUserDefaults()
         var state = defaults.objectForKey("state") as? String
+        var country = defaults.objectForKey("country") as? String
         /* === Uncomment for simulator === */
 //        state = "CO"
         /* === Uncomment for simulator === */
         if (state != nil) {
-            userLocation = state!
+            if (state == "foreign") {
+                if (country != nil) {
+                   userLocation = country!
+                }
+            } else {
+                userLocation = state!
+            }
             currentSelection = userLocation
         }
         
@@ -187,6 +194,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             
             //If there is no location
             if (userLocation == nil) {
+                //do something to prevent crashes
                 // TODO: Set default  location if foreigner
                 LocationButton.setTitle( "My Location",  forState: .Normal)
                 LocationButton.selected = false
@@ -668,6 +676,11 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                         
                         cell.voteSelector.Score.text = "\(existingScore)"
                         cell.updateHighlighted()
+                        
+                        //animate button
+                        if let button = sender as? UIButton {
+                            animateVoteButton(button)
+                        }
                     }
                 }
             }
@@ -732,6 +745,11 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
                         
                         cell.voteSelector.Score.text = "\(existingScore)"
                         cell.updateHighlighted()
+                        
+                        //animate button
+                        if let button = sender as? UIButton {
+                            animateVoteButton(button)
+                        }
                     }
                 }
             }

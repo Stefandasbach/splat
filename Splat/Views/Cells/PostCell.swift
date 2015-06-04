@@ -44,8 +44,6 @@ class PostCell: UITableViewCell {
         let width   = 40 as CGFloat
         let height  = 40 as CGFloat
         
-        voteSelector = VoteSelector(frame: CGRectMake(cellWidth-width, 10, width, cellHeight-20))
-        self.addSubview(voteSelector)
         
         //image
         let imageWidth  = 150 as CGFloat
@@ -71,6 +69,8 @@ class PostCell: UITableViewCell {
            // self.addSubview(flagButton)
         }
         
+        voteSelector = VoteSelector(frame: CGRectMake(cellWidth-width, 10, width, cellHeight-20))
+        
         //Comment
         Comment = UITextView()
         Comment.frame = CGRectMake(imageWidth + 10, 0, cellWidth - myImage.frame.width - voteSelector.frame.width, cellHeight-flagButton.frame.height)
@@ -83,6 +83,7 @@ class PostCell: UITableViewCell {
             Comment.font = UIFont.systemFontOfSize(9.0)
         }
         self.addSubview(Comment)
+        self.addSubview(voteSelector)
         
         //time created
         timeCreatedLabel = UILabel()

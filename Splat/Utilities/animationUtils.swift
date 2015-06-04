@@ -72,5 +72,21 @@ func scrollElement(scrollToView: UIView, y: CGFloat, view: UIView) {
     }
 }
 
+func animateVoteButton(button:UIButton) {
+    UIView.animateWithDuration(0.15, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+        
+        button.transform = CGAffineTransformMakeScale(1.5, 1.5)
+        
+        }, completion: { finished in
+            UIView.animateWithDuration(0.15, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+                
+                button.transform = CGAffineTransformMakeScale(1.0, 1.0)
+                
+                }, completion: nil)
+            
+    })
+}
+
+
 
 

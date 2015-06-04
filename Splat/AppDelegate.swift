@@ -10,6 +10,7 @@ import UIKit
 import Parse
 import AVFoundation
 import Photos
+import FBSDKCoreKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
@@ -43,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         /* Ensure photo and camera access propogates to settings */
         var isFirstTimeAskingForCamera = NSUserDefaults.standardUserDefaults().boolForKey("firstTimeAskingForCamera")
         if(!isFirstTimeAskingForCamera){
-            println("Value: \(isFirstTimeAskingForCamera)"
+            println("First time asking for camera: \(isFirstTimeAskingForCamera)"
             )
             self.requestCameraAccess()
             self.requestPhotosAccess()
@@ -81,6 +82,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+        FBSDKAppEvents.activateApp()
     }
 
     func applicationWillTerminate(application: UIApplication) {
@@ -190,11 +193,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 let defaults = NSUserDefaults.standardUserDefaults()
                 if country == "United States" {
                     defaults.setObject(state, forKey: "state")
+                    defaults.setObject(country, forKey: "country")
                     /* Only show user's state at the top of the list */
                    Location.getStates(state)
                 }
                 else {
-                    defaults.setObject(state, forKey: "foreign")
+                    println("foreign")
+                    //set state to some value
+                    defaults.setObject("foreign", forKey: "state")
+                    defaults.setObject(country, forKey: "country")
                 }
                 
                 //block user if banned
