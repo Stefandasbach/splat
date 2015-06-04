@@ -38,6 +38,8 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     var notificationsBadge: NotificationBadge!
     var notificationsButton: UIButton!
     
+    var currentCountry:String? = ""
+    
     init() {
         super.init(style: .Plain)
     }
@@ -98,6 +100,7 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         let defaults = NSUserDefaults.standardUserDefaults()
         var state = defaults.objectForKey("state") as? String
         var country = defaults.objectForKey("country") as? String
+        currentCountry = country
         /* === Uncomment for simulator === */
 //        state = "CO"
         /* === Uncomment for simulator === */
@@ -588,13 +591,21 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
         if (row == 0) {
             /* Could probably just set this to the user's current state here */
             currentSelection = userLocation
+        //TODO: make this cleaner
+        } else if (row == 1 && currentCountry != "United States") {
+            currentSelection = "United States"
         } else {
             currentSelection = Location.getStates(userLocation)[row-1]
         }
     }
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return Location.getStates(userLocation).count+1
+        //TODO: make this cleaner
+        if (currentCountry != "United States") {
+            return Location.getStates(userLocation).count+2
+        } else {
+             return Location.getStates(userLocation).count+1
+        }
     }
 
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
@@ -608,6 +619,9 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
             } else {
                 return "My Location"
             }
+        //TODO: make this cleaner
+        } else if (row == 1 && currentCountry != "United States") {
+            return "United States"
         } else {
             return Location.getStates(userLocation) [row-1]
         }
@@ -763,6 +777,11 @@ class FeedViewController: UITableViewController, UITableViewDelegate, UITableVie
     }
     
     func selectLocation(sender: UIButton) {
+        //TODO: make this cleaner
+        if currentSelection == "United States" {
+            return
+        }
+        
         selectedLocation = currentSelection
         let userDefaults = NSUserDefaults.standardUserDefaults()
         userDefaults.setValue(selectedLocation, forKey: "SelectedLocation")
